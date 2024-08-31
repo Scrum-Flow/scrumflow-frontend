@@ -11,6 +11,11 @@ dependencies:
   flutter:
     sdk: flutter
 
+  get: ^4.6.5
+
+  mask_text_input_formatter: ^2.9.0
+
+  validadores: ^1.0.9
 
   cupertino_icons: ^1.0.6
 
