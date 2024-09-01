@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:scrumflow/core/theme.dart';
+import 'package:scrumflow/services/authentication_service.dart';
 
 class LoginController {
   var email = ''.obs;
@@ -8,16 +10,47 @@ class LoginController {
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  void login() {
+  Future<void> login() async {
     if (formKey.currentState!.validate()) {
-      isLoading.value = true;
+      try {
+        final authService = AuthService();
 
-      Future.delayed(Duration(seconds: 2), () {
-        isLoading.value = false;
-        Get.snackbar('Sucesso', 'Login realizado',
-            snackPosition: SnackPosition.BOTTOM);
-        Get.offNamed('/home'); // Redirecionar para a página inicial
-      });
+        await authService.authenticate(email.value, password.value);
+
+        if (await authService.getToken() != null) {
+          showCustomSnackBar(
+            'Sucesso',
+            'Login realizado com sucesso!',
+            true,
+          );
+
+          // Routes.goTo(pageHome)
+        }
+      } catch (e) {
+        showCustomSnackBar(
+          'Erro',
+          'Falha ao realizar login: ${e.toString()}',
+          false,
+        );
+      }
+    } else {
+      showCustomSnackBar(
+        'Erro',
+        "E-mail ou senha inválidos",
+        false,
+      );
     }
+  }
+
+  void showCustomSnackBar(String title, String message, bool isSuccess) {
+    Get.snackbar(
+      title,
+      message,
+      backgroundColor:
+          isSuccess ? AppTheme.successColor : AppTheme.theme.colorScheme.error,
+      colorText:
+          isSuccess ? AppTheme.onSuccess : AppTheme.theme.colorScheme.onError,
+      snackPosition: SnackPosition.BOTTOM,
+    );
   }
 }

@@ -5,6 +5,8 @@ class AppTheme {
   static const Color secondaryColor = Colors.black;
   static const Color errorColor = Colors.red;
   static const Color backgroundColor = Colors.white;
+  static const Color successColor = Colors.green;
+  static const Color onSuccess = Colors.white;
 
   static ThemeData get theme {
     return ThemeData(
@@ -18,7 +20,7 @@ class AppTheme {
         secondary: secondaryColor,
         onSecondary: Colors.white,
         error: errorColor,
-        onError: Colors.black,
+        onError: Colors.white,
         brightness: Brightness.light,
       ),
     );

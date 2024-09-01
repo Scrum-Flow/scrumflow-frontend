@@ -155,7 +155,7 @@ class LoginState extends State<LoginPage> {
                   20.toSizedBoxH(),
                   BaseButton(
                     title: "Continuar",
-                    onPressed: () => controller.login,
+                    onPressed: () => controller.login(),
                   ),
                   20.toSizedBoxH(),
                   newAccount(),
