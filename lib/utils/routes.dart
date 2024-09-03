@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:scrumflow/domain/login/login_page.dart';
+import 'package:scrumflow/domain/login/pages/login_page.dart';
 
 class Routes {
   static String first() {

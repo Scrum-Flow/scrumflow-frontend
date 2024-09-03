@@ -1,3 +1,5 @@
+import 'package:scrumflow/utils/json_helper.dart';
+
 class User {
   final int? id;
   final String? name;
@@ -17,11 +19,12 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'],
-      name: json['name'],
-      email: json['email'],
-      createdAt: DateTime.parse(json['dt_created']),
-      active: json['active'],
+      id: JsonHelper.keyExists<int>(json, 'id'),
+      name: JsonHelper.keyExists<String>(json, 'name'),
+      email: JsonHelper.keyExists<String>(json, 'email'),
+      createdAt:
+          JsonHelper.toDateTime(JsonHelper.keyExists(json, 'dt_created')),
+      active: JsonHelper.toBool(JsonHelper.keyExists(json, 'active')),
     );
   }
 
@@ -34,5 +37,23 @@ class User {
       'dt_created': createdAt?.toIso8601String() ?? '',
       'active': active,
     };
+  }
+
+  User copyWith({
+    int? id,
+    String? name,
+    String? password,
+    String? email,
+    DateTime? createdAt,
+    bool? active,
+  }) {
+    return User(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      password: password ?? this.password,
+      email: email ?? this.email,
+      createdAt: createdAt ?? this.createdAt,
+      active: active ?? this.active,
+    );
   }
 }

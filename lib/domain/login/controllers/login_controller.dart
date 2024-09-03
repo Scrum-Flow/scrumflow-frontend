@@ -4,7 +4,7 @@ import 'package:scrumflow/utils/dio_helper.dart';
 import 'package:scrumflow/utils/theme.dart';
 import 'package:scrumflow/services/authentication_service.dart';
 
-class LoginController {
+class LoginController extends GetxController {
   var email = ''.obs;
   var password = ''.obs;
   var isLoading = false.obs;

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 import 'package:scrumflow/domain/user_register/controllers/user_register_controller.dart';
-import 'package:scrumflow/models/user.dart';
 import 'package:scrumflow/parts/web_view.dart';
 import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/base_button.dart';
@@ -29,21 +28,27 @@ class _Body extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisSize: MainAxisSize.max,
       children: [
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-                width: 150, height: 150, child: Image.asset('images/logo.png')),
-            10.toSizedBoxH(),
-            const BaseLabel(
-              text: "ScrumFlow",
-              fontSize: fsVeryBig,
-              fontWeight: fwBold,
-            ),
-          ],
+        Flexible(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              SizedBox(
+                  width: 150,
+                  height: 150,
+                  child: Image.asset('assets/images/logo.png')),
+              10.toSizedBoxH(),
+              const BaseLabel(
+                text: "ScrumFlow",
+                fontSize: fsVeryBig,
+                fontWeight: fwBold,
+              ),
+            ],
+          ),
         ),
-        _Form(),
+        Flexible(child: _Form()),
       ],
     );
   }
@@ -59,7 +64,7 @@ class _Form extends StatelessWidget {
       child: Form(
         key: userController.formKey,
         autovalidateMode: AutovalidateMode.disabled,
-        child: Column(
+        child: ListView(
           children: [
             BaseTextField(
               hint: 'Nome Completo',
@@ -115,13 +120,7 @@ class _Form extends StatelessWidget {
                       title: 'Cadastrar',
                       isLoading: controller.pageState.value.status ==
                           PageStatus.loading,
-                      onPressed: () async {
-                        User? user = await userController.register();
-
-                        if (user != null) {
-                          Navigator.of(context).pop();
-                        }
-                      },
+                      onPressed: () async => await userController.register(),
                     ),
                   ),
                 ],

@@ -38,17 +38,19 @@ class UserRegisterController extends GetxController {
     passwordConfirmation.value = value;
   }
 
-  FutureOr<User?> register() async {
+  FutureOr<void> register() async {
     if (formKey.currentState!.validate()) {
       pageState.value = PageState.loading();
       update([UserRegisterControllersIds.pageState]);
 
       try {
-        return await AuthService.register(User(
+        User? user = await AuthService.register(User(
           name: name.value,
           email: email.value,
           password: password.value,
         ));
+
+        Get.back(result: user);
       } on DioException catch (e) {
         pageState.value = PageState.error(e.message);
         update([UserRegisterControllersIds.pageState]);

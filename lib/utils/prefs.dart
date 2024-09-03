@@ -11,6 +11,10 @@ class Prefs {
     return _instance;
   }
 
+  static Future<Object?> get(PrefsKeys key) async {
+    return (await _getInstance())?.get(key.toString());
+  }
+
   static Future<String?> getString(PrefsKeys key) async {
     return (await _getInstance())?.getString(key.toString());
   }

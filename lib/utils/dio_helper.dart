@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
-import 'package:scrumflow/domain/login/login_page.dart';
+import 'package:scrumflow/domain/login/pages/login_page.dart';
 import 'package:scrumflow/utils/utils.dart';
 
 class DioHelper {
@@ -36,7 +36,7 @@ class DioHelper {
       ..receiveTimeout = const Duration(minutes: 1)
       ..connectTimeout = const Duration(minutes: 1)
       ..headers = headers ?? await jsonHeaders
-      ..baseUrl = 'http://localhost:9000';
+      ..baseUrl = baseURL;
 
     dio.interceptors
       ..add(LogInterceptor())
