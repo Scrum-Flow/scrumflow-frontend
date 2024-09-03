@@ -1,25 +1,27 @@
 class User {
-  final int id;
-  final String name;
-  final String email;
-  final DateTime createdAt;
-  final bool active;
+  final int? id;
+  final String? name;
+  final String? password;
+  final String? email;
+  final DateTime? createdAt;
+  final bool? active;
 
   User({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.createdAt,
-    required this.active,
+    this.id,
+    this.name,
+    this.password,
+    this.email,
+    this.createdAt,
+    this.active,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['id'],
-      name: json['nome'],
+      name: json['name'],
       email: json['email'],
-      createdAt: DateTime.parse(json['dataCriacao']),
-      active: json['ativo'],
+      createdAt: DateTime.parse(json['dt_created']),
+      active: json['active'],
     );
   }
 
@@ -27,8 +29,9 @@ class User {
     return {
       'id': id,
       'name': name,
+      'password': password,
       'email': email,
-      'createdAt': createdAt.toIso8601String(),
+      'dt_created': createdAt?.toIso8601String() ?? '',
       'active': active,
     };
   }

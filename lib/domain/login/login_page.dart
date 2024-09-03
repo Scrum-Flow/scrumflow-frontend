@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:scrumflow/core/theme.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:scrumflow/utils/extensions/extensions.dart';
+import 'package:scrumflow/utils/routes.dart';
+import 'package:scrumflow/utils/theme.dart';
 import 'package:scrumflow/domain/login/login_controller.dart';
-import 'package:scrumflow/domain/login/page_views/login_mobile_view.dart';
-import 'package:scrumflow/domain/login/page_views/login_web_view.dart';
-import 'package:scrumflow/infra/utils.dart';
+import 'package:scrumflow/domain/user_register/user_register_page.dart';
+import 'package:scrumflow/parts/web_view.dart';
 import 'package:scrumflow/widgets/base_button.dart';
+import 'package:scrumflow/widgets/base_label.dart';
+import 'package:scrumflow/widgets/base_password_field.dart';
 import 'package:scrumflow/widgets/base_text_field.dart';
-import 'package:validadores/Validador.dart';
+import 'package:scrumflow/widgets/page_builder.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -29,13 +33,9 @@ class LoginState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          if (isMobile()) {
-            return buildMobile();
-          }
-          return buildWeb();
-        },
+      body: PageBuilder(
+        mobilePage: addBody(),
+        webPage: WebView(addBody()),
       ),
     );
   }
@@ -45,19 +45,17 @@ class LoginState extends State<LoginPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text(
-            'Ainda não tem uma conta? ',
-            style: TextStyle(color: Colors.white, fontSize: 14),
+          const BaseLabel(
+            text: 'Ainda não tem uma conta? ',
+            color: Colors.black,
+            fontSize: 14,
           ),
           InkWell(
-            onTap: () =>
-                {} /*Navigator.of(context).push(UserRegisterPage.route())*/,
-            child: Text(
-              'Crie agora',
-              style: TextStyle(
-                color: AppTheme.theme.colorScheme.onPrimary,
-                decoration: TextDecoration.underline,
-              ),
+            onTap: () => Routes.goTo(context, const UserRegisterPage()),
+            child: BaseLabel(
+              text: 'Crie agora',
+              color: AppTheme.theme.colorScheme.onPrimary,
+              decoration: TextDecoration.underline,
             ),
           ),
         ],
@@ -77,12 +75,10 @@ class LoginState extends State<LoginPage> {
               MaterialPageRoute(builder: (context) => ForgotPasswordPage()),
             );*/
           },
-          child: Text(
-            'Esqueci minha senha',
-            style: TextStyle(
-              color: AppTheme.theme.colorScheme.onPrimary,
-              decoration: TextDecoration.underline,
-            ),
+          child: BaseLabel(
+            text: 'Esqueci minha senha',
+            color: AppTheme.theme.colorScheme.onPrimary,
+            decoration: TextDecoration.underline,
           ),
         ),
       ],
@@ -92,75 +88,74 @@ class LoginState extends State<LoginPage> {
   Widget addBody() {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.only(left: 25, right: 25, top: 8, bottom: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            SizedBox(
-                width: 150, height: 150, child: Image.asset('images/logo.png')),
-            10.toSizedBoxH(),
-            const Text(
-              "ScrumFlow",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            Column(
+              children: [
+                SizedBox(
+                    width: 150,
+                    height: 150,
+                    child: Image.asset('images/logo.png')),
+                10.toSizedBoxH(),
+                const BaseLabel(
+                  text: "ScrumFlow",
+                  fontSize: fsVeryBig,
+                  fontWeight: fwBold,
+                ),
+              ],
             ),
-            100.toSizedBoxH(),
-            Form(
-              key: controller.formKey,
-              autovalidateMode: AutovalidateMode.disabled,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Row(
+            Column(
+              children: [
+                Form(
+                  key: controller.formKey,
+                  autovalidateMode: AutovalidateMode.disabled,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Bem vindo!",
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black,
-                        ),
+                      const BaseLabel(
+                        text: "Bem vindo!",
+                        fontSize: fsVeryBig,
+                        fontWeight: fwMedium,
                       ),
+                      const BaseLabel(
+                        text: "Entre na sua conta",
+                        fontWeight: fwLight,
+                      ),
+                      20.toSizedBoxH(),
+                      BaseTextField(
+                          hint: 'Email',
+                          prefixIcon: const Icon(Icons.email_outlined),
+                          keyboardType: TextInputType.emailAddress,
+                          validator: FormBuilderValidators.compose(
+                            [
+                              FormBuilderValidators.required(
+                                  errorText: 'Campo obrigatório'),
+                              FormBuilderValidators.email(
+                                  errorText: 'Email inválido')
+                            ],
+                          ),
+                          onChanged: (value) => controller.email.value = value),
+                      BasePasswordField(
+                        hint: 'Senha',
+                        validator: FormBuilderValidators.required(
+                            errorText: 'Campo obrigatório'),
+                        onChanged: (value) => controller.password.value = value,
+                      ),
+                      forgotPassword(),
+                      20.toSizedBoxH(),
+                      BaseButton(
+                        title: "Continuar",
+                        onPressed: () => controller.login(),
+                      ),
+                      20.toSizedBoxH(),
+                      newAccount(),
                     ],
                   ),
-                  const Row(
-                    children: [
-                      Text(
-                        "Entre na sua conta",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ],
-                  ),
-                  20.toSizedBoxH(),
-                  BaseTextField(
-                      hint: 'Email',
-                      prefixIcon: const Icon(Icons.email_outlined),
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (value) => Validador()
-                          .add(Validar.OBRIGATORIO, msg: 'Campo obrigatório')
-                          .add(Validar.EMAIL, msg: "Email inválido")
-                          .validar(value),
-                      onChanged: (value) => controller.email.value = value),
-                  BaseTextField(
-                    hint: 'Senha',
-                    obscureText: true,
-                    prefixIcon: const Icon(Icons.lock_outline_rounded),
-                    keyboardType: TextInputType.visiblePassword,
-                    autofillHints: const [AutofillHints.password],
-                    onChanged: (value) => controller.password.value = value,
-                  ),
-                  forgotPassword(),
-                  20.toSizedBoxH(),
-                  BaseButton(
-                    title: "Continuar",
-                    onPressed: () => controller.login(),
-                  ),
-                  20.toSizedBoxH(),
-                  newAccount(),
-                ],
-              ),
+                ),
+              ],
             ),
           ],
         ),

@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:scrumflow/domain/login/login_page.dart';
 
-extension LoginPageWeb on LoginState {
-  Widget buildWeb() {
+class WebView extends StatelessWidget {
+  const WebView(this.child, {super.key});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
     return Center(
       child: Container(
-        width: 400,
+        width: 800,
         height: 800,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -15,7 +19,7 @@ extension LoginPageWeb on LoginState {
             width: 2,
           ),
         ),
-        child: addBody(),
+        child: child,
       ),
     );
   }

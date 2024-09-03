@@ -25,6 +25,14 @@ class Routes {
     );
   }
 
+  static Future<T?> replaceTo<T extends Object>(BuildContext context, var page) async {
+    return await Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => page,
+      ),
+    );
+  }
+
   static goBack(BuildContext context, {dynamic result}) {
     Navigator.of(context).pop(result);
   }

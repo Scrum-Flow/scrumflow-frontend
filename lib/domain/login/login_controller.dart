@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:scrumflow/core/theme.dart';
+import 'package:scrumflow/utils/dio_helper.dart';
+import 'package:scrumflow/utils/theme.dart';
 import 'package:scrumflow/services/authentication_service.dart';
 
 class LoginController {
@@ -17,7 +18,7 @@ class LoginController {
 
         await authService.authenticate(email.value, password.value);
 
-        if (await authService.getToken() != null) {
+        if (await DioHelper.userToken != null) {
           showCustomSnackBar(
             'Sucesso',
             'Login realizado com sucesso!',

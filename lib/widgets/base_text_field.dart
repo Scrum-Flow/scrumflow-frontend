@@ -89,6 +89,12 @@ class BaseTextField extends StatelessWidget {
             minHeight: 24,
             minWidth: 50,
           ),
+          suffixIconConstraints: const BoxConstraints(
+            maxHeight: 24,
+            maxWidth: 50,
+            minHeight: 24,
+            minWidth: 50,
+          ),
           prefixIcon: prefixIcon,
           suffixIcon: suffixIcon,
           fillColor: Colors.black12,

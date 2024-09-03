@@ -21,7 +21,9 @@ dependencies:
 
   shared_preferences: ^2.3.2            #https://pub.dev/packages/shared_preferences/install
 
-  validadores: ^1.0.9
+  form_builder_validators: ^11.0.0
+
+  flutter_dotenv: ^5.1.0
 
   cupertino_icons: ^1.0.6
 
@@ -37,6 +39,7 @@ flutter:
 
   assets:
     - assets/images/
+    - .env
 
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a

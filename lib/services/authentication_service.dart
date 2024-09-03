@@ -1,29 +1,32 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:scrumflow/models/user.dart';
+import 'package:scrumflow/utils/dio_helper.dart';
 
 class AuthService {
-  final Dio _dio = Dio();
-
   Future<void> authenticate(String email, String password) async {
+    Dio dio = await DioHelper.jsonDio();
+
     try {
-      final response = await _dio.post('/auth/login', data: {
+      final response = await dio.post('/auth/login', data: {
         'email': email,
         'password': password,
       });
 
-      _storeToken(response.data['token']);
+      await DioHelper.setToken(response.data['token']);
     } catch (e) {
       throw Exception('Falha ao autenticar com o servidor');
     }
   }
 
-  Future<void> _storeToken(String token) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('jwtToken', token);
-  }
+  static FutureOr<User> register(User user) async {
+    var dio = await DioHelper.jsonDio();
 
-  Future<String?> getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('jwtToken');
+    Response response =
+        await dio.post('/auth/register', data: json.encode(user.toJson()));
+
+    return User.fromJson(response.data);
   }
 }
