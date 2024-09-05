@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:scrumflow/utils/dio_helper.dart';
-import 'package:scrumflow/utils/theme.dart';
+import 'package:scrumflow/domain/home/pages/home_page.dart';
 import 'package:scrumflow/services/authentication_service.dart';
+import 'package:scrumflow/utils/utils.dart';
+import 'package:scrumflow/widgets/prompts.dart';
 
 class LoginController extends GetxController {
+  var pageState = PageState.none().obs;
   var email = ''.obs;
   var password = ''.obs;
   var isLoading = false.obs;
@@ -13,45 +15,30 @@ class LoginController extends GetxController {
 
   Future<void> login() async {
     if (formKey.currentState!.validate()) {
+      pageState.value = PageState.loading();
+      update();
+
       try {
         final authService = AuthService();
 
         await authService.authenticate(email.value, password.value);
 
         if (await DioHelper.userToken != null) {
-          showCustomSnackBar(
-            'Sucesso',
-            'Login realizado com sucesso!',
-            true,
-          );
+          Prompts.successSnackBar('Sucesso', 'Login realizado com sucesso!');
 
-          // Routes.goTo(pageHome)
+          if (Get.context != null) {
+            Routes.replaceTo(Get.context!, const HomePage());
+          }
         }
       } catch (e) {
-        showCustomSnackBar(
-          'Erro',
-          'Falha ao realizar login: ${e.toString()}',
-          false,
-        );
+        Prompts.errorSnackBar(
+            'Erro', 'Falha ao realizar login: ${e.toString()}');
       }
     } else {
-      showCustomSnackBar(
-        'Erro',
-        "E-mail ou senha inválidos",
-        false,
-      );
+      Prompts.errorSnackBar('Erro', "E-mail ou senha inválidos");
     }
-  }
 
-  void showCustomSnackBar(String title, String message, bool isSuccess) {
-    Get.snackbar(
-      title,
-      message,
-      backgroundColor:
-          isSuccess ? AppTheme.successColor : AppTheme.theme.colorScheme.error,
-      colorText:
-          isSuccess ? AppTheme.onSuccess : AppTheme.theme.colorScheme.onError,
-      snackPosition: SnackPosition.BOTTOM,
-    );
+    pageState.value = PageState.none();
+    update();
   }
 }

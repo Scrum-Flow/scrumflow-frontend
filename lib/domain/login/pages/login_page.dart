@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:get/get.dart';
 import 'package:scrumflow/utils/extensions/extensions.dart';
+import 'package:scrumflow/utils/page_state.dart';
 import 'package:scrumflow/utils/routes.dart';
 import 'package:scrumflow/utils/theme.dart';
 import 'package:scrumflow/domain/login/controllers/login_controller.dart';
@@ -102,6 +104,7 @@ class LoginState extends State<LoginPage> {
                             hint: 'Email',
                             prefixIcon: const Icon(Icons.email_outlined),
                             keyboardType: TextInputType.emailAddress,
+                            autofillHints: const [AutofillHints.email],
                             validator: FormBuilderValidators.compose(
                               [
                                 FormBuilderValidators.required(
@@ -119,9 +122,13 @@ class LoginState extends State<LoginPage> {
                           onChanged: (value) =>
                               controller.password.value = value,
                         ),
-                        BaseButton(
-                          title: "Continuar",
-                          onPressed: () => controller.login(),
+                        Obx(
+                          () => BaseButton(
+                            title: "Continuar",
+                            isLoading: controller.pageState.value.status ==
+                                PageStatus.loading,
+                            onPressed: () => controller.login(),
+                          ),
                         ),
                         10.toSizedBoxH(),
                         newAccount(),

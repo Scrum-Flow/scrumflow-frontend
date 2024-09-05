@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:scrumflow/domain/login/pages/login_page.dart';
 import 'package:scrumflow/utils/utils.dart';
+import 'package:scrumflow/widgets/prompts.dart';
 
 class DioHelper {
   static FutureOr<Map<String, dynamic>> get authHeader async => {
@@ -51,10 +52,31 @@ class AppInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) {
     var statusCode = err.response?.statusCode;
 
+    var type = err.type;
+
+    switch (type) {
+      case DioExceptionType.sendTimeout:
+      case DioExceptionType.connectionTimeout:
+      case DioExceptionType.receiveTimeout:
+        Prompts.errorSnackBar('Erro de conexão',
+            'Tempo de conexão excedido, verifique sua conexão e tente novamente');
+        return;
+      case DioExceptionType.badCertificate:
+      case DioExceptionType.badResponse:
+      case DioExceptionType.cancel:
+      case DioExceptionType.connectionError:
+      case DioExceptionType.unknown:
+        break;
+    }
+
     switch (statusCode) {
       case HttpStatus.unauthorized:
         Get.to(const LoginPage());
         break;
+      case HttpStatus.requestTimeout:
+        Prompts.errorSnackBar('Erro de conexão',
+            'Tempo de conexão excedido, verifique sua conexão e tente novamente');
+        return;
     }
 
     super.onError(err, handler);

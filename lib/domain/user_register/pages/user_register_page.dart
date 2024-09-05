@@ -84,8 +84,17 @@ class _Form extends StatelessWidget {
             ),
             BasePasswordField(
               hint: 'Senha',
-              validator: FormBuilderValidators.required(
-                  errorText: 'Campo obrigatório'),
+              validator: FormBuilderValidators.compose([
+                FormBuilderValidators.required(errorText: 'Campo obrigatório'),
+                FormBuilderValidators.minLength(8,
+                    errorText: 'A senha deve ter no mínimo 8 caracteres'),
+                FormBuilderValidators.hasUppercaseChars(
+                    atLeast: 1,
+                    errorText: 'A senha deve ter ao menos uma letra maiúscula'),
+                FormBuilderValidators.hasNumericChars(
+                    atLeast: 1,
+                    errorText: 'A senha deve ter ao menos um número'),
+              ]),
               onChanged: userController.onPasswordChanged,
             ),
             GetBuilder<UserRegisterController>(

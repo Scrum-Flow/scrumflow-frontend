@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:scrumflow/models/user.dart';
 import 'package:scrumflow/services/authentication_service.dart';
 import 'package:scrumflow/utils/utils.dart';
+import 'package:scrumflow/widgets/prompts.dart';
 
 enum UserRegisterControllersIds {
   pageState,
@@ -51,11 +52,16 @@ class UserRegisterController extends GetxController {
         ));
 
         Get.back(result: user);
+
+        Prompts.errorSnackBar('Sucesso', 'Usuário cadastrado com sucesso!');
       } on DioException catch (e) {
+        Prompts.errorSnackBar('Erro', e.message);
+
         pageState.value = PageState.error(e.message);
         update([UserRegisterControllersIds.pageState]);
         debugPrint(e.toString());
       } catch (e) {
+        Prompts.errorSnackBar('Erro');
         pageState.value = PageState.error(e.toString());
         update([UserRegisterControllersIds.pageState]);
         debugPrint(e.toString());
