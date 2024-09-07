@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scrumflow/controllers/user_controller.dart';
+import 'package:scrumflow/utils/enums/enum_icons.dart';
 import 'package:scrumflow/widgets/base_label.dart';
+import 'package:scrumflow/widgets/navegation_button.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -37,18 +39,50 @@ class HomePage extends StatelessWidget {
             )
           ]),
       drawer: Drawer(
-        child: Column(
-          children: [
-            UserAccountsDrawerHeader(
-              accountName:
-                  BaseLabel(text: userController.user.value.name ?? 'Test'),
-              accountEmail: BaseLabel(
-                text: userController.user.value.email ?? 'Test',
-              ),
-            )
-          ],
-        ),
+        child: Column(children: [
+          UserAccountsDrawerHeader(
+            accountName:
+                BaseLabel(text: userController.user.value.name ?? 'Test'),
+            accountEmail: BaseLabel(
+              text: userController.user.value.email ?? 'Test',
+            ),
+          ),
+          addNavigationButtons(),
+        ]),
       ),
     );
+  }
+
+  Widget addNavigationButtons() {
+    return ListView(shrinkWrap: true, children: [
+      NavigationButton(
+          iconPath: PathIcons.home.getIcon(),
+          title: "Home",
+          onPressed: () => {}),
+      NavigationButton(
+          iconPath: PathIcons.projects.getIcon(),
+          title: "Projetos",
+          onPressed: () => {}),
+      NavigationButton(
+          iconPath: PathIcons.team.getIcon(),
+          title: "Times",
+          onPressed: () => {}),
+      NavigationButton(
+          iconPath: PathIcons.users.getIcon(),
+          title: "Usuários",
+          onPressed: () => {}),
+      NavigationButton(
+          iconPath: PathIcons.tasks.getIcon(),
+          title: "Tarefas",
+          onPressed: () => {}),
+      NavigationButton(
+          iconPath: PathIcons.chat.getIcon(),
+          title: "Chat",
+          onPressed: () => {}),
+      NavigationButton(
+          iconPath: PathIcons.dashboard.getIcon(),
+          title: "Dashboard",
+          onPressed: () => {}),
+    ]);
   }
 }
