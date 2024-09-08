@@ -9,7 +9,7 @@ class User {
   final String? email;
   final DateTime? createdAt;
   final bool? active;
-  final UserCategory? userCategory;
+  /*final UserCategory? userCategory;*/
 
   User(
       {this.id,
@@ -18,7 +18,7 @@ class User {
       this.email,
       this.createdAt,
       this.active,
-      this.userCategory = UserCategory.user});
+      /*this.userCategory = UserCategory.user*/});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -28,8 +28,8 @@ class User {
         createdAt:
             JsonHelper.toDateTime(JsonHelper.keyExists(json, 'dt_created')),
         active: JsonHelper.toBool(JsonHelper.keyExists(json, 'active')),
-        userCategory: JsonHelper.toUserCategory(
-            JsonHelper.keyExists(json, "userCategory")));
+        /*userCategory: JsonHelper.toUserCategory(
+            JsonHelper.keyExists(json, "userCategory"))*/);
   }
 
   Map<String, dynamic> toJson() {
@@ -40,7 +40,7 @@ class User {
       'email': email,
       'dt_created': createdAt?.toIso8601String() ?? '',
       'active': active,
-      'userCategory': userCategory
+      /*'userCategory': userCategory*/
     };
   }
 
@@ -51,7 +51,7 @@ class User {
       String? email,
       DateTime? createdAt,
       bool? active,
-      UserCategory? userCategory}) {
+      /*UserCategory? userCategory*/}) {
     return User(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -59,6 +59,6 @@ class User {
         email: email ?? this.email,
         createdAt: createdAt ?? this.createdAt,
         active: active ?? this.active,
-        userCategory: userCategory ?? this.userCategory);
+        /*userCategory: userCategory ?? this.userCategory*/);
   }
 }

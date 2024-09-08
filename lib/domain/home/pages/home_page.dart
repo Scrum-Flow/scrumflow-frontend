@@ -65,7 +65,7 @@ class HomePage extends StatelessWidget {
 
     btns = [];
 
-    if (userController.user.value.userCategory!.index != 2) {
+    /*if (userController.user.value.userCategory!.index != 2) {*/
       btns.add(
         NavigationButton(
           iconPath: PathIcons.projects.getIcon(),
@@ -86,7 +86,7 @@ class HomePage extends StatelessWidget {
             title: "Usuários",
             onPressed: () => Routes.goTo(context, const UsersPage())),
       );
-    }
+    //}
 
     btns.add(
       NavigationButton(
