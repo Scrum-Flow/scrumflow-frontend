@@ -1,3 +1,6 @@
+import 'package:get/get.dart';
+import 'package:scrumflow/models/user.dart';
+
 class JsonHelper {
   static bool? toBool(dynamic value) {
     if (value is bool) {
@@ -29,5 +32,10 @@ class JsonHelper {
 
   static T? keyExists<T>(Map json, String key) {
     return json.containsKey(key) ? json[key] : null;
+  }
+
+  static UserCategory toUserCategory(dynamic value) {
+    return UserCategory.values.firstWhereOrNull((e) => e == value) ??
+        UserCategory.user;
   }
 }
