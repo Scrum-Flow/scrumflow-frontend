@@ -53,7 +53,7 @@ class UserRegisterController extends GetxController {
 
         Get.back(result: user);
 
-        Prompts.errorSnackBar('Sucesso', 'Usuário cadastrado com sucesso!');
+        Prompts.successSnackBar('Sucesso', 'Usuário cadastrado com sucesso!');
       } on DioException catch (e) {
         Prompts.errorSnackBar('Erro', e.message);
 
