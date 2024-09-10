@@ -17,6 +17,14 @@ enum Pages {
         Pages.users => PathIcons.users.getIcon(),
         Pages.tasks => PathIcons.tasks.getIcon(),
       };
+
+  String get name => switch (this) {
+        Pages.dashboard => 'Dashboard',
+        Pages.projects => 'Projetos',
+        Pages.team => 'Times',
+        Pages.users => 'Usuários',
+        Pages.tasks => 'Tarefas',
+      };
 }
 
 class HomePageController extends GetxController {

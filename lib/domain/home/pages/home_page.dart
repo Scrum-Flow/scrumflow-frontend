@@ -63,7 +63,9 @@ class _Body extends StatelessWidget {
             controller: homeController.sideMenu,
             alwaysShowFooter: true,
             style: SideMenuStyle(
-              displayMode: SideMenuDisplayMode.compact,
+              displayMode: isMobile
+                  ? SideMenuDisplayMode.compact
+                  : SideMenuDisplayMode.auto,
               openSideMenuWidth: 150,
             ),
             title: Column(
@@ -78,28 +80,42 @@ class _Body extends StatelessWidget {
             items: Pages.values
                 .map(
                   (page) => SideMenuItem(
-                    builder: (context, displayMode) => Container(
-                      width: double.infinity,
-                      height: 50,
-                      color: homeController.sideMenu.currentPage == page.index
-                          ? const Color(0xff020819)
-                          : Colors.transparent,
-                      child: InkWell(
-                        onTap: () => homeController.changePage(page.index),
-                        child: Center(
-                          child: SvgPicture.asset(
-                            page.icon,
-                            width: 25,
-                            colorFilter: ColorFilter.mode(
-                              homeController.sideMenu.currentPage == page.index
-                                  ? Colors.white
-                                  : Colors.black,
-                              BlendMode.srcIn,
-                            ),
-                          ),
+                    builder: (context, displayMode) {
+                      Widget picture = SvgPicture.asset(
+                        page.icon,
+                        width: 25,
+                        colorFilter: ColorFilter.mode(
+                          homeController.sideMenu.currentPage == page.index
+                              ? Colors.white
+                              : Colors.black,
+                          BlendMode.srcIn,
                         ),
-                      ),
-                    ),
+                      );
+
+                      return Container(
+                        width: double.infinity,
+                        height: 50,
+                        color: homeController.sideMenu.currentPage == page.index
+                            ? const Color(0xff020819)
+                            : Colors.transparent,
+                        child: InkWell(
+                          onTap: () => homeController.changePage(page.index),
+                          child: isMobile
+                              ? Center(child: picture)
+                              : ListTile(
+                                  leading: picture,
+                                  title: BaseLabel(
+                                    text: page.name,
+                                    color:
+                                        homeController.sideMenu.currentPage ==
+                                                page.index
+                                            ? Colors.white
+                                            : Colors.black,
+                                  ),
+                                ),
+                        ),
+                      );
+                    },
                   ),
                 )
                 .toList(),
