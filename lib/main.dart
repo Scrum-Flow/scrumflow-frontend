@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
-import 'package:scrumflow/controllers/user_controller.dart';
+import 'package:scrumflow/controllers/auth_controller.dart';
 import 'package:scrumflow/domain/login/pages/login_page.dart';
 import 'package:scrumflow/domain/splash_page.dart';
 

@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:scrumflow/domain/home/pages/home_page.dart';
 import 'package:scrumflow/domain/login/pages/login_page.dart';
 import 'package:scrumflow/models/user.dart';
 import 'package:scrumflow/utils/utils.dart';
@@ -21,7 +22,10 @@ class AuthController extends GetxController {
 
   void authenticated() {
     authState.value = AuthState.authorized;
-    update([AuthControllerIds.authState]);
+
+    Get.key.currentState?.pushReplacement(
+      MaterialPageRoute(builder: (context) => const HomePage()),
+    );
   }
 
   FutureOr<void> initialVerification() async {
