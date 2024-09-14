@@ -43,11 +43,14 @@ class ProjectFormViewController extends GetxController {
         pageState.value = PageState.loading();
 
         try {
-          Project project = await ProjetcService.newProject(Project(
+          Project? project = await ProjetcService.newProject(Project(
               name: name.value,
               description: description.value,
               startDate: startDate.value,
-              endDate: endDate.value));
+              endDate: endDate.value,
+              active: true));
+
+          Get.back(result: project);
 
           Prompts.successSnackBar('Sucesso', 'Projeto criado com sucesso!');
         } on DioException catch (e) {

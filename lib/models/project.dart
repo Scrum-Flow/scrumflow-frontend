@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:scrumflow/utils/utils.dart';
 
 class Project {
@@ -6,23 +8,37 @@ class Project {
   final String? description;
   final DateTime? startDate;
   final DateTime? endDate;
+  final bool? active;
 
-  Project({
-    this.id,
-    this.name,
-    this.description,
-    this.startDate,
-    this.endDate,
-  });
+  Project(
+      {this.id,
+      this.name,
+      this.description,
+      this.startDate,
+      this.endDate,
+      this.active});
 
-  factory Project.fromJson(Map<String, dynamic> json) {
+  factory Project.fromJsonObject(Map<String, dynamic> json) {
     return Project(
       id: JsonHelper.keyExists<int>(json, 'id'),
       name: JsonHelper.keyExists<String>(json, 'name'),
       description: JsonHelper.keyExists<String>(json, 'description'),
       startDate: JsonHelper.toDateTime(JsonHelper.keyExists(json, 'startDate')),
       endDate: JsonHelper.toDateTime(JsonHelper.keyExists(json, 'endDate')),
+      active: JsonHelper.keyExists(json, 'active') ?? true,
     );
+  }
+
+  static List<Project> fromJson(String jsonBody) {
+    List<Project> lista = [];
+
+    var jsonPronto = jsonDecode(jsonBody);
+
+    for (var item in jsonPronto) {
+      lista.add(Project.fromJsonObject(item));
+    }
+
+    return lista;
   }
 
   Project copyWith({
@@ -31,23 +47,24 @@ class Project {
     String? description,
     DateTime? startDate,
     DateTime? endDate,
+    bool? active,
   }) {
     return Project(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      description: description ?? this.description,
-      startDate: startDate ?? this.startDate,
-      endDate: endDate ?? this.endDate,
-    );
+        id: id ?? this.id,
+        name: name ?? this.name,
+        description: description ?? this.description,
+        startDate: startDate ?? this.startDate,
+        endDate: endDate ?? this.endDate,
+        active: active ?? this.active);
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'name': name,
       'description': description,
-      'startDate': startDate?.toIso8601String() ?? '',
-      'endDate': endDate?.toIso8601String() ?? '',
+      'startDate': startDate?.toYYYYMMDD ?? '',
+      'endDate': endDate?.toYYYYMMDD ?? '',
+      'active': active
     };
   }
 }

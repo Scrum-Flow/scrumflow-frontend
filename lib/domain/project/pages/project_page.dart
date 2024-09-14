@@ -100,7 +100,8 @@ class _ProjectForm extends StatelessWidget {
                   hint: "Descrição do projeto",
                   validator: FormBuilderValidators.required(
                       errorText: 'Campo obrigatório'),
-                  onChanged: projectFormViewController.onProjectNameChanged,
+                  onChanged:
+                      projectFormViewController.onProjectDescriptionChanged,
                 ),
                 BaseDatePicker(
                   hint: 'Data de início do projeto',
