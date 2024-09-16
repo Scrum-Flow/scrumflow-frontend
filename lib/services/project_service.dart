@@ -14,24 +14,24 @@ class ProjetcService {
     return Project.fromJsonObject(response.data);
   }
 
-  static FutureOr<void> deleteProject(int id) async {
-    var dio = await DioHelper.jsonDio();
+  static FutureOr<void> deleteProjectById(int id) async {
+    var dio = await DioHelper.defaultDio();
 
     var response = await dio.delete('/project/$id');
 
     ///TODO Ajustar isso. :> Não sei o que retorna
   }
 
-  static FutureOr<void> updateProject(int id) async {
-    var dio = await DioHelper.jsonDio();
+  static FutureOr<void> updateProjectById(int id) async {
+    var dio = await DioHelper.defaultDio();
 
     var response = await dio.put('/project/$id');
 
     ///TODO Ajustar isso. :> Não sei o que retorna
   }
 
-  static FutureOr<Project> getProject(int id) async {
-    var dio = await DioHelper.jsonDio();
+  static FutureOr<Project> getProjectById(int id) async {
+    var dio = await DioHelper.defaultDio();
 
     var response = await dio.get('/project/$id');
 
@@ -39,7 +39,7 @@ class ProjetcService {
   }
 
   static FutureOr<List<Project>> getAllProject() async {
-    var dio = await DioHelper.jsonDio();
+    var dio = await DioHelper.defaultDio();
 
     var response = await dio.get('/project');
 

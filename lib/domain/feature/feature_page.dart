@@ -1,30 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
-import 'package:scrumflow/controllers/project_form_controller.dart';
-import 'package:scrumflow/domain/feature/feature_page.dart';
-import 'package:scrumflow/utils/utils.dart';
+import 'package:scrumflow/controllers/feature_form_controller.dart';
+import 'package:scrumflow/utils/extensions/extensions.dart';
+import 'package:scrumflow/utils/page_state.dart';
+import 'package:scrumflow/utils/routes.dart';
+import 'package:scrumflow/utils/screen_helper.dart';
 import 'package:scrumflow/widgets/base_button.dart';
-import 'package:scrumflow/widgets/base_date_picker.dart';
 import 'package:scrumflow/widgets/base_label.dart';
 import 'package:scrumflow/widgets/base_text_field.dart';
 import 'package:scrumflow/widgets/page_builder.dart';
 
-class ProjectPage extends StatelessWidget {
-  const ProjectPage({super.key});
+class FeaturePage extends StatelessWidget {
+  const FeaturePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: const BaseLabel(
-              text: 'Projetos', fontSize: fsVeryBig, fontWeight: fwMedium),
+              text: 'Funcionalidades',
+              fontSize: fsVeryBig,
+              fontWeight: fwMedium),
         ),
         body: Column(
           children: [
-            BaseButton(
-                title: 'Criar novo projeto',
-                onPressed: () => Routes.goTo(context, CreateProjectPage())),
             BaseButton(
                 title: 'Criar nova funcionalidade',
                 onPressed: () => Routes.goTo(context, CreateFeaturePage())),
@@ -33,16 +33,14 @@ class ProjectPage extends StatelessWidget {
   }
 }
 
-class CreateProjectPage extends StatelessWidget {
-  const CreateProjectPage({super.key});
+class CreateFeaturePage extends StatelessWidget {
+  const CreateFeaturePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    Get.put<CreateProjectController>(CreateProjectController());
-
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Cadastro de novo Projeto"),
+          title: const Text("Cadastro de nova Funcionalidade"),
         ),
         body: PageBuilder(
             minimumInsets: EdgeInsets.zero,
@@ -51,43 +49,33 @@ class CreateProjectPage extends StatelessWidget {
   }
 
   Widget _WebPage() {
-    return const ProjectFormView();
+    return const FeatureFormView();
   }
 
   Widget _MobilePage() {
-    return const ProjectFormView();
+    return const FeatureFormView();
   }
 }
 
-class CreateProjectController extends GetxController {
-  //Vai ser utiilizado futuramente para cadastrar um projeto inteiro.
-  // Sem ter que voltar pra home para trocar as páginas
-  final PageController _pageController = PageController();
-
-  void changePage(int index) {
-    _pageController.jumpToPage(index);
-  }
-}
-
-class ProjectFormView extends StatelessWidget {
-  const ProjectFormView({super.key});
+class FeatureFormView extends StatelessWidget {
+  const FeatureFormView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    Get.put<ProjectFormViewController>(ProjectFormViewController());
+    Get.put<FeatureFormViewController>(FeatureFormViewController());
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
-      children: [_ProjectForm()],
+      children: [_FeatureForm()],
     );
   }
 }
 
-class _ProjectForm extends StatelessWidget {
+class _FeatureForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    ProjectFormViewController projectFormViewController =
-        Get.find<ProjectFormViewController>();
+    FeatureFormViewController featureFormViewController =
+        Get.find<FeatureFormViewController>();
 
     return SizedBox(
       width: ScreenHelper.screenWidth(),
@@ -95,7 +83,7 @@ class _ProjectForm extends StatelessWidget {
       child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
           child: Form(
-            key: projectFormViewController.projectFormKey,
+            key: featureFormViewController.featureFormKey,
             autovalidateMode: AutovalidateMode.disabled,
             child: ListView(
               children: [
@@ -103,30 +91,27 @@ class _ProjectForm extends StatelessWidget {
                   hint: "Nome do projeto",
                   validator: FormBuilderValidators.required(
                       errorText: 'Campo obrigatório'),
-                  onChanged: projectFormViewController.onProjectNameChanged,
+                  onChanged: featureFormViewController.onFeatureNameChanged,
                 ),
                 BaseTextField(
                   hint: "Descrição do projeto",
                   validator: FormBuilderValidators.required(
                       errorText: 'Campo obrigatório'),
                   onChanged:
-                      projectFormViewController.onProjectDescriptionChanged,
+                      featureFormViewController.onFeatureDescriptionChanged,
                 ),
-                BaseDatePicker(
-                  hint: 'Data de início do projeto',
-                  initialValue: projectFormViewController.startDate.value,
-                  validator: FormBuilderValidators.required(
-                      errorText: 'Campo obrigatório'),
-                  onChanged: (value) => projectFormViewController
-                      .onProjectStartDateChanged(value),
-                ),
-                BaseDatePicker(
-                  hint: 'Data de fim do projeto',
-                  initialValue: projectFormViewController.endDate.value,
-                  validator: FormBuilderValidators.required(
-                      errorText: 'Campo obrigatório'),
+                DropdownButtonFormField<int>(
+                  items: const [
+                    //Setado com valores estáticos por enquanto
+                    DropdownMenuItem(value: 1, child: Text('Nome Projeto 1')),
+                    DropdownMenuItem(value: 2, child: Text('Nome Projeto 2')),
+                  ],
                   onChanged: (value) =>
-                      projectFormViewController.onProjectEndDateChanged(value),
+                      featureFormViewController.onFeatureProjectSelected,
+                  decoration: InputDecoration(labelText: 'Projeto'),
+                  isExpanded: true,
+                  validator: FormBuilderValidators.required(
+                      errorText: 'É necessário selecionar um projeto'),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -134,19 +119,19 @@ class _ProjectForm extends StatelessWidget {
                     BaseButton(
                       title: 'Cancelar',
                       isLoading:
-                          projectFormViewController.pageState.value.status ==
+                          featureFormViewController.pageState.value.status ==
                               PageStatus.loading,
                       onPressed: () async =>
-                          await projectFormViewController.cancel(),
+                          await featureFormViewController.cancel(),
                     ),
                     25.toSizedBoxW(),
                     BaseButton(
                       title: 'Salvar',
                       isLoading:
-                          projectFormViewController.pageState.value.status ==
+                          featureFormViewController.pageState.value.status ==
                               PageStatus.loading,
                       onPressed: () async =>
-                          await projectFormViewController.newProject(),
+                          await featureFormViewController.newFeature(),
                     ),
                   ],
                 )

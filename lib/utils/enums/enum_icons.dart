@@ -7,7 +7,8 @@ enum PathIcons {
   projects,
   tasks,
   team,
-  users;
+  users,
+  feature;
 
   static PathIcons? getByName(String name) {
     return PathIcons.values.firstWhereOrNull((e) => e.name == name);

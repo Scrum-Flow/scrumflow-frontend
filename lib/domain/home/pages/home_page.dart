@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:scrumflow/controllers/auth_controller.dart';
 import 'package:scrumflow/domain/dashboard/dashboard_page.dart';
+import 'package:scrumflow/domain/feature/feature_page.dart';
 import 'package:scrumflow/domain/home/controllers/home_page_controller.dart';
 import 'package:scrumflow/domain/project/pages/project_page.dart';
 import 'package:scrumflow/domain/tasks/pages/task_page.dart';
@@ -153,6 +154,7 @@ class _Body extends StatelessWidget {
                 TeamPage(),
                 UsersPage(),
                 TaskPage(),
+                FeaturePage(),
               ],
             ),
           ),
