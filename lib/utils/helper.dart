@@ -8,4 +8,12 @@ class Helper {
 
     return format.format(dateTime);
   }
+
+  static String? schemaDate(DateTime? dateTime) {
+    if (dateTime == null) return null;
+
+    DateFormat format = DateFormat('yyyy-MM-dd');
+
+    return format.format(dateTime);
+  }
 }

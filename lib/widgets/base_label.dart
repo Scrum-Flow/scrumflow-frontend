@@ -18,6 +18,8 @@ class BaseLabel extends StatelessWidget {
     this.fontWeight = fwNormal,
     this.color,
     this.decoration,
+    this.overflow = TextOverflow.ellipsis,
+    this.maxLines,
   });
 
   final String text;
@@ -25,12 +27,16 @@ class BaseLabel extends StatelessWidget {
   final FontWeight fontWeight;
   final Color? color;
   final TextDecoration? decoration;
+  final TextOverflow overflow;
+  final int? maxLines;
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
+      maxLines: maxLines,
       style: TextStyle(
+        overflow: overflow,
         fontSize: fontSize,
         fontWeight: fontWeight,
         color: color,

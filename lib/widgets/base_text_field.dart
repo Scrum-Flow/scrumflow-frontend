@@ -16,6 +16,7 @@ class BaseTextField extends StatelessWidget {
     this.controller,
     this.keyboardType,
     this.onChanged,
+    this.onFieldSubmitted,
     this.inputFormatters,
     this.maxLength,
     this.autofillHints,
@@ -36,6 +37,7 @@ class BaseTextField extends StatelessWidget {
   final TextEditingController? controller;
   final TextInputType? keyboardType;
   final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onFieldSubmitted;
   final List<TextInputFormatter>? inputFormatters;
   final int? maxLength;
   final Iterable<String>? autofillHints;
@@ -45,7 +47,8 @@ class BaseTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
+      height: kMinInteractiveDimension * 2,
       padding: const EdgeInsets.only(bottom: 4),
       child: TextFormField(
         initialValue: initialValue,
@@ -58,6 +61,7 @@ class BaseTextField extends StatelessWidget {
         keyboardType: keyboardType ??
             (fieldType == FieldType.expanded ? TextInputType.multiline : null),
         onChanged: onChanged,
+        onFieldSubmitted: onFieldSubmitted,
         inputFormatters: [
           FilteringTextInputFormatter.singleLineFormatter,
           ...inputFormatters ?? [],
@@ -68,6 +72,7 @@ class BaseTextField extends StatelessWidget {
         validator: validator,
         maxLines: fieldType == FieldType.normal ? 1 : 4,
         decoration: InputDecoration(
+          contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 8),
           enabledBorder: UnderlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide.none),

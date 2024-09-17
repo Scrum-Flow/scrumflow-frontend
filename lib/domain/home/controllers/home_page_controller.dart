@@ -28,10 +28,14 @@ enum Pages {
 }
 
 class HomePageController extends GetxController {
-  final PageController pageController = PageController();
+  late PageController pageController = PageController();
   final SideMenuController sideMenu = SideMenuController();
 
+  int index = 0;
+
   void changePage(int index) {
+    this.index = index;
+
     sideMenu.changePage(index);
 
     pageController.jumpToPage(index);

@@ -6,7 +6,7 @@ import 'package:scrumflow/models/user.dart';
 import 'package:scrumflow/utils/dio_helper.dart';
 
 class AuthService {
-  Future<void> authenticate(String email, String password) async {
+  Future<User> authenticate(String email, String password) async {
     Dio dio = await DioHelper.jsonDio();
 
     try {
@@ -15,10 +15,9 @@ class AuthService {
         'password': password,
       });
 
-      User authenticatedUser =
-          User.fromJson(response.data).copyWith(email: email);
+      await DioHelper.setToken(jsonEncode(response.data ?? ''));
 
-      await DioHelper.setToken(json.encode(authenticatedUser.toJson()));
+      return User.fromJson(response.data);
     } catch (e) {
       throw Exception('Falha ao autenticar com o servidor');
     }

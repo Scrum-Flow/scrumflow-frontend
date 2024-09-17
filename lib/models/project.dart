@@ -1,3 +1,4 @@
+import 'package:scrumflow/utils/helper.dart';
 import 'package:scrumflow/utils/utils.dart';
 
 class Project {
@@ -46,8 +47,8 @@ class Project {
       'id': id,
       'name': name,
       'description': description,
-      'startDate': startDate?.toIso8601String() ?? '',
-      'endDate': endDate?.toIso8601String() ?? '',
+      'startDate': Helper.schemaDate(startDate),
+      'endDate': Helper.schemaDate(endDate),
     };
   }
 }

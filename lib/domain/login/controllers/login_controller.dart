@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -25,18 +24,14 @@ class LoginController extends GetxController {
       try {
         final authService = AuthService();
 
-        await authService.authenticate(email.value, password.value);
+        User user = await authService.authenticate(email.value, password.value);
 
-        String? userToken = await DioHelper.userToken;
+        var authController = Get.find<AuthController>();
 
-        if (userToken != null) {
-          Prompts.successSnackBar('Sucesso', 'Login realizado com sucesso!');
+        authController.updateUser(user);
+        authController.authenticated();
 
-          var authController = Get.find<AuthController>();
-
-          authController.updateUser(User.fromJson(json.decode(userToken)));
-          authController.authenticated();
-        }
+        Prompts.successSnackBar('Sucesso', 'Login realizado com sucesso!');
       } on DioException catch (e) {
         Prompts.errorSnackBar('Erro', e.message);
       } catch (e) {

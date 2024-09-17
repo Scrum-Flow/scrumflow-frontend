@@ -17,7 +17,9 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put<HomePageController>(HomePageController());
+    HomePageController controller = HomePageController();
+
+    Get.put<HomePageController>(controller);
 
     return PageBuilder(
       minimumInsets: EdgeInsets.zero,

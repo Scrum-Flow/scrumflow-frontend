@@ -35,7 +35,7 @@ class AuthController extends GetxController {
     try {
       await Future.delayed(Duration(seconds: 2));
 
-      String? token = await DioHelper.userToken;
+      String? token = await Prefs.getString(PrefsKeys.userToken);
 
       if (token != null) {
         user.value = User.fromJson(json.decode(token.toString()));

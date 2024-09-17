@@ -18,7 +18,8 @@ class PageBuilder extends StatelessWidget {
     return SafeArea(
       minimum: minimumInsets ?? const EdgeInsets.symmetric(vertical: 18),
       child: LayoutBuilder(
-          builder: (context, constraints) => ScreenHelper.isMobile() ? mobilePage : webPage),
+          builder: (context, constraints) =>
+              ScreenHelper.isMobile() ? mobilePage : webPage),
     );
   }
 }
