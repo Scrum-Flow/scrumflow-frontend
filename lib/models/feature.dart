@@ -47,4 +47,10 @@ class Feature {
       'projectId': projectId,
     };
   }
+
+  Feature.fake()
+      : id = -1,
+        name = "Funcionalidade fake",
+        description = "Essa funcionalidade é falsa",
+        projectId = -1;
 }

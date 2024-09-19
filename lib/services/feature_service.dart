@@ -30,12 +30,15 @@ class FeatureService {
     return Feature.fromJsonObject(response.data);
   }
 
-  static FutureOr<void> updateFeatureById(int id) async {
+  static FutureOr<Feature> updateFeature(Feature feature) async {
     var dio = await DioHelper.defaultDio();
 
-    var response = await dio.put('/feature/$id');
+    var response =
+        await dio.put('/feature/${feature.id}', data: feature.toJson());
 
     ///TODO Ajustar isso. :> Não sei o que retorna
+
+    return Feature.fromJsonObject(response.data);
   }
 
   static FutureOr<void> deleteFeatureById(int id) async {
