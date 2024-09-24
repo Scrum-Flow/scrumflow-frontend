@@ -9,12 +9,14 @@ class BaseDatePicker extends StatefulWidget {
     this.initialValue,
     this.onChanged,
     this.validator,
+    this.enabled = true,
   }) : super(key: key);
 
   final String? hint;
   final DateTime? initialValue;
   final ValueChanged<DateTime?>? onChanged;
   final FormFieldValidator<DateTime>? validator;
+  final bool enabled;
 
   @override
   State<BaseDatePicker> createState() => _BaseDatePickerState();
@@ -30,6 +32,7 @@ class _BaseDatePickerState extends State<BaseDatePicker> {
     super.initState();
 
     selectedValue = widget.initialValue;
+    controller.text = Helper.formatDate(selectedValue) ?? '';
   }
 
   @override
@@ -39,6 +42,7 @@ class _BaseDatePickerState extends State<BaseDatePicker> {
       controller: controller,
       readOnly: true,
       validator: (value) => widget.validator?.call(selectedValue),
+      enabled: widget.enabled,
       onTap: () async {
         DateTime? picked = await showDatePicker(
           context: context,

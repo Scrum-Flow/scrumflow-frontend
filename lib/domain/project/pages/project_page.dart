@@ -3,6 +3,8 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 import 'package:scrumflow/controllers/project_form_controller.dart';
 import 'package:scrumflow/domain/feature/feature_page.dart';
+import 'package:scrumflow/models/project.dart';
+import 'package:scrumflow/utils/enums/enum_view_mode.dart';
 import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/base_button.dart';
 import 'package:scrumflow/widgets/base_date_picker.dart';
@@ -25,6 +27,21 @@ class ProjectPage extends StatelessWidget {
             BaseButton(
                 title: 'Criar novo projeto',
                 onPressed: () => Routes.goTo(context, CreateProjectPage())),
+            20.toSizedBoxH(),
+            BaseButton(
+                title: 'Editar projeto',
+                onPressed: () => Routes.goTo(
+                    context,
+                    CreateProjectPage(
+                        project: Project.fake(), viewMode: ViewMode.edit))),
+            20.toSizedBoxH(),
+            BaseButton(
+                title: 'Visualizar projeto',
+                onPressed: () => Routes.goTo(
+                    context,
+                    CreateProjectPage(
+                        project: Project.fake(), viewMode: ViewMode.view))),
+            20.toSizedBoxH(),
             BaseButton(
                 title: 'Criar nova funcionalidade',
                 onPressed: () => Routes.goTo(context, CreateFeaturePage())),
@@ -34,7 +51,11 @@ class ProjectPage extends StatelessWidget {
 }
 
 class CreateProjectPage extends StatelessWidget {
-  const CreateProjectPage({super.key});
+  const CreateProjectPage(
+      {super.key, this.project, this.viewMode = ViewMode.create});
+
+  final ViewMode? viewMode;
+  final Project? project;
 
   @override
   Widget build(BuildContext context) {
@@ -42,20 +63,24 @@ class CreateProjectPage extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Cadastro de novo Projeto"),
+          title: Text(viewMode == ViewMode.view
+              ? "Visualização do projeto"
+              : viewMode == ViewMode.edit
+                  ? "Edição do projeto"
+                  : "Cadastro de novo Projeto"),
         ),
         body: PageBuilder(
             minimumInsets: EdgeInsets.zero,
-            webPage: _WebPage(),
-            mobilePage: _MobilePage()));
+            webPage: _WebPage(project, viewMode),
+            mobilePage: _MobilePage(project, viewMode)));
   }
 
-  Widget _WebPage() {
-    return const ProjectFormView();
+  Widget _WebPage(Project? project, ViewMode? viewMode) {
+    return ProjectFormView(project: project, viewMode: viewMode);
   }
 
-  Widget _MobilePage() {
-    return const ProjectFormView();
+  Widget _MobilePage(Project? project, ViewMode? viewMode) {
+    return ProjectFormView(project: project, viewMode: viewMode);
   }
 }
 
@@ -70,11 +95,16 @@ class CreateProjectController extends GetxController {
 }
 
 class ProjectFormView extends StatelessWidget {
-  const ProjectFormView({super.key});
+  const ProjectFormView(
+      {super.key, this.project, this.viewMode = ViewMode.create});
+
+  final ViewMode? viewMode;
+  final Project? project;
 
   @override
   Widget build(BuildContext context) {
-    Get.put<ProjectFormViewController>(ProjectFormViewController());
+    Get.put<ProjectFormViewController>(
+        ProjectFormViewController(viewMode, project));
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -100,54 +130,72 @@ class _ProjectForm extends StatelessWidget {
             child: ListView(
               children: [
                 BaseTextField(
-                  hint: "Nome do projeto",
-                  validator: FormBuilderValidators.required(
-                      errorText: 'Campo obrigatório'),
-                  onChanged: projectFormViewController.onProjectNameChanged,
-                ),
+                    initialValue: projectFormViewController.name.value,
+                    hint: "Nome do projeto",
+                    validator: FormBuilderValidators.required(
+                        errorText: 'Campo obrigatório'),
+                    onChanged: projectFormViewController.onProjectNameChanged,
+                    enabled:
+                        projectFormViewController.viewMode != ViewMode.view),
                 BaseTextField(
-                  hint: "Descrição do projeto",
-                  validator: FormBuilderValidators.required(
-                      errorText: 'Campo obrigatório'),
-                  onChanged:
-                      projectFormViewController.onProjectDescriptionChanged,
+                    initialValue: projectFormViewController.description.value,
+                    hint: "Descrição do projeto",
+                    validator: FormBuilderValidators.required(
+                        errorText: 'Campo obrigatório'),
+                    onChanged:
+                        projectFormViewController.onProjectDescriptionChanged,
+                    enabled:
+                        projectFormViewController.viewMode != ViewMode.view),
+                Obx(
+                  () => BaseDatePicker(
+                    hint: 'Data de início do projeto',
+                    enabled:
+                        projectFormViewController.viewMode != ViewMode.view,
+                    initialValue: projectFormViewController.startDate.value,
+                    validator: FormBuilderValidators.required(
+                        errorText: 'Campo obrigatório'),
+                    onChanged: (value) => projectFormViewController
+                        .onProjectStartDateChanged(value),
+                  ),
                 ),
-                BaseDatePicker(
-                  hint: 'Data de início do projeto',
-                  initialValue: projectFormViewController.startDate.value,
-                  validator: FormBuilderValidators.required(
-                      errorText: 'Campo obrigatório'),
-                  onChanged: (value) => projectFormViewController
-                      .onProjectStartDateChanged(value),
-                ),
-                BaseDatePicker(
-                  hint: 'Data de fim do projeto',
-                  initialValue: projectFormViewController.endDate.value,
-                  validator: FormBuilderValidators.required(
-                      errorText: 'Campo obrigatório'),
-                  onChanged: (value) =>
-                      projectFormViewController.onProjectEndDateChanged(value),
+                Obx(
+                  () => BaseDatePicker(
+                    hint: 'Data de fim do projeto',
+                    enabled:
+                        projectFormViewController.viewMode != ViewMode.view,
+                    initialValue: projectFormViewController.endDate.value,
+                    validator: FormBuilderValidators.required(
+                        errorText: 'Campo obrigatório'),
+                    onChanged: (value) => projectFormViewController
+                        .onProjectEndDateChanged(value),
+                  ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     BaseButton(
-                      title: 'Cancelar',
+                      title: projectFormViewController.viewMode != ViewMode.view
+                          ? 'Cancelar'
+                          : 'Voltar',
                       isLoading:
                           projectFormViewController.pageState.value.status ==
                               PageStatus.loading,
-                      onPressed: () async =>
-                          await projectFormViewController.cancel(),
+                      onPressed: () =>
+                          projectFormViewController.viewMode != ViewMode.view
+                              ? projectFormViewController.confirmExit(context)
+                              : projectFormViewController.exit(),
                     ),
                     25.toSizedBoxW(),
-                    BaseButton(
-                      title: 'Salvar',
-                      isLoading:
-                          projectFormViewController.pageState.value.status ==
-                              PageStatus.loading,
-                      onPressed: () async =>
-                          await projectFormViewController.newProject(),
-                    ),
+                    projectFormViewController.viewMode != ViewMode.view
+                        ? BaseButton(
+                            title: 'Salvar',
+                            isLoading: projectFormViewController
+                                    .pageState.value.status ==
+                                PageStatus.loading,
+                            onPressed: () async =>
+                                await projectFormViewController.saveProject(),
+                          )
+                        : 0.toSizedBoxW(),
                   ],
                 )
               ],

@@ -141,6 +141,7 @@ class _FeatureForm extends StatelessWidget {
                 DropdownButtonFormField<int>(
                   items: const [
                     //Setado com valores estáticos por enquanto
+                    DropdownMenuItem(value: -1, child: Text('Projeto fake')),
                     DropdownMenuItem(value: 1, child: Text('Nome Projeto 1')),
                     DropdownMenuItem(value: 2, child: Text('Nome Projeto 2')),
                   ],
@@ -152,6 +153,9 @@ class _FeatureForm extends StatelessWidget {
                   isExpanded: true,
                   validator: FormBuilderValidators.required(
                       errorText: 'É necessário selecionar um projeto'),
+                  value: featureFormViewController.viewMode != ViewMode.create
+                      ? featureFormViewController.projectId.value
+                      : null,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -165,8 +169,10 @@ class _FeatureForm extends StatelessWidget {
                         isLoading:
                             featureFormViewController.pageState.value.status ==
                                 PageStatus.loading,
-                        onPressed: () async =>
-                            await featureFormViewController.cancel(),
+                        onPressed: () =>
+                            featureFormViewController.viewMode != ViewMode.view
+                                ? featureFormViewController.confirmExit(context)
+                                : featureFormViewController.exit(),
                       ),
                     ),
                     25.toSizedBoxW(),

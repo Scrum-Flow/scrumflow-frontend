@@ -67,4 +67,12 @@ class Project {
       'active': active
     };
   }
+
+  Project.fake()
+      : id = -1,
+        name = "Projeto fake",
+        description = "Esse Projeto é falsa",
+        startDate = DateTime.now(),
+        endDate = DateTime.now().copyWith(year: 2025),
+        active = true;
 }

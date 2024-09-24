@@ -7,18 +7,19 @@ import 'package:scrumflow/models/feature.dart';
 import 'package:scrumflow/services/feature_service.dart';
 import 'package:scrumflow/utils/enums/enum_view_mode.dart';
 import 'package:scrumflow/utils/utils.dart';
+import 'package:scrumflow/widgets/dialog_confirm_exit.dart';
 import 'package:scrumflow/widgets/prompts.dart';
 
 class FeatureFormViewController extends GetxController {
   final GlobalKey<FormState> featureFormKey = GlobalKey<FormState>();
 
-  late int? id;
   final Rx<PageState> pageState = PageState.none().obs;
   final RxString name = ''.obs;
   final RxString description = ''.obs;
   final RxInt projectId = 0.obs;
 
   late ViewMode viewMode = ViewMode.create;
+  late int? id;
 
   FeatureFormViewController(ViewMode? viewMode, Feature? feature) {
     this.viewMode = viewMode ?? ViewMode.create;
@@ -79,7 +80,15 @@ class FeatureFormViewController extends GetxController {
     }
   }
 
-  Future<void> cancel() async {
+  void confirmExit(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return DialogConfirmExit(onConfirm: exit);
+        });
+  }
+
+  void exit() {
     Get.delete<FeatureFormViewController>();
     Get.back();
   }

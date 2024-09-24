@@ -22,12 +22,15 @@ class ProjetcService {
     ///TODO Ajustar isso. :> Não sei o que retorna
   }
 
-  static FutureOr<void> updateProjectById(int id) async {
+  static Future<Project> updateProject(Project project) async {
     var dio = await DioHelper.defaultDio();
 
-    var response = await dio.put('/project/$id');
+    var response =
+        await dio.put('/project/${project.id}', data: project.toJson());
 
     ///TODO Ajustar isso. :> Não sei o que retorna
+
+    return Project.fromJsonObject(response.data);
   }
 
   static FutureOr<Project> getProjectById(int id) async {
