@@ -7,6 +7,7 @@ class Project {
   final String? description;
   final DateTime? startDate;
   final DateTime? endDate;
+  final bool? active;
 
   Project({
     this.id,
@@ -14,6 +15,7 @@ class Project {
     this.description,
     this.startDate,
     this.endDate,
+    this.active = true,
   });
 
   factory Project.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class Project {
       description: JsonHelper.keyExists<String>(json, 'description'),
       startDate: JsonHelper.toDateTime(JsonHelper.keyExists(json, 'startDate')),
       endDate: JsonHelper.toDateTime(JsonHelper.keyExists(json, 'endDate')),
+      active: JsonHelper.toBool(JsonHelper.keyExists(json, 'active')),
     );
   }
 
@@ -32,6 +35,7 @@ class Project {
     String? description,
     DateTime? startDate,
     DateTime? endDate,
+    bool? active,
   }) {
     return Project(
       id: id ?? this.id,
@@ -39,6 +43,7 @@ class Project {
       description: description ?? this.description,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
+      active: active ?? this.active,
     );
   }
 
@@ -49,6 +54,12 @@ class Project {
       'description': description,
       'startDate': Helper.schemaDate(startDate),
       'endDate': Helper.schemaDate(endDate),
+      'active': active,
     };
+  }
+
+  @override
+  String toString() {
+    return name ?? '';
   }
 }
