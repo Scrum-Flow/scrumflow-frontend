@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:scrumflow/utils/enums/enum_icons.dart';
 import 'package:scrumflow/utils/helper.dart';
 import 'package:scrumflow/widgets/base_text_field.dart';
 
@@ -38,6 +40,10 @@ class _BaseDatePickerState extends State<BaseDatePicker> {
   @override
   Widget build(BuildContext context) {
     return BaseTextField(
+      prefixIcon: SvgPicture.asset(
+        PathIcons.calendar.getIcon(),
+        width: 20,
+      ),
       hint: widget.hint,
       controller: controller,
       readOnly: true,

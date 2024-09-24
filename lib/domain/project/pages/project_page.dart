@@ -148,7 +148,7 @@ class _ProjectForm extends StatelessWidget {
                         projectFormViewController.viewMode != ViewMode.view),
                 Obx(
                   () => BaseDatePicker(
-                    hint: 'Data de início do projeto',
+                    hint: 'Data de início do projeto ( DD/MM/AAAA )',
                     enabled:
                         projectFormViewController.viewMode != ViewMode.view,
                     initialValue: projectFormViewController.startDate.value,
@@ -160,7 +160,7 @@ class _ProjectForm extends StatelessWidget {
                 ),
                 Obx(
                   () => BaseDatePicker(
-                    hint: 'Data de fim do projeto',
+                    hint: 'Data de fim do projeto ( DD/MM/AAAA )',
                     enabled:
                         projectFormViewController.viewMode != ViewMode.view,
                     initialValue: projectFormViewController.endDate.value,
