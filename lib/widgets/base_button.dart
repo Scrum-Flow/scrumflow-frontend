@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:scrumflow/widgets/base_label.dart';
 
 enum ButtonType {
-  primary(Colors.grey),
-  secondary(Color(0xff000000));
+  primary(Color(0xff020819)),
+  secondary(Color(0xff0A2E43));
 
   final Color color;
 
@@ -14,6 +15,7 @@ class BaseButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final IconData? iconData;
   final ButtonType type;
+  final bool isLoading;
 
   const BaseButton({
     super.key,
@@ -21,30 +23,35 @@ class BaseButton extends StatelessWidget {
     this.iconData,
     this.onPressed,
     this.type = ButtonType.primary,
+    this.isLoading = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 44,
-      width: double.infinity,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: type.color,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           minimumSize: const Size.fromHeight(44),
         ),
-        onPressed: onPressed,
-        child: Text(
-          title,
-          style: TextStyle(
-            color: type == ButtonType.primary
-                ? const Color(0xff363435)
-                : Colors.white,
-            fontWeight: FontWeight.w500,
-            fontSize: 16,
-          ),
-        ),
+        onPressed: isLoading ? () {} : onPressed,
+        child: isLoading
+            ? const SizedBox(
+                height: 22,
+                width: 22,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.5,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              )
+            : BaseLabel(
+                text: title,
+                color: Colors.white,
+                fontWeight: fwMedium,
+                fontSize: fsBig,
+              ),
       ),
     );
   }

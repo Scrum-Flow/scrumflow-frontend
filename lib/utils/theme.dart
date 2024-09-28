@@ -7,6 +7,7 @@ class AppTheme {
   static const Color backgroundColor = Colors.white;
   static const Color successColor = Colors.green;
   static const Color onSuccess = Colors.white;
+  static const Color ligthBlueScrum = Color(0xFF28a8f7);
 
   static ThemeData get theme {
     return ThemeData(
