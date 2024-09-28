@@ -1,9 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
-import 'package:scrumflow/domain/login/pages/login_page.dart';
+import 'package:scrumflow/domain/pages/login/login.dart';
 import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/prompts.dart';
 
@@ -20,7 +21,7 @@ class DioHelper {
   static String get baseURL => EnvHelper.getKey(Keys.SCRUMFLOW_API_URL);
 
   static FutureOr<String?> get userToken async =>
-      await Prefs.getString(PrefsKeys.userToken);
+      json.decode((await Prefs.getString(PrefsKeys.userToken)) ?? '')['token'];
 
   static FutureOr<void> setToken(String token) async =>
       await Prefs.setString(PrefsKeys.userToken, token);

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:scrumflow/utils/screen_helper.dart';
 import 'package:scrumflow/widgets/base_label.dart';
 
 enum ButtonType {
@@ -31,7 +30,6 @@ class BaseButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 44,
-      width: ScreenHelper.isMobile() ? 100 : 300,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: type.color,

@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:scrumflow/domain/dashboard/dashboard_page.dart';
-import 'package:scrumflow/domain/home/pages/home_page.dart';
-import 'package:scrumflow/domain/login/pages/login_page.dart';
-import 'package:scrumflow/domain/project/pages/project_page.dart';
-import 'package:scrumflow/domain/tasks/pages/task_page.dart';
-import 'package:scrumflow/domain/team/pages/team_page.dart';
-import 'package:scrumflow/domain/users/pages/users_page.dart';
+import 'package:scrumflow/domain/pages/pages.dart';
 
 class Routes {
   static String first() {

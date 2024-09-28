@@ -1,0 +1,9 @@
+export 'dashboard/dashboard.dart';
+export 'home/home.dart';
+export 'login/login.dart';
+export 'project/projects.dart';
+export 'tasks/tasks.dart';
+export 'team/team.dart';
+export 'user_register/user_register.dart';
+export 'users/users.dart';
+export 'splash_page.dart';

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
-import 'package:scrumflow/controllers/auth_controller.dart';
-import 'package:scrumflow/domain/splash_page.dart';
-
-import 'domain/home/pages/home_page.dart';
+import 'package:scrumflow/domain/pages/home/controllers/auth_controller.dart';
+import 'package:scrumflow/domain/pages/pages.dart';
 
 void main() async {
   await dotenv.load();
@@ -37,7 +35,7 @@ class MyApp extends StatelessWidget {
               return const HomePage();
             case AuthState.unauthorized:
             case AuthState.none:
-              return const HomePage();
+              return const LoginPage();
             case AuthState.loading:
             default:
               return const SplashPage();
