@@ -9,18 +9,20 @@ class Prompts {
       Get.closeAllSnackbars();
     }
 
-    switch (state.status) {
-      case PageStatus.loading:
-        alertSnackBar('Carregando...', state.info ?? '');
-        break;
-      case PageStatus.error:
-        errorSnackBar('Erro', state.info);
-        break;
-      case PageStatus.success:
-        successSnackBar('Sucesso', state.info ?? '');
-        break;
-      default:
-        break;
+    if (state.info != null) {
+      switch (state.status) {
+        case PageStatus.loading:
+          alertSnackBar('Carregando...', state.info ?? '');
+          break;
+        case PageStatus.error:
+          errorSnackBar('Erro', state.info);
+          break;
+        case PageStatus.success:
+          successSnackBar('Sucesso', state.info ?? '');
+          break;
+        default:
+          break;
+      }
     }
   }
 

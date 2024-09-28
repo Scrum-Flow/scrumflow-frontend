@@ -1,23 +1,41 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:scrumflow/models/project.dart';
-import 'package:scrumflow/utils/dio_helper.dart';
+import 'package:scrumflow/utils/utils.dart';
 
-class ProjetcService {
+class ProjectService {
+  static String get path => '/project';
+
+  static FutureOr<Project> fetchProject(int? id) async {
+    Dio dio = await DioHelper.defaultDio();
+
+    Response response = await dio.get('$path/$id');
+
+    return Project.fromJson(response.data);
+  }
+
+  static FutureOr<List<Project>> fetchProjects() async {
+    Dio dio = await DioHelper.defaultDio();
+
+    Response response = await dio.get(path);
+
+    return response.data.map<Project>((map) => Project.fromJson(map)).toList();
+  }
+
   static FutureOr<Project> newProject(Project project) async {
     var dio = await DioHelper.defaultDio();
 
-    var response = await dio.post('/project', data: json.encode(project.toJson()));
+    var response =
+        await dio.post('/project', data: json.encode(project.toJson()));
 
     return Project.fromJson(response.data);
   }
 
   static FutureOr<void> deleteProject(int? id) async {
-    var dio = await DioHelper.jsonDio();
-  }
+    Dio dio = await DioHelper.defaultDio();
 
-  static FutureOr<void> updateProject(Project project) async {
-    var dio = await DioHelper.jsonDio();
+    await dio.delete('$path/$id');
   }
 }

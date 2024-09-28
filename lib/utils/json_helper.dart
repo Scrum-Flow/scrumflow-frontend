@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:scrumflow/models/user.dart';
 
 class JsonHelper {
   static bool? toBool(dynamic value) {
@@ -30,12 +29,23 @@ class JsonHelper {
     return null;
   }
 
-  static T? keyExists<T>(Map json, String key) {
-    return json.containsKey(key) ? json[key] : null;
+  static T? toEnum<T>(List<T> values, dynamic value, {int? base}) {
+    if (value is int) {
+      return values[value];
+    }
+
+    if (value is String) {
+      return values.firstWhere((element) => (element as Enum).name == value.camelCase);
+    }
+
+    if (base != null) {
+      return values[base];
+    }
+
+    return null;
   }
 
-  static UserCategory toUserCategory(dynamic value) {
-    return UserCategory.values.firstWhereOrNull((e) => e == value) ??
-        UserCategory.user;
+  static T? keyExists<T>(Map json, String key) {
+    return json.containsKey(key) ? json[key] : null;
   }
 }

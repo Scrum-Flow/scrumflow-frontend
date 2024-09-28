@@ -34,6 +34,10 @@ class Helper {
       value = 0.0;
     }
 
+    if (value > 1) {
+      value = 1;
+    }
+
     return '${(value * 100).toStringAsFixed(2)}%';
   }
 }

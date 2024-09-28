@@ -72,7 +72,10 @@ class BaseTextField extends StatelessWidget {
         validator: validator,
         maxLines: fieldType == FieldType.normal ? 1 : 4,
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+          constraints: const BoxConstraints(
+            minHeight: 24,
+            maxHeight: 48,
+          ),
           enabledBorder: UnderlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide.none),
