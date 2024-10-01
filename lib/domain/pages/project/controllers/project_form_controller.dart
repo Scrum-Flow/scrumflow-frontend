@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:scrumflow/domain/pages/project/services/services.dart';
+import 'package:scrumflow/domain/pages/user/services/services.dart';
 import 'package:scrumflow/models/models.dart';
-import 'package:scrumflow/models/project.dart';
-import 'package:scrumflow/services/services.dart';
 import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/prompts.dart';
 
@@ -23,7 +23,9 @@ class ProjectFormController extends GetxController {
   final Rx<DateTime?> startDate = Rx<DateTime?>(null);
   final Rx<DateTime?> endDate = Rx<DateTime?>(null);
 
+  final RxString teamName = ''.obs;
   final RxList<User> users = <User>[].obs;
+  final RxList<User> selectedUsers = <User>[].obs;
 
   final PageController _pageController = PageController();
 
@@ -39,12 +41,34 @@ class ProjectFormController extends GetxController {
 
   void updateEndDate(DateTime? value) => endDate.value = value;
 
+  void updateSelectedUsers(List<User> value) => selectedUsers.value = value;
+
+  @override
+  onInit() {
+    super.onInit();
+
+    if (project != null) {
+      name.value = project?.name ?? '';
+      description.value = project?.description ?? '';
+      startDate.value = project?.startDate;
+      endDate.value = project?.endDate;
+    }
+
+    pageState.listen((value) {
+      Prompts.showSnackBar(value);
+
+      if (value.status == PageStatus.success) Get.back();
+    });
+
+    initialEvent();
+  }
+
   FutureOr<void> initialEvent() async {
     initialState.value = PageState.loading();
     try {
-      await Future.delayed(Duration(seconds: 5));
-
       users.value = await UserService.getUsers();
+
+      initialState.value = PageState.none();
     } on DioException catch (e) {
       initialState.value = PageState.error(e.message);
     } catch (e) {
@@ -52,22 +76,35 @@ class ProjectFormController extends GetxController {
     }
   }
 
-  FutureOr<void> newProject() async {
+  FutureOr<void> save() async {
     if (projectFormKey.currentState!.validate()) {
       if (validateDates()) {
         pageState.value = PageState.loading();
 
         try {
-          Project project = await ProjectService.newProject(
-            Project(
-              name: name.value,
-              description: description.value,
-              startDate: startDate.value,
-              endDate: endDate.value,
-            ),
-          );
+          if (project != null) {
+            Project updatedProject = await ProjectService.updateProject(
+              Project(
+                name: name.value,
+                description: description.value,
+                startDate: startDate.value,
+                endDate: endDate.value,
+              ),
+            );
 
-          pageState.value = PageState.success(info: 'Projeto criado!!', data: project);
+            pageState.value = PageState.success(info: 'Projeto atualizado!!', data: updatedProject);
+          } else {
+            Project newProject = await ProjectService.newProject(
+              Project(
+                name: name.value,
+                description: description.value,
+                startDate: startDate.value,
+                endDate: endDate.value,
+              ),
+            );
+
+            pageState.value = PageState.success(info: 'Projeto criado!!', data: newProject);
+          }
         } on DioException catch (e) {
           pageState.value = PageState.error(e.message);
 

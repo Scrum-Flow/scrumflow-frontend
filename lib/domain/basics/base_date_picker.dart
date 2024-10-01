@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scrumflow/utils/helper.dart';
-import 'package:scrumflow/widgets/base_text_field.dart';
+import 'package:scrumflow/domain/basics/base_text_field.dart';
 
 class BaseDatePicker extends StatefulWidget {
   const BaseDatePicker({
@@ -29,7 +29,10 @@ class _BaseDatePickerState extends State<BaseDatePicker> {
   void initState() {
     super.initState();
 
-    selectedValue = widget.initialValue;
+    if (widget.initialValue != null) {
+      selectedValue = widget.initialValue;
+      controller.text = Helper.formatDate(selectedValue) ?? '';
+    }
   }
 
   @override
@@ -48,8 +51,7 @@ class _BaseDatePickerState extends State<BaseDatePicker> {
         );
 
         if (picked != null) {
-          picked = picked.copyWith(
-              minute: 0, millisecond: 0, microsecond: 0, hour: 0, second: 0);
+          picked = picked.copyWith(minute: 0, millisecond: 0, microsecond: 0, hour: 0, second: 0);
         }
 
         controller.text = Helper.formatDate(picked) ?? '';

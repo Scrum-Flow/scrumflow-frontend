@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scrumflow/domain/pages/home/controllers/auth_controller.dart';
 import 'package:scrumflow/models/user.dart';
-import 'package:scrumflow/services/authentication_service.dart';
+import 'package:scrumflow/domain/pages/login/services/authentication_service.dart';
 import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/prompts.dart';
 

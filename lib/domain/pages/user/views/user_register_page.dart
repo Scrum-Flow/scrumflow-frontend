@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
-import 'package:scrumflow/domain/pages/user_register/user_register.dart';
-import 'package:scrumflow/domain/parts/web_view.dart';
+import 'package:scrumflow/domain/basics/basics.dart';
+import 'package:scrumflow/domain/pages/user/user.dart';
+import 'package:scrumflow/widgets/web_view.dart';
 import 'package:scrumflow/utils/utils.dart';
-import 'package:scrumflow/widgets/base_button.dart';
-import 'package:scrumflow/widgets/base_label.dart';
-import 'package:scrumflow/widgets/base_password_field.dart';
-import 'package:scrumflow/widgets/base_text_field.dart';
 import 'package:scrumflow/widgets/page_builder.dart';
 
 class UserRegisterPage extends StatelessWidget {
@@ -35,10 +32,7 @@ class _Body extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.max,
             children: [
-              SizedBox(
-                  width: 150,
-                  height: 150,
-                  child: Image.asset('assets/images/logo.png')),
+              SizedBox(width: 150, height: 150, child: Image.asset('assets/images/logo.png')),
               10.toSizedBoxH(),
               const BaseLabel(
                 text: "ScrumFlow",
@@ -69,31 +63,22 @@ class _Form extends StatelessWidget {
             BaseTextField(
               hint: 'Nome Completo',
               prefixIcon: const Icon(Icons.person_outline),
-              validator: FormBuilderValidators.required(
-                  errorText: 'Campo obrigatório'),
+              validator: FormBuilderValidators.required(errorText: 'Campo obrigatório'),
               onChanged: userController.onNameChanged,
             ),
             BaseTextField(
               hint: 'E-mail',
               prefixIcon: const Icon(Icons.email_outlined),
-              validator: FormBuilderValidators.compose([
-                FormBuilderValidators.required(errorText: 'Campo obrigatório'),
-                FormBuilderValidators.email(errorText: 'Email inválido')
-              ]),
+              validator: FormBuilderValidators.compose([FormBuilderValidators.required(errorText: 'Campo obrigatório'), FormBuilderValidators.email(errorText: 'Email inválido')]),
               onChanged: userController.onEmailChanged,
             ),
             BasePasswordField(
               hint: 'Senha',
               validator: FormBuilderValidators.compose([
                 FormBuilderValidators.required(errorText: 'Campo obrigatório'),
-                FormBuilderValidators.minLength(8,
-                    errorText: 'A senha deve ter no mínimo 8 caracteres'),
-                FormBuilderValidators.hasUppercaseChars(
-                    atLeast: 1,
-                    errorText: 'A senha deve ter ao menos uma letra maiúscula'),
-                FormBuilderValidators.hasNumericChars(
-                    atLeast: 1,
-                    errorText: 'A senha deve ter ao menos um número'),
+                FormBuilderValidators.minLength(8, errorText: 'A senha deve ter no mínimo 8 caracteres'),
+                FormBuilderValidators.hasUppercaseChars(atLeast: 1, errorText: 'A senha deve ter ao menos uma letra maiúscula'),
+                FormBuilderValidators.hasNumericChars(atLeast: 1, errorText: 'A senha deve ter ao menos um número'),
               ]),
               onChanged: userController.onPasswordChanged,
             ),
@@ -101,12 +86,8 @@ class _Form extends StatelessWidget {
               id: UserRegisterControllersIds.password,
               builder: (controller) => BasePasswordField(
                 hint: 'Repita a senha',
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(
-                      errorText: 'Campo obrigatório'),
-                  FormBuilderValidators.equal(controller.password.value,
-                      errorText: 'As senhas não coincidem')
-                ]),
+                validator: FormBuilderValidators.compose(
+                    [FormBuilderValidators.required(errorText: 'Campo obrigatório'), FormBuilderValidators.equal(controller.password.value, errorText: 'As senhas não coincidem')]),
                 onChanged: userController.onPasswordConfirmationChanged,
               ),
             ),
@@ -118,8 +99,7 @@ class _Form extends StatelessWidget {
                     child: BaseButton(
                       title: 'Cancelar',
                       type: ButtonType.secondary,
-                      isLoading: controller.pageState.value.status ==
-                          PageStatus.loading,
+                      isLoading: controller.pageState.value.status == PageStatus.loading,
                       onPressed: () => Routes.goBack(context),
                     ),
                   ),
@@ -127,8 +107,7 @@ class _Form extends StatelessWidget {
                   Expanded(
                     child: BaseButton(
                       title: 'Cadastrar',
-                      isLoading: controller.pageState.value.status ==
-                          PageStatus.loading,
+                      isLoading: controller.pageState.value.status == PageStatus.loading,
                       onPressed: () async => await userController.register(),
                     ),
                   ),

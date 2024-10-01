@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scrumflow/widgets/base_label.dart';
+import 'package:scrumflow/domain/basics/basics.dart';
 
 enum ButtonType {
   primary(Color(0xff020819)),

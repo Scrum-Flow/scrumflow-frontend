@@ -2,31 +2,24 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:scrumflow/domain/basics/basics.dart';
 import 'package:scrumflow/domain/pages/project/projects.dart';
 import 'package:scrumflow/models/project.dart';
 import 'package:scrumflow/utils/utils.dart';
-import 'package:scrumflow/widgets/base_button.dart';
-import 'package:scrumflow/widgets/base_grid.dart';
-import 'package:scrumflow/widgets/base_label.dart';
 import 'package:scrumflow/widgets/page_builder.dart';
-import 'package:scrumflow/widgets/prompts.dart';
 import 'package:scrumflow/widgets/search_field.dart';
 
-class ProjectPage extends StatelessWidget {
+class ProjectPage extends StatefulWidget {
   const ProjectPage({super.key});
 
   @override
+  State<ProjectPage> createState() => _ProjectPageState();
+}
+
+class _ProjectPageState extends State<ProjectPage> {
+  @override
   Widget build(BuildContext context) {
-    ProjectPageController controller = Get.put<ProjectPageController>(ProjectPageController())..fetchProjects();
-
-    controller.projectDeleteState.listen(Prompts.showSnackBar);
-    controller.projectState.listen((state) {
-      Prompts.showSnackBar(state);
-
-      if (state.status == PageStatus.success) {
-        Routes.goTo(context, ProjectFormPage(project: state.data));
-      }
-    });
+    ProjectPageController controller = Get.put<ProjectPageController>(ProjectPageController());
 
     return Scaffold(
       backgroundColor: Colors.grey[200],
@@ -84,6 +77,12 @@ class ProjectPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  @override
+  dispose() {
+    Get.delete<ProjectPageController>();
+    super.dispose();
   }
 }
 

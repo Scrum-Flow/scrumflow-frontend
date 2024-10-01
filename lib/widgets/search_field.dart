@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:scrumflow/widgets/base_text_field.dart';
+import 'package:scrumflow/domain/basics/base_text_field.dart';
 
 class SearchField extends StatefulWidget {
   const SearchField({

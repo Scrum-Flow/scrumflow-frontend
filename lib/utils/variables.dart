@@ -8,6 +8,6 @@ enum Keys {
       };
 }
 
-class EnvHelper {
+class Variables {
   static String getKey(Keys key) => dotenv.get(key.value, fallback: '');
 }

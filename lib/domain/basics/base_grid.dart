@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:scrumflow/domain/basics/basics.dart';
 import 'package:scrumflow/utils/utils.dart';
-import 'package:scrumflow/widgets/base_label.dart';
 
 typedef ItemBuilder<T> = Widget Function(BuildContext context, T item);
 

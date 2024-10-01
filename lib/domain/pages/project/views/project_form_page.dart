@@ -2,15 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:scrumflow/domain/basics/basics.dart';
 import 'package:scrumflow/domain/pages/project/projects.dart';
 import 'package:scrumflow/models/project.dart';
 import 'package:scrumflow/utils/utils.dart';
-import 'package:scrumflow/widgets/base_button.dart';
-import 'package:scrumflow/widgets/base_date_picker.dart';
-import 'package:scrumflow/widgets/base_text_field.dart';
-import 'package:scrumflow/widgets/loading_widget.dart';
-import 'package:scrumflow/widgets/page_builder.dart';
-import 'package:scrumflow/widgets/prompts.dart';
+import 'package:scrumflow/widgets/widgets.dart';
 
 class ProjectFormPage extends StatelessWidget {
   const ProjectFormPage({this.project, super.key});
@@ -51,15 +47,9 @@ class _ProjectForm extends StatelessWidget {
   Widget build(BuildContext context) {
     ProjectFormController projectFormViewController = Get.find<ProjectFormController>();
 
-    projectFormViewController.pageState.listen((value) {
-      Prompts.showSnackBar(value);
-
-      if (value.status == PageStatus.success) Get.back();
-    });
-
     return SizedBox(
-      width: ScreenHelper.screenWidth(),
-      height: ScreenHelper.screenHeight(),
+      width: Helper.screenWidth(),
+      height: Helper.screenHeight(),
       child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
           child: Form(
@@ -91,11 +81,17 @@ class _ProjectForm extends StatelessWidget {
                   validator: FormBuilderValidators.required(errorText: 'Campo obrigatório'),
                   onChanged: projectFormViewController.updateEndDate,
                 ),
+                BaseTextField(
+                  hint: "Nome do Time",
+                  initialValue: projectFormViewController.project?.description,
+                  validator: FormBuilderValidators.required(errorText: 'Campo obrigatório'),
+                  onChanged: projectFormViewController.updateDescription,
+                ),
                 Obx(
                   () => LoadingWidget(
                     isLoading: projectFormViewController.initialState.value.status == PageStatus.loading,
                     child: MultiSelectDialogField(
-                      onConfirm: (p0) {},
+                      onConfirm: projectFormViewController.updateSelectedUsers,
                       searchable: true,
                       searchIcon: Icon(Icons.search_outlined),
                       listType: MultiSelectListType.CHIP,
@@ -126,7 +122,7 @@ class _ProjectForm extends StatelessWidget {
                       child: BaseButton(
                         title: 'Salvar',
                         isLoading: projectFormViewController.pageState.value.status == PageStatus.loading,
-                        onPressed: () async => await projectFormViewController.newProject(),
+                        onPressed: () async => await projectFormViewController.save(),
                       ),
                     ),
                   ],

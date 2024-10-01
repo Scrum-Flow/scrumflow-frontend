@@ -20,12 +20,12 @@ class Project {
 
   factory Project.fromJson(Map<String, dynamic> json) {
     return Project(
-      id: JsonHelper.keyExists<int>(json, 'id'),
-      name: JsonHelper.keyExists<String>(json, 'name'),
-      description: JsonHelper.keyExists<String>(json, 'description'),
-      startDate: JsonHelper.toDateTime(JsonHelper.keyExists(json, 'startDate')),
-      endDate: JsonHelper.toDateTime(JsonHelper.keyExists(json, 'endDate')),
-      active: JsonHelper.toBool(JsonHelper.keyExists(json, 'active')),
+      id: Helper.keyExists<int>(json, 'id'),
+      name: Helper.keyExists<String>(json, 'name'),
+      description: Helper.keyExists<String>(json, 'description'),
+      startDate: Helper.toDateTime(Helper.keyExists(json, 'startDate')),
+      endDate: Helper.toDateTime(Helper.keyExists(json, 'endDate')),
+      active: Helper.toBool(Helper.keyExists(json, 'active')),
     );
   }
 

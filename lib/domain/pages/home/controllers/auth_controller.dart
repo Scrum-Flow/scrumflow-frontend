@@ -35,7 +35,7 @@ class AuthController extends GetxController {
     try {
       await Future.delayed(Duration(seconds: 2));
 
-      String? token = await Prefs.getString(PrefsKeys.userToken);
+      String? token = await Preferences.getString(PreferencesKeys.userToken);
 
       if (token != null) {
         user.value = User.fromJson(json.decode(token.toString()));
@@ -54,7 +54,7 @@ class AuthController extends GetxController {
   }
 
   FutureOr<void> logout() async {
-    await Prefs.clear();
+    await Preferences.clear();
 
     authState.value = AuthState.unauthorized;
 
