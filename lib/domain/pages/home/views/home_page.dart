@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:scrumflow/domain/pages/dashboard/dashboard_page.dart';
-import 'package:scrumflow/domain/pages/home/controllers/auth_controller.dart';
 import 'package:scrumflow/domain/pages/home/home.dart';
 import 'package:scrumflow/domain/pages/project/projects.dart';
 import 'package:scrumflow/domain/pages/tasks/tasks.dart';
 import 'package:scrumflow/domain/pages/team/team.dart';
 import 'package:scrumflow/domain/pages/users/users.dart';
+import 'package:scrumflow/models/models.dart';
 import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/base_label.dart';
 import 'package:scrumflow/widgets/page_builder.dart';
@@ -51,7 +51,7 @@ class _Body extends StatelessWidget {
                 ProjectPage(),
                 TeamPage(),
                 UsersPage(),
-                TaskPage(),
+                TaskPage(feature: Feature.fake()),
               ],
             ),
           ),
@@ -71,7 +71,9 @@ class _SideMenu extends StatelessWidget {
       controller: homeController.sideMenu,
       alwaysShowFooter: true,
       style: SideMenuStyle(
-        displayMode: ScreenHelper.isMobile() ? SideMenuDisplayMode.compact : SideMenuDisplayMode.auto,
+        displayMode: ScreenHelper.isMobile()
+            ? SideMenuDisplayMode.compact
+            : SideMenuDisplayMode.auto,
         openSideMenuWidth: 150,
       ),
       title: Column(
@@ -91,7 +93,9 @@ class _SideMenu extends StatelessWidget {
                   page.icon,
                   width: 25,
                   colorFilter: ColorFilter.mode(
-                    homeController.sideMenu.currentPage == page.index ? Colors.white : Colors.black,
+                    homeController.sideMenu.currentPage == page.index
+                        ? Colors.white
+                        : Colors.black,
                     BlendMode.srcIn,
                   ),
                 );
@@ -99,7 +103,9 @@ class _SideMenu extends StatelessWidget {
                 return Container(
                   width: double.infinity,
                   height: 50,
-                  color: homeController.sideMenu.currentPage == page.index ? const Color(0xff020819) : Colors.transparent,
+                  color: homeController.sideMenu.currentPage == page.index
+                      ? const Color(0xff020819)
+                      : Colors.transparent,
                   child: InkWell(
                     onTap: () => homeController.changePage(page.index),
                     child: ScreenHelper.isMobile()
@@ -108,7 +114,10 @@ class _SideMenu extends StatelessWidget {
                             leading: picture,
                             title: BaseLabel(
                               text: page.name,
-                              color: homeController.sideMenu.currentPage == page.index ? Colors.white : Colors.black,
+                              color: homeController.sideMenu.currentPage ==
+                                      page.index
+                                  ? Colors.white
+                                  : Colors.black,
                             ),
                           ),
                   ),

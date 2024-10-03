@@ -30,10 +30,6 @@ class Routes {
         page: () => const UsersPage(),
       ),
       GetPage(
-        name: taskPage,
-        page: () => const TaskPage(),
-      ),
-      GetPage(
         name: dashboardPage,
         page: () => const DashboardPage(),
       ),
@@ -68,6 +64,5 @@ class Routes {
   static const projectPage = '/project';
   static const teamPage = '/team';
   static const usersPage = '/users';
-  static const taskPage = '/task';
   static const dashboardPage = '/dashboard';
 }

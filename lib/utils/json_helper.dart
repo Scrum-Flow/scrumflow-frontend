@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class JsonHelper {
@@ -35,7 +36,8 @@ class JsonHelper {
     }
 
     if (value is String) {
-      return values.firstWhere((element) => (element as Enum).name == value.camelCase);
+      return values
+          .firstWhere((element) => (element as Enum).name == value.camelCase);
     }
 
     if (base != null) {
@@ -47,5 +49,16 @@ class JsonHelper {
 
   static T? keyExists<T>(Map json, String key) {
     return json.containsKey(key) ? json[key] : null;
+  }
+
+  String get pathJsons => 'assets/json/';
+
+  Future<String> getJsonAssetByName(String name) async {
+    try {
+      return await rootBundle.loadString('$pathJsons$name.json');
+    } catch (e) {
+      // Não foi possível obter o asset
+    }
+    return '';
   }
 }

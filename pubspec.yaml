@@ -13,6 +13,7 @@ dependencies:
 
   cupertino_icons: ^1.0.6
   dio: ^5.6.0                           #https://pub.dev/packages/dio/install
+  dropdown_search: ^6.0.1               #https://pub.dev/packages/dropdown_search/install
   easy_sidemenu: ^0.6.0
   form_builder_validators: ^11.0.0
   flutter_dotenv: ^5.1.0
@@ -25,6 +26,7 @@ dependencies:
   multi_select_flutter: ^4.1.3          #https://pub.dev/packages/multi_select_flutter
   shared_preferences: ^2.3.2            #https://pub.dev/packages/shared_preferences/install
   shimmer: ^3.0.0                       #https://pub.dev/packages/shimmer
+
 
 dev_dependencies:
   flutter_test:
@@ -47,6 +49,7 @@ flutter:
   assets:
       - assets/images/
       - assets/icons/
+      - assets/json/
       - .env
 
   # To add custom fonts to your application, add a fonts section here,

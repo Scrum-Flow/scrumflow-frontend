@@ -1,4 +1,3 @@
-import 'package:scrumflow/utils/helper.dart';
 import 'package:scrumflow/utils/utils.dart';
 
 class Project {
@@ -63,3 +62,24 @@ class Project {
     return name ?? '';
   }
 }
+/*
+Para criar um project:
+{
+    "name": "ProjetoTeste01",
+    "description": "Este projeto é um teste",
+    "startDate": "2024-10-10",
+    "endDate": "2024-11-10",
+    "active": true
+    + Usuarios (a fazer)
+}
+
+Recebe da api:
+{
+  "id": 1,
+  "name": "ProjetoTeste01",
+  "description": "Este projeto é um teste",
+  "startDate": "2024-10-10",
+  "endDate": "2024-11-10",
+  "active": true
+}
+ */
