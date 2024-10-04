@@ -4,12 +4,12 @@ import 'package:get/get.dart';
 import 'package:scrumflow/domain/basics/basics.dart';
 import 'package:scrumflow/domain/pages/login/login.dart';
 import 'package:scrumflow/domain/pages/user/user.dart';
-import 'package:scrumflow/widgets/web_view.dart';
 import 'package:scrumflow/utils/extensions/extensions.dart';
 import 'package:scrumflow/utils/page_state.dart';
 import 'package:scrumflow/utils/routes.dart';
 import 'package:scrumflow/utils/theme.dart';
 import 'package:scrumflow/widgets/page_builder.dart';
+import 'package:scrumflow/widgets/web_view.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

@@ -1,10 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:scrumflow/models/user.dart';
 import 'package:scrumflow/domain/pages/login/services/authentication_service.dart';
+import 'package:scrumflow/models/user.dart';
 import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/prompts.dart';
 
@@ -55,9 +56,11 @@ class UserRegisterController extends GetxController {
 
         Prompts.successSnackBar('Sucesso', 'Usuário cadastrado com sucesso!');
       } on DioException catch (e) {
-        Prompts.errorSnackBar('Erro', e.message);
+        Prompts.errorSnackBar('Erro',
+            "Falha ao cadastrar usuário: ${jsonDecode(e.response.toString())['errors'].toString()}");
 
-        pageState.value = PageState.error(e.message);
+        pageState.value = PageState.error(
+            "Falha ao cadastrar usuário: ${jsonDecode(e.response.toString())['errors'].toString()}");
         update([UserRegisterControllersIds.pageState]);
         debugPrint(e.toString());
       } catch (e) {
