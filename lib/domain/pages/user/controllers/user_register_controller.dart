@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -56,11 +55,11 @@ class UserRegisterController extends GetxController {
 
         Prompts.successSnackBar('Sucesso', 'Usuário cadastrado com sucesso!');
       } on DioException catch (e) {
-        Prompts.errorSnackBar('Erro',
-            "Falha ao cadastrar usuário: ${jsonDecode(e.response.toString())['errors'].toString()}");
+        Prompts.errorSnackBar(
+            'Erro', "Falha ao cadastrar usuário: ${e.message}");
 
-        pageState.value = PageState.error(
-            "Falha ao cadastrar usuário: ${jsonDecode(e.response.toString())['errors'].toString()}");
+        pageState.value =
+            PageState.error("Falha ao cadastrar usuário: ${e.message}");
         update([UserRegisterControllersIds.pageState]);
         debugPrint(e.toString());
       } catch (e) {

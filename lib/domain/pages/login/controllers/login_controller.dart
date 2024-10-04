@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -44,10 +42,8 @@ class LoginController extends GetxController {
 
         Prompts.successSnackBar('Sucesso', 'Login realizado com sucesso!');
       } on DioException catch (e) {
-        pageState.value = PageState.error(
-            'Erro ${jsonDecode(e.response.toString())['errors'].toString()}');
-        Prompts.errorSnackBar(
-            'Erro', jsonDecode(e.response.toString())['errors'].toString());
+        pageState.value = PageState.error('Erro ${e.message}');
+        Prompts.errorSnackBar('Erro', e.message);
       } catch (e) {
         pageState.value = PageState.error('Erro ${e.toString()}');
         Prompts.errorSnackBar(

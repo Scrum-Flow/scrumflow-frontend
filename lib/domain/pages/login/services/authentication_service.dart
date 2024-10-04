@@ -19,7 +19,7 @@ class AuthService {
 
       return User.fromJson(response.data);
     } catch (e) {
-      rethrow /*Exception('Falha ao autenticar com o servidor')*/;
+      throw Exception('Falha ao autenticar com o servidor');
     }
   }
 
@@ -31,7 +31,7 @@ class AuthService {
 
       return User.fromJson(response.data);
     } catch (e) {
-      rethrow /*Exception('Falha ao cadastrar usuário.\nErro: ${e.toString()}')*/;
+      throw Exception('Falha ao cadastrar usuário.\nErro: ${e.toString()}');
     }
   }
 }
