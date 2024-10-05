@@ -79,31 +79,78 @@ class _TaskForm extends StatelessWidget {
                       errorText: 'Campo obrigatório'),
                   onChanged: taskFormViewController.updateDescription,
                 ),
-                BaseTextField(
-                  hint: "Pontos estimados",
-                  initialValue: taskFormViewController.task?.description,
-                  validator: FormBuilderValidators.required(
-                      errorText: 'Campo obrigatório'),
-                  onChanged: taskFormViewController.updateDescription,
-                ),
-                Obx(
-                  () => LoadingWidget(
-                    isLoading:
-                        taskFormViewController.initialState.value.status ==
-                            PageStatus.loading,
-                    child: DropdownSearch<String>(
-                      decoratorProps: const DropDownDecoratorProps(
-                        decoration: InputDecoration(
-                          labelText: 'Selecione o responsável pela tarefa',
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: DropdownSearch<int>(
+                        items: (f, cs) => List.generate(15, (i) => i + 1),
+                        decoratorProps: DropDownDecoratorProps(
+                          decoration: InputDecoration(
+                              labelText: "Pontos estimados",
+                              hintText: "Selecione um número"),
+                        ),
+                        selectedItem:
+                            taskFormViewController.estimatePoints.value,
+                        /*validator: FormBuilderValidators.required(
+                            errorText: 'Campo obrigatório'),*/
+                        onChanged: (value) => taskFormViewController
+                            .updateEstimatePoints(value ?? 0),
+                        popupProps: PopupProps.dialog(
+                          title: Container(
+                            decoration:
+                                BoxDecoration(color: AppTheme.ligthBlueScrum),
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            child: Text(
+                              'Pontos estimados',
+                              style: TextStyle(
+                                  fontSize: 21,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white70),
+                            ),
+                          ),
+                          dialogProps: DialogProps(
+                            clipBehavior: Clip.antiAlias,
+                            shape: OutlineInputBorder(
+                              borderSide: BorderSide(width: 0),
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                          ),
                         ),
                       ),
-                      popupProps: PopupProps.menu(
-                        disableFilter:
-                            true, //data will be filtered by the backend
-                        showSearchBox: true,
-                        showSelectedItems: true,
-                      ),
-                      /*icon: Icon(Icons.person),
+                    ),
+                    20.toSizedBoxW(),
+                    Expanded(
+                      flex: 7,
+                      child: Obx(
+                        () => LoadingWidget(
+                          isLoading: taskFormViewController
+                                  .initialState.value.status ==
+                              PageStatus.loading,
+                          child: DropdownSearch<String>(
+                            suffixProps: DropdownSuffixProps(
+                              dropdownButtonProps: DropdownButtonProps(
+                                iconClosed: Icon(Icons.keyboard_arrow_down),
+                                iconOpened: Icon(Icons.keyboard_arrow_up),
+                              ),
+                            ),
+                            decoratorProps: const DropDownDecoratorProps(
+                              decoration: InputDecoration(
+                                labelText:
+                                    'Selecione o responsável pela tarefa',
+                              ),
+                            ),
+                            items: (name, props) => taskFormViewController.users
+                                .map((user) => user.name.toString())
+                                .toList(),
+                            popupProps: PopupProps.menu(
+                              disableFilter:
+                                  true, //data will be filtered by the backend
+                              showSearchBox: true,
+                              showSelectedItems: true,
+                            ),
+                            /*icon: Icon(Icons.person),
                       onConfirm: (p0) {},
                       searchable: true,
                       searchIcon: Icon(Icons.search_outlined),
@@ -118,9 +165,19 @@ class _TaskForm extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                         color: Colors.black12,
                       ),*/
-                    ),
-                  ),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
                 ),
+                /*BaseTextField(
+                  hint: "Pontos estimados",
+                  initialValue: taskFormViewController.task?.description,
+                  validator: FormBuilderValidators.required(
+                      errorText: 'Campo obrigatório'),
+                  onChanged: taskFormViewController.updateDescription,
+                ),*/
                 25.toSizedBoxH(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
