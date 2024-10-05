@@ -8,7 +8,7 @@ import 'package:scrumflow/domain/pages/login/login.dart';
 import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/prompts.dart';
 
-class DioHelper {
+class Connection {
   static FutureOr<Map<String, dynamic>> get authHeader async => {
         HttpHeaders.authorizationHeader: 'Bearer ${await userToken}',
       };
@@ -18,18 +18,13 @@ class DioHelper {
         ...await authHeader,
       };
 
-  static String get baseURL => EnvHelper.getKey(Keys.SCRUMFLOW_API_URL);
+  static String get baseURL => Variables.getKey(Keys.SCRUMFLOW_API_URL);
 
-  static FutureOr<String?> get userToken async =>
-      json.decode((await Prefs.getString(PrefsKeys.userToken)) ?? '')['token'];
+  static FutureOr<String?> get userToken async => json.decode((await Preferences.getString(PreferencesKeys.userToken)) ?? '')['token'];
 
-  static FutureOr<void> setToken(String token) async =>
-      await Prefs.setString(PrefsKeys.userToken, token);
+  static FutureOr<void> setToken(String token) async => await Preferences.setString(PreferencesKeys.userToken, token);
 
-  static FutureOr<Dio> jsonDio() async {
-    return await defaultDio(
-        {HttpHeaders.contentTypeHeader: 'application/json'});
-  }
+  static FutureOr<Dio> jsonDio() async => await defaultDio({HttpHeaders.contentTypeHeader: 'application/json'});
 
   static FutureOr<Dio> defaultDio([Map<String, dynamic>? headers]) async {
     Dio dio = Dio();
@@ -59,8 +54,7 @@ class AppInterceptor extends Interceptor {
       case DioExceptionType.sendTimeout:
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.receiveTimeout:
-        Prompts.errorSnackBar('Erro de conexão',
-            'Tempo de conexão excedido, verifique sua conexão e tente novamente');
+        Prompts.errorSnackBar('Erro de conexão', 'Tempo de conexão excedido, verifique sua conexão e tente novamente');
         return;
       case DioExceptionType.badCertificate:
       case DioExceptionType.badResponse:
@@ -75,8 +69,7 @@ class AppInterceptor extends Interceptor {
         Get.to(const LoginPage());
         break;
       case HttpStatus.requestTimeout:
-        Prompts.errorSnackBar('Erro de conexão',
-            'Tempo de conexão excedido, verifique sua conexão e tente novamente');
+        Prompts.errorSnackBar('Erro de conexão', 'Tempo de conexão excedido, verifique sua conexão e tente novamente');
         return;
     }
 

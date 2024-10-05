@@ -1,4 +1,4 @@
-import 'package:scrumflow/utils/json_helper.dart';
+import 'package:scrumflow/utils/utils.dart';
 
 enum UserCategory { admin, scrumMaster, user }
 
@@ -23,12 +23,12 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-        id: JsonHelper.keyExists<int>(json, 'id'),
-        name: JsonHelper.keyExists<String>(json, 'name'),
-        email: JsonHelper.keyExists<String>(json, 'email'),
-        createdAt: JsonHelper.toDateTime(JsonHelper.keyExists(json, 'dt_created')),
-        active: JsonHelper.toBool(JsonHelper.keyExists(json, 'active')),
-        userCategory: JsonHelper.toEnum(UserCategory.values, JsonHelper.keyExists(json, 'userCategory'), base: UserCategory.user.index));
+        id: Helper.keyExists<int>(json, 'id'),
+        name: Helper.keyExists<String>(json, 'name'),
+        email: Helper.keyExists<String>(json, 'email'),
+        createdAt: Helper.toDateTime(Helper.keyExists(json, 'dt_created')),
+        active: Helper.toBool(Helper.keyExists(json, 'active')),
+        userCategory: Helper.toEnum(UserCategory.values, Helper.keyExists(json, 'userCategory'), base: UserCategory.user.index));
   }
 
   Map<String, dynamic> toJson() {

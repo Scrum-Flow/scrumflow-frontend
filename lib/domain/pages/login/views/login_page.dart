@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
+import 'package:scrumflow/domain/basics/basics.dart';
 import 'package:scrumflow/domain/pages/login/login.dart';
-import 'package:scrumflow/domain/pages/user_register/user_register.dart';
-import 'package:scrumflow/domain/parts/web_view.dart';
+import 'package:scrumflow/domain/pages/user/user.dart';
 import 'package:scrumflow/utils/extensions/extensions.dart';
 import 'package:scrumflow/utils/page_state.dart';
 import 'package:scrumflow/utils/routes.dart';
 import 'package:scrumflow/utils/theme.dart';
-import 'package:scrumflow/widgets/base_button.dart';
-import 'package:scrumflow/widgets/base_label.dart';
-import 'package:scrumflow/widgets/base_password_field.dart';
-import 'package:scrumflow/widgets/base_text_field.dart';
 import 'package:scrumflow/widgets/page_builder.dart';
+import 'package:scrumflow/widgets/web_view.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

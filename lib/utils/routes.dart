@@ -45,10 +45,8 @@ class Routes {
     );
   }
 
-  static Future<T?> replaceTo<T extends Object>(BuildContext context, var page,
-      [bool rootNavigator = false]) async {
-    return await Navigator.of(context, rootNavigator: rootNavigator)
-        .pushReplacement(
+  static Future<T?> replaceTo<T extends Object>(BuildContext context, var page, [bool rootNavigator = false]) async {
+    return await Navigator.of(context, rootNavigator: rootNavigator).pushReplacement(
       MaterialPageRoute(
         builder: (context) => page,
       ),

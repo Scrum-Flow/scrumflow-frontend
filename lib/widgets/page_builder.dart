@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scrumflow/utils/screen_helper.dart';
+import 'package:scrumflow/utils/utils.dart';
 
 class PageBuilder extends StatelessWidget {
   const PageBuilder({
@@ -17,7 +17,7 @@ class PageBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       minimum: minimumInsets ?? const EdgeInsets.symmetric(vertical: 18),
-      child: LayoutBuilder(builder: (context, constraints) => ScreenHelper.isMobile() ? mobilePage : webPage),
+      child: LayoutBuilder(builder: (context, constraints) => Helper.isMobile() ? mobilePage : webPage),
     );
   }
 }

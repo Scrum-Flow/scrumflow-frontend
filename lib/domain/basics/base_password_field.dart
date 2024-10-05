@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scrumflow/widgets/base_text_field.dart';
+import 'package:scrumflow/domain/basics/base_text_field.dart';
 
 class BasePasswordField extends StatefulWidget {
   const BasePasswordField({

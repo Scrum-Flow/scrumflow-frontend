@@ -5,10 +5,10 @@ import 'package:scrumflow/models/models.dart';
 import 'package:scrumflow/utils/utils.dart';
 
 class UserService {
-  static String get path => '/users';
+  static String get path => '/user';
 
   static FutureOr<List<User>> getUsers() async {
-    Dio dio = await DioHelper.jsonDio();
+    Dio dio = await Connection.defaultDio();
 
     Response response = await dio.get(path);
 
