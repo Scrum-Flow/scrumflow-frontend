@@ -2,11 +2,11 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
+import 'package:scrumflow/domain/basics/basics.dart';
+import 'package:scrumflow/domain/pages/task/controllers/controllers.dart';
 import 'package:scrumflow/models/models.dart';
 import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/widgets.dart';
-
-import '../controllers/controllers.dart';
 
 class TaskFormPage extends StatelessWidget {
   const TaskFormPage({required this.feature, this.task, super.key});
@@ -56,8 +56,8 @@ class _TaskForm extends StatelessWidget {
     });
 
     return SizedBox(
-      width: ScreenHelper.screenWidth(),
-      height: ScreenHelper.screenHeight(),
+      width: Helper.screenWidth(),
+      height: Helper.screenHeight(),
       child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
           child: Form(
@@ -85,7 +85,7 @@ class _TaskForm extends StatelessWidget {
                       flex: 3,
                       child: DropdownSearch<int>(
                         items: (f, cs) => List.generate(15, (i) => i + 1),
-                        decoratorProps: DropDownDecoratorProps(
+                        decoratorProps: const DropDownDecoratorProps(
                           decoration: InputDecoration(
                               labelText: "Pontos estimados",
                               hintText: "Selecione um número"),
@@ -98,11 +98,11 @@ class _TaskForm extends StatelessWidget {
                             .updateEstimatePoints(value ?? 0),
                         popupProps: PopupProps.dialog(
                           title: Container(
-                            decoration:
-                                BoxDecoration(color: AppTheme.ligthBlueScrum),
+                            decoration: const BoxDecoration(
+                                color: AppTheme.ligthBlueScrum),
                             alignment: Alignment.center,
-                            padding: EdgeInsets.symmetric(vertical: 16),
-                            child: Text(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            child: const Text(
                               'Pontos estimados',
                               style: TextStyle(
                                   fontSize: 21,
@@ -113,7 +113,7 @@ class _TaskForm extends StatelessWidget {
                           dialogProps: DialogProps(
                             clipBehavior: Clip.antiAlias,
                             shape: OutlineInputBorder(
-                              borderSide: BorderSide(width: 0),
+                              borderSide: const BorderSide(width: 1),
                               borderRadius: BorderRadius.circular(25),
                             ),
                           ),
@@ -129,55 +129,67 @@ class _TaskForm extends StatelessWidget {
                                   .initialState.value.status ==
                               PageStatus.loading,
                           child: DropdownSearch<String>(
-                            suffixProps: DropdownSuffixProps(
+                            suffixProps: const DropdownSuffixProps(
+                              clearButtonProps:
+                                  ClearButtonProps(isVisible: true),
                               dropdownButtonProps: DropdownButtonProps(
                                 iconClosed: Icon(Icons.keyboard_arrow_down),
                                 iconOpened: Icon(Icons.keyboard_arrow_up),
                               ),
                             ),
-                            decoratorProps: const DropDownDecoratorProps(
+                            items: (filter, props) => taskFormViewController
+                                .users
+                                .map((user) => user.name ?? '')
+                                .where((e) => e
+                                    .toLowerCase()
+                                    .contains(filter.toLowerCase()))
+                                .toList(),
+                            onChanged: (selectedUserName) {
+                              var selectedUser =
+                                  taskFormViewController.users.firstWhere(
+                                (user) => user.name == selectedUserName,
+                              );
+                              taskFormViewController
+                                  .updateResponsibleUser(selectedUser.id!);
+                            },
+                            /*selectedItem: taskFormViewController.users
+                                    .firstWhere((user) =>
+                                        user.id ==
+                                        taskFormViewController
+                                            .responsibleUser.value)
+                                    .name,*/
+                            decoratorProps: DropDownDecoratorProps(
                               decoration: InputDecoration(
-                                labelText:
-                                    'Selecione o responsável pela tarefa',
+                                labelText: "Selecione o responsável",
+                                hintText: "Escolha um usuário",
+                                border: OutlineInputBorder(),
                               ),
                             ),
-                            items: (name, props) => taskFormViewController.users
-                                .map((user) => user.name.toString())
-                                .toList(),
                             popupProps: PopupProps.menu(
-                              disableFilter:
-                                  true, //data will be filtered by the backend
                               showSearchBox: true,
-                              showSelectedItems: true,
+                              itemBuilder:
+                                  (context, item, isDisabled, isSelected) {
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 12.0),
+                                  child: Text(
+                                    item,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                );
+                              },
+                              fit: FlexFit.loose,
+                              constraints: BoxConstraints(maxHeight: 400),
                             ),
-                            /*icon: Icon(Icons.person),
-                      onConfirm: (p0) {},
-                      searchable: true,
-                      searchIcon: Icon(Icons.search_outlined),
-                      listType: MultiSelectListType.CHIP,
-                      title: const Text('Selecione os membros do projeto'),
-                      searchHint: 'Nome do usuário',
-                      barrierColor: Colors.transparent,
-                      items: taskFormViewController.users
-                          .map((user) => MultiSelectItem(user, user.name ?? ''))
-                          .toList(),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: Colors.black12,
-                      ),*/
                           ),
                         ),
                       ),
                     )
                   ],
                 ),
-                /*BaseTextField(
-                  hint: "Pontos estimados",
-                  initialValue: taskFormViewController.task?.description,
-                  validator: FormBuilderValidators.required(
-                      errorText: 'Campo obrigatório'),
-                  onChanged: taskFormViewController.updateDescription,
-                ),*/
                 25.toSizedBoxH(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

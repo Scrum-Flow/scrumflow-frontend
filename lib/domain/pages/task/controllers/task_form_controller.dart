@@ -4,8 +4,8 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:scrumflow/domain/pages/user/services/services.dart';
 import 'package:scrumflow/models/models.dart';
-import 'package:scrumflow/services/services.dart';
 import 'package:scrumflow/utils/utils.dart';
 
 class TaskFormController extends GetxController {
@@ -40,6 +40,8 @@ class TaskFormController extends GetxController {
     try {
       //TODO : filtrar o user com base no projectId
       users.value = await UserService.getUsers();
+
+      initialState.value = PageState.none();
     } on DioException catch (e) {
       initialState.value = PageState.error(e.message);
     } catch (e) {
@@ -55,14 +57,20 @@ class TaskFormController extends GetxController {
         Task task = await await TaskService.newTask(Task(
           name: name.value,
           description: description.value,
-          assignedUser: responsibleUser,
+          assignedUser: responsibleUser.value,
           assignedFeature: feature.id,
           estimatePoints: estimatePoints.value,
         ));
         pageState.value =
             PageState.success(info: 'Tarefa criada!!', data: task);
+
+        Get.back();
       } on DioException catch (e) {
         pageState.value = PageState.error(e.message);
+
+        debugPrint(e.toString());
+      } catch (e) {
+        pageState.value = PageState.error(e.toString());
 
         debugPrint(e.toString());
       }
@@ -74,7 +82,7 @@ class TaskService {
   static String get path => '/task';
 
   static FutureOr<Task> fetchTask(int? id) async {
-    Dio dio = await DioHelper.defaultDio();
+    Dio dio = await Connection.defaultDio();
 
     var response = await dio.get('$path/$id');
 
@@ -82,7 +90,7 @@ class TaskService {
   }
 
   static FutureOr<List<Task>> fetchTasks(int? featureId) async {
-    Dio dio = await DioHelper.defaultDio();
+    Dio dio = await Connection.defaultDio();
 
     var response;
     if (featureId == null) {
@@ -95,7 +103,7 @@ class TaskService {
   }
 
   static FutureOr<Task> newTask(Task task) async {
-    var dio = await DioHelper.defaultDio();
+    var dio = await Connection.defaultDio();
 
     var response = await dio.post(path, data: json.encode(task.toJson()));
 
@@ -103,7 +111,7 @@ class TaskService {
   }
 
   static FutureOr<void> deleteTask(int? id) async {
-    Dio dio = await DioHelper.defaultDio();
+    Dio dio = await Connection.defaultDio();
 
     await dio.delete('$path/$id');
   }

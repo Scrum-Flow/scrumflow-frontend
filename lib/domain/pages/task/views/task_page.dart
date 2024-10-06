@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scrumflow/domain/basics/basics.dart';
 import 'package:scrumflow/models/models.dart';
 import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/widgets.dart';
@@ -233,14 +234,48 @@ class _TaskTableState extends State<TaskTable> {
             Expanded(flex: 3, child: Text(task.estimatePoints.toString())),
             Expanded(flex: 5, child: Text(task.status ?? "ASTATAS")),
             Expanded(
-              flex: 2,
-              child: IconButton(
-                icon: const Icon(Icons.edit),
-                onPressed: () {
-                  // Ação de edição
-                },
-              ),
-            ),
+                flex: 2,
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () {
+                        // Ação de edição
+                      },
+                    ),
+                    Container(
+                      height: 40,
+                      width: 1,
+                      color: Colors.black12,
+                    ),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.delete_outline_rounded,
+                      ),
+                      tooltip: 'Excluir',
+                      onPressed: () => showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: BaseLabel(
+                              text: 'Realmente deseja excluir esta tarefa?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: BaseLabel(text: 'Cancelar'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                /*controller.deleteTask(task);*/
+                              },
+                              child: BaseLabel(text: 'Confirmar'),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                )),
           ],
         ),
       ],

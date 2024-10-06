@@ -4,8 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:scrumflow/domain/basics/basics.dart';
 import 'package:scrumflow/domain/pages/pages.dart';
+import 'package:scrumflow/models/models.dart';
 import 'package:scrumflow/utils/utils.dart';
-import 'package:scrumflow/widgets/base_label.dart';
 import 'package:scrumflow/widgets/page_builder.dart';
 
 class HomePage extends StatelessWidget {
@@ -66,7 +66,9 @@ class _SideMenu extends StatelessWidget {
       controller: homeController.sideMenu,
       alwaysShowFooter: true,
       style: SideMenuStyle(
-        displayMode: Helper.isMobile() ? SideMenuDisplayMode.compact : SideMenuDisplayMode.auto,
+        displayMode: Helper.isMobile()
+            ? SideMenuDisplayMode.compact
+            : SideMenuDisplayMode.auto,
         openSideMenuWidth: 150,
       ),
       title: Column(
@@ -86,7 +88,9 @@ class _SideMenu extends StatelessWidget {
                   page.icon,
                   width: 25,
                   colorFilter: ColorFilter.mode(
-                    homeController.sideMenu.currentPage == page.index ? Colors.white : Colors.black,
+                    homeController.sideMenu.currentPage == page.index
+                        ? Colors.white
+                        : Colors.black,
                     BlendMode.srcIn,
                   ),
                 );
@@ -94,7 +98,9 @@ class _SideMenu extends StatelessWidget {
                 return Container(
                   width: double.infinity,
                   height: 50,
-                  color: homeController.sideMenu.currentPage == page.index ? const Color(0xff020819) : Colors.transparent,
+                  color: homeController.sideMenu.currentPage == page.index
+                      ? const Color(0xff020819)
+                      : Colors.transparent,
                   child: InkWell(
                     onTap: () => homeController.changePage(page.index),
                     child: Helper.isMobile()
@@ -103,7 +109,10 @@ class _SideMenu extends StatelessWidget {
                             leading: picture,
                             title: BaseLabel(
                               text: page.name,
-                              color: homeController.sideMenu.currentPage == page.index ? Colors.white : Colors.black,
+                              color: homeController.sideMenu.currentPage ==
+                                      page.index
+                                  ? Colors.white
+                                  : Colors.black,
                             ),
                           ),
                   ),

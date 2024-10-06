@@ -6,28 +6,32 @@ class Task {
   final String? description;
   final int? estimatePoints;
   final String? status;
-
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
   var assignedUser;
   var assignedFeature;
 
-  Task({
-    this.id,
-    this.name,
-    this.description,
-    this.estimatePoints,
-    this.assignedUser,
-    this.assignedFeature,
-    this.status,
-  });
+  Task(
+      {this.id,
+      this.name,
+      this.description,
+      this.estimatePoints,
+      this.assignedUser,
+      this.assignedFeature,
+      this.status,
+      this.createdAt,
+      this.updatedAt});
 
   factory Task.fromJson(Map<String, dynamic> json) {
     return Task(
-        id: JsonHelper.keyExists<int>(json, 'id'),
-        name: JsonHelper.keyExists<String>(json, 'name'),
-        description: JsonHelper.keyExists<String>(json, 'description'),
-        estimatePoints: JsonHelper.keyExists<int>(json, 'estimatePoints'),
-        assignedUser: JsonHelper.keyExists<String>(json, 'assignedToUserName'),
-        assignedFeature: JsonHelper.keyExists<String>(json, 'featureName'),
+        id: Helper.keyExists<int>(json, 'id'),
+        name: Helper.keyExists<String>(json, 'name'),
+        description: Helper.keyExists<String>(json, 'description'),
+        estimatePoints: Helper.keyExists<int>(json, 'estimatePoints'),
+        assignedUser: Helper.keyExists<String>(json, 'assignedToUserName'),
+        assignedFeature: Helper.keyExists<String>(json, 'featureName'),
+        createdAt: Helper.toDateTime(Helper.keyExists(json, 'createdAt')),
+        updatedAt: Helper.toDateTime(Helper.keyExists(json, 'updatedAt')),
         status: 'STATUS');
   }
 
@@ -37,6 +41,8 @@ class Task {
     String? description,
     int? estimatePoints,
     String? status,
+    DateTime? createdAt,
+    DateTime? updatedAt,
     var assignedUser,
     var assignedFeature,
   }) {
@@ -47,12 +53,14 @@ class Task {
         estimatePoints: estimatePoints ?? this.estimatePoints,
         assignedUser: assignedUser ?? this.assignedUser,
         assignedFeature: assignedFeature ?? this.assignedFeature,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
         status: status ?? 'STATUS');
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      /*'id': id,*/
       'name': name,
       'description': description,
       'estimatePoints': estimatePoints,
