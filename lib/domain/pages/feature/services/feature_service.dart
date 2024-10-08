@@ -25,13 +25,11 @@ class FeatureService {
     return response.data.map<Feature>((map) => Feature.fromJson(map)).toList();
   }
 
-  static FutureOr<Feature> updateFeature(Feature feature) async {
+  static FutureOr<void> updateFeature(Feature feature) async {
     var dio = await Connection.defaultDio();
 
     var response = await dio.put('$path/${feature.id}',
         data: json.encode(feature.toJson()));
-
-    return Feature.fromJson(response.data);
   }
 
   static FutureOr<Feature> newFeature(Feature feature) async {

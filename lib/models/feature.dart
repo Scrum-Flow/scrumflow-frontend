@@ -4,7 +4,7 @@ class Feature {
   final int? id;
   final String? name;
   final String? description;
-  final int? projectId;
+  int? projectId;
 
   Feature({this.id, this.name, this.description, this.projectId});
 
@@ -32,7 +32,7 @@ class Feature {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      'projectId': projectId,
       'name': name,
       'description': description,
     };
@@ -44,6 +44,11 @@ class Feature {
       name: "Feature FAKE",
       description: "Feature false",
     );
+  }
+
+  @override
+  String toString() {
+    return name ?? "";
   }
 }
 /*

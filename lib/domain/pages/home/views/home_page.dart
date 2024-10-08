@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:scrumflow/domain/basics/basics.dart';
+import 'package:scrumflow/domain/pages/feature/views/views.dart';
 import 'package:scrumflow/domain/pages/pages.dart';
 import 'package:scrumflow/models/models.dart';
 import 'package:scrumflow/utils/utils.dart';
@@ -47,6 +48,7 @@ class _Body extends StatelessWidget {
                 TeamPage(),
                 UsersPage(),
                 TaskPage(feature: Feature.fake()),
+                FeaturePage(projectId: 1)
               ],
             ),
           ),

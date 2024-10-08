@@ -11,7 +11,9 @@ import 'package:scrumflow/widgets/widgets.dart';
 import 'views.dart';
 
 class FeaturePage extends StatefulWidget {
-  const FeaturePage({super.key});
+  const FeaturePage({super.key, required this.projectId});
+
+  final int projectId;
 
   @override
   State<FeaturePage> createState() => _FeaturePageState();
@@ -20,8 +22,8 @@ class FeaturePage extends StatefulWidget {
 class _FeaturePageState extends State<FeaturePage> {
   @override
   Widget build(BuildContext context) {
-    FeaturePageController featureController =
-        Get.put<FeaturePageController>(FeaturePageController(projectId: 1));
+    FeaturePageController featureController = Get.put<FeaturePageController>(
+        FeaturePageController(projectId: widget.projectId));
 
     return Scaffold(
       backgroundColor: Colors.grey[200],
@@ -59,14 +61,17 @@ class _FeaturePageState extends State<FeaturePage> {
                               width: 200,
                               child: BaseButton(
                                 title: 'Criar Funcionalidade',
-                                onPressed: () =>
-                                    Routes.goTo(context, FeatureFormPage()),
+                                onPressed: () => Routes.goTo(
+                                    context,
+                                    FeatureFormPage(
+                                      projectId: 1,
+                                    )),
                               ),
                             ),
                             mobilePage: IconButton(
                               tooltip: 'Criar Funcionalidade',
-                              onPressed: () =>
-                                  Routes.goTo(context, FeatureFormPage()),
+                              onPressed: () => Routes.goTo(
+                                  context, FeatureFormPage(projectId: 1)),
                               icon: Icon(Icons.add_card_outlined),
                             ),
                           ),

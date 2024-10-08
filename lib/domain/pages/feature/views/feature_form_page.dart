@@ -8,9 +8,9 @@ import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/widgets.dart';
 
 class FeatureFormPage extends StatelessWidget {
-  const FeatureFormPage({this.feature, this.projectId, super.key});
+  const FeatureFormPage({this.feature, required this.projectId, super.key});
 
-  final int? projectId;
+  final int projectId;
   final Feature? feature;
 
   @override
@@ -20,7 +20,7 @@ class FeatureFormPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Cadastro de nova Funcionalidade"),
+        title: const Text("Cadastro de Funcionalidade"),
       ),
       body: const PageBuilder(
         minimumInsets: EdgeInsets.zero,

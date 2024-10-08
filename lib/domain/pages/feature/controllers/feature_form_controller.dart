@@ -19,7 +19,7 @@ class FeatureFormController extends GetxController {
   final Rx<PageState> initialState = PageState.none().obs;
   final RxString name = ''.obs;
   final RxString description = ''.obs;
-  late final int? projectId;
+  int? projectId;
 
   void updateName(String value) => name.value = value;
 
@@ -48,15 +48,16 @@ class FeatureFormController extends GetxController {
 
       try {
         if (feature != null) {
-          Feature updatedFeature = await FeatureService.updateFeature(
+          await FeatureService.updateFeature(
             Feature(
+                id: feature!.id,
                 name: name.value,
                 description: description.value,
                 projectId: projectId),
           );
 
           pageState.value = PageState.success(
-              info: 'Funcionalidade atualizada!!', data: updatedFeature);
+              info: 'Funcionalidade atualizada!!', data: feature);
         } else {
           Feature newFeature = await FeatureService.newFeature(
             Feature(

@@ -30,7 +30,10 @@ class FeaturePageController extends GetxController {
       Prompts.showSnackBar(state);
 
       if (state.status == PageStatus.success) {
-        await Get.to(FeatureFormPage(feature: state.data));
+        await Get.to(FeatureFormPage(
+          feature: state.data,
+          projectId: state.data.projectId,
+        ));
       }
     });
 
@@ -42,6 +45,10 @@ class FeaturePageController extends GetxController {
 
     try {
       List<Feature> features = await FeatureService.fetchFeatures(projectId);
+
+      for (Feature feature in features) {
+        feature.projectId = projectId;
+      }
 
       values = _features = features;
     } on DioException catch (e) {
@@ -82,9 +89,10 @@ class FeaturePageController extends GetxController {
     featureState.value = PageState.loading('Carregando projeto!');
 
     try {
-      Feature featureData = await FeatureService.fetchFeature(feature.id);
+      //Não rpeciso fazer o fetch. Já é passado o featre
+      // Feature featureData = await FeatureService.fetchFeature(feature.id);
 
-      featureState.value = PageState.success(data: featureData);
+      featureState.value = PageState.success(data: feature);
     } on DioException catch (e) {
       debugPrint(e.toString());
       featureState.value = PageState.error('Erro ao carregar projeto!');
