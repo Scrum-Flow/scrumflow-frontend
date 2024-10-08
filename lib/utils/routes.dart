@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scrumflow/domain/pages/pages.dart';
+import 'package:scrumflow/models/models.dart';
 
 class Routes {
   static String first() {
@@ -14,12 +14,28 @@ class Routes {
         page: () => const LoginPage(),
       ),
       GetPage(
+        name: registerPage,
+        page: () => const UserRegisterPage(),
+      ),
+      GetPage(
         name: homePage,
         page: () => const HomePage(),
       ),
       GetPage(
+        name: loadingPage,
+        page: () => const SplashPage(),
+      ),
+      GetPage(
         name: projectPage,
         page: () => const ProjectPage(),
+      ),
+      GetPage(
+        name: projectFormPage,
+        page: () {
+          Project? team = Get.arguments;
+
+          return ProjectFormPage(project: team);
+        },
       ),
       GetPage(
         name: teamPage,
@@ -40,30 +56,12 @@ class Routes {
     ];
   }
 
-  static Future goTo(BuildContext context, var page) async {
-    return await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => page,
-      ),
-    );
-  }
-
-  static Future<T?> replaceTo<T extends Object>(BuildContext context, var page, [bool rootNavigator = false]) async {
-    return await Navigator.of(context, rootNavigator: rootNavigator).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => page,
-      ),
-    );
-  }
-
-  static goBack(BuildContext context, {dynamic result}) {
-    Navigator.of(context).pop(result);
-  }
-
   static const loginPage = '/login';
+  static const registerPage = '/register';
   static const homePage = '/home';
+  static const loadingPage = '/loading';
   static const projectPage = '/project';
+  static const projectFormPage = '$projectPage/projectForm';
   static const teamPage = '/team';
   static const usersPage = '/users';
   static const taskPage = '/task';

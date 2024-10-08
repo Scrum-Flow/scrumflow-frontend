@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:scrumflow/domain/pages/pages.dart';
+import 'package:scrumflow/utils/utils.dart';
 
 void main() async {
   await dotenv.load();
@@ -26,21 +27,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: GetBuilder<AuthController>(
-        id: AuthControllerIds.authState,
-        builder: (controller) {
-          switch (controller.authState.value) {
-            case AuthState.authorized:
-              return const HomePage();
-            case AuthState.unauthorized:
-            case AuthState.none:
-              return const LoginPage();
-            case AuthState.loading:
-            default:
-              return const SplashPage();
-          }
-        },
-      ),
+      initialRoute: Routes.first(),
+      getPages: Routes.getPages(),
     );
   }
 }

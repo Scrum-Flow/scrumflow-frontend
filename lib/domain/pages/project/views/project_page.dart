@@ -56,12 +56,12 @@ class _ProjectPageState extends State<ProjectPage> {
                               width: 200,
                               child: BaseButton(
                                 title: 'Criar Projeto',
-                                onPressed: () => Routes.goTo(context, ProjectFormPage()),
+                                onPressed: () => Get.toNamed(Routes.projectFormPage),
                               ),
                             ),
                             mobilePage: IconButton(
                               tooltip: 'Criar Projeto',
-                              onPressed: () => Routes.goTo(context, ProjectFormPage()),
+                              onPressed: () => Get.toNamed(Routes.projectFormPage),
                               icon: Icon(Icons.add_card_outlined),
                             ),
                           ),

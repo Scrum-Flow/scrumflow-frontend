@@ -3,7 +3,6 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 import 'package:scrumflow/domain/basics/basics.dart';
 import 'package:scrumflow/domain/pages/login/login.dart';
-import 'package:scrumflow/domain/pages/user/user.dart';
 import 'package:scrumflow/utils/extensions/extensions.dart';
 import 'package:scrumflow/utils/page_state.dart';
 import 'package:scrumflow/utils/routes.dart';
@@ -41,7 +40,7 @@ class LoginState extends State<LoginPage> {
           fontSize: 14,
         ),
         InkWell(
-          onTap: () => Routes.goTo(context, const UserRegisterPage()),
+          onTap: () => Get.toNamed(Routes.registerPage),
           child: BaseLabel(
             text: 'Crie agora',
             color: AppTheme.theme.colorScheme.onPrimary,

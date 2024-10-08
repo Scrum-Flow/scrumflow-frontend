@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scrumflow/domain/pages/home/home.dart';
@@ -16,21 +17,31 @@ class AuthController extends GetxController {
   final Rx<User> user = User().obs;
   final Rx<AuthState> authState = AuthState.none.obs;
 
+  @override
+  void onInit() {
+    super.onInit();
+
+    authState.listen((state) {
+      if (state == AuthState.unauthorized) {
+        Get.offNamed(Routes.loginPage);
+      } else if (state == AuthState.authorized) {
+        Get.offNamed(Routes.homePage);
+      } else if (state == AuthState.loading) {
+        Get.offNamed(Routes.loadingPage);
+      }
+    });
+  }
+
   void updateUser(User newUser) {
     user.value = newUser;
   }
 
   void authenticated() {
     authState.value = AuthState.authorized;
-
-    Get.key.currentState?.pushReplacement(
-      MaterialPageRoute(builder: (context) => const HomePage()),
-    );
   }
 
   FutureOr<void> initialVerification() async {
     authState.value = AuthState.loading;
-    update([AuthControllerIds.authState]);
 
     try {
       await Future.delayed(Duration(seconds: 2));
@@ -41,15 +52,12 @@ class AuthController extends GetxController {
         user.value = User.fromJson(json.decode(token.toString()));
 
         authState.value = AuthState.authorized;
-        update([AuthControllerIds.authState]);
       } else {
         authState.value = AuthState.unauthorized;
-        update([AuthControllerIds.authState]);
       }
     } catch (e) {
       debugPrint(e.toString());
       authState.value = AuthState.unauthorized;
-      update([AuthControllerIds.authState]);
     }
   }
 
@@ -57,8 +65,5 @@ class AuthController extends GetxController {
     await Preferences.clear();
 
     authState.value = AuthState.unauthorized;
-
-    Get.key.currentState?.pushReplacement(
-        MaterialPageRoute(builder: (context) => const LoginPage()));
   }
 }

@@ -18,6 +18,7 @@ class LoginController extends GetxController {
   @override
   onInit() {
     super.onInit();
+
     pageState.listen((value) {
       Prompts.showSnackBar(value);
 
@@ -28,7 +29,6 @@ class LoginController extends GetxController {
   Future<void> login() async {
     if (formKey.currentState!.validate()) {
       pageState.value = PageState.loading();
-      update();
 
       try {
         final authService = AuthService();

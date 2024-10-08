@@ -100,7 +100,7 @@ class _Form extends StatelessWidget {
                       title: 'Cancelar',
                       type: ButtonType.secondary,
                       isLoading: controller.pageState.value.status == PageStatus.loading,
-                      onPressed: () => Routes.goBack(context),
+                      onPressed: () => Get.back(),
                     ),
                   ),
                   12.toSizedBoxW(),
