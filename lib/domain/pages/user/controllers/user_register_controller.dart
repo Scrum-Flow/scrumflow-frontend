@@ -55,22 +55,13 @@ class UserRegisterController extends GetxController {
 
         Prompts.successSnackBar('Sucesso', 'Usuário cadastrado com sucesso!');
       } on DioException catch (e) {
-        Prompts.errorSnackBar(
-            'Erro', "Falha ao cadastrar usuário: ${e.message}");
-
-        pageState.value =
-            PageState.error("Falha ao cadastrar usuário: ${e.message}");
+        pageState.value = PageState.error("Falha ao cadastrar usuário: ${e.message}");
         update([UserRegisterControllersIds.pageState]);
         debugPrint(e.toString());
-      } catch (e) {
-        Prompts.errorSnackBar('Erro');
-        pageState.value = PageState.error(e.toString());
+      } finally {
+        pageState.value = PageState.none();
         update([UserRegisterControllersIds.pageState]);
-        debugPrint(e.toString());
       }
-
-      pageState.value = PageState.none();
-      update([UserRegisterControllersIds.pageState]);
     }
 
     return null;

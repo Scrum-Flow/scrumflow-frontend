@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:scrumflow/domain/pages/login/login.dart';
+import 'package:scrumflow/models/request_exception.dart';
 import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/prompts.dart';
 
@@ -50,27 +51,52 @@ class AppInterceptor extends Interceptor {
 
     var type = err.type;
 
+    RequestException? exception;
+
+    err.response?.extra = {'exception': exception};
+
+    if (err.response?.data != null) {
+      exception = RequestException.fromJson(err.response!.data);
+    }
+
     switch (type) {
       case DioExceptionType.sendTimeout:
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.receiveTimeout:
         Prompts.errorSnackBar('Erro de conexão', 'Tempo de conexão excedido, verifique sua conexão e tente novamente');
         return;
-      case DioExceptionType.badCertificate:
       case DioExceptionType.badResponse:
+        {
+          if (exception != null) {
+            switch (exception.statusCode) {
+              case HttpStatus.forbidden:
+                Prompts.errorSnackBar('Erro', exception.errors?.join(', ') ?? 'Requisição inválida, verifique os dados e tente novamente');
+                break;
+              case HttpStatus.unauthorized:
+                Get.to(const LoginPage());
+                break;
+              case HttpStatus.requestTimeout:
+                Prompts.errorSnackBar('Erro de conexão', 'Tempo de conexão excedido, verifique sua conexão e tente novamente');
+                break;
+              case HttpStatus.internalServerError:
+                Prompts.errorSnackBar('Erro interno', 'Erro interno no servidor, tente novamente mais tarde');
+                break;
+              case HttpStatus.badRequest:
+                Prompts.errorSnackBar('Erro', 'Requisição inválida, verifique os dados e tente novamente');
+                break;
+              case HttpStatus.notFound:
+                Prompts.errorSnackBar('Erro', 'Recurso não encontrado');
+                break;
+            }
+          }
+        }
+        break;
+
+      case DioExceptionType.badCertificate:
       case DioExceptionType.cancel:
       case DioExceptionType.connectionError:
       case DioExceptionType.unknown:
         break;
-    }
-
-    switch (statusCode) {
-      case HttpStatus.unauthorized:
-        Get.to(const LoginPage());
-        break;
-      case HttpStatus.requestTimeout:
-        Prompts.errorSnackBar('Erro de conexão', 'Tempo de conexão excedido, verifique sua conexão e tente novamente');
-        return;
     }
 
     super.onError(err, handler);
