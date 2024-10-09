@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:scrumflow/domain/basics/basics.dart';
+import 'package:scrumflow/domain/pages/task/controllers/task_page_controller.dart';
 import 'package:scrumflow/models/models.dart';
 import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/widgets.dart';
 
-import 'task_form_page.dart';
+class TaskPage extends StatefulWidget {
+  const TaskPage({super.key, required this.projectId});
 
-class TaskPage extends StatelessWidget {
-  const TaskPage({super.key, required this.feature});
-
-  final Feature feature;
+  final int projectId;
 
   @override
+  State<TaskPage> createState() => _TaskPageState();
+}
+
+class _TaskPageState extends State<TaskPage> {
+  @override
   Widget build(BuildContext context) {
-    //TODO : Controller da página
+    TaskPageController controller = Get.put<TaskPageController>(
+        TaskPageController(projectId: widget.projectId));
 
     return Scaffold(
       backgroundColor: Colors.grey[200],
@@ -51,11 +57,14 @@ class TaskPage extends StatelessWidget {
                               width: 200,
                               child: BaseButton(
                                 title: 'Criar Tarefa',
-                                onPressed: () => Routes.goTo(
+
+                                ///TODO: Modificar form de tarefas para poder escolher a funcionalidade
+                                onPressed:
+                                    () {}, /* => Routes.goTo(
                                     context,
                                     TaskFormPage(
                                       feature: feature,
-                                    )),
+                                    )),*/
                               ),
                             ),
                             mobilePage: IconButton(
@@ -68,8 +77,13 @@ class TaskPage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    _cabecalho(),
-                    _TaskList(),
+                    _header(),
+                    Obx(
+                      () => controller.pageState.value.status ==
+                              PageStatus.loading
+                          ? 0.toSizedBoxH()
+                          : _TaskList(),
+                    ),
                   ],
                 ),
               ),
@@ -80,9 +94,15 @@ class TaskPage extends StatelessWidget {
     );
   }
 
-  Widget _cabecalho() {
+  @override
+  dispose() {
+    Get.delete<TaskPageController>();
+    super.dispose();
+  }
+
+  Widget _header() {
     return const Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
         children: [
           Row(
@@ -96,11 +116,11 @@ class TaskPage extends StatelessWidget {
                   child: Text('Descrição',
                       style: TextStyle(fontWeight: FontWeight.bold))),
               Expanded(
-                  flex: 8,
+                  flex: 7,
                   child: Text('Responsável',
                       style: TextStyle(fontWeight: FontWeight.bold))),
               Expanded(
-                  flex: 3,
+                  flex: 2,
                   child: Text('Pontos',
                       style: TextStyle(fontWeight: FontWeight.bold))),
               Expanded(
@@ -108,8 +128,8 @@ class TaskPage extends StatelessWidget {
                   child: Text('Status',
                       style: TextStyle(fontWeight: FontWeight.bold))),
               Expanded(
-                  flex: 2,
-                  child: Text('Editar',
+                  flex: 4,
+                  child: Text('Editar/Excluir',
                       style: TextStyle(fontWeight: FontWeight.bold))),
             ],
           ),
@@ -146,74 +166,29 @@ class TaskTable extends StatefulWidget {
 }
 
 class _TaskTableState extends State<TaskTable> {
-  final List<Functionality> functionalities = [
-    Functionality(
-      title: 'Página de Login',
-      tasks: [
-        Task(
-            name: 'Criar formulário de login',
-            description: 'Tarefa designada para criar o formulário.',
-            assignedUser: 'Gabriel F.',
-            estimatePoints: 5,
-            status: 'Aberta'),
-        Task(
-            name: 'Validações de requisições',
-            description: 'Tarefa designada para validações.',
-            assignedUser: 'Luis Jun.',
-            estimatePoints: 7,
-            status: 'Pausada'),
-        Task(
-            name: 'Redirecionamento',
-            description: 'Tarefa designada para redirecionamento.',
-            assignedUser: 'Taís Lun.',
-            estimatePoints: 3,
-            status: 'Fazendo'),
-      ],
-    ),
-    Functionality(
-      title: 'Página de Cadastro',
-      tasks: [
-        Task(
-            name: 'Criar formulário de cadastro',
-            description: 'Tarefa designada para criar o formulário.',
-            assignedUser: 'Ana M.',
-            estimatePoints: 4,
-            status: 'Fazendo'),
-      ],
-    ),
-    Functionality(
-      title: 'Gestão de Projetos',
-      tasks: [
-        Task(
-            name: 'Organizar backlog',
-            description: 'Tarefa para organizar backlog.',
-            assignedUser: 'José S.',
-            estimatePoints: 6,
-            status: 'Aberta'),
-      ],
-    ),
-  ];
+  TaskPageController controller = Get.find<TaskPageController>();
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: functionalities.map((functionality) {
+      children: controller.featureValues.map((feature) {
         return ExpansionTile(
-          title: Text(
-            'Funcionalidade: ${functionality.title}',
-            textAlign: TextAlign.center,
-          ),
-          children: functionality.tasks.map((task) {
-            return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: _task(task));
-          }).toList(),
-        );
+            title: Text(
+              'Funcionalidade: ${feature.name}',
+              textAlign: TextAlign.center,
+            ),
+            children: controller.tasksValues
+                .map((task) => task.assignedFeature == feature.name
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: _taskWidget(task))
+                    : const Text("Nenhuma tarefa para essa funcionalidade"))
+                .toList());
       }).toList(),
     );
   }
 
-  Widget _task(Task task) {
+  Widget _taskWidget(Task task) {
     return Column(
       children: [
         Row(
@@ -230,11 +205,11 @@ class _TaskTableState extends State<TaskTable> {
           children: [
             Expanded(flex: 10, child: Text(task.name ?? "NOME AQ")),
             Expanded(flex: 10, child: Text(task.description ?? "DESC AQ")),
-            Expanded(flex: 8, child: Text(task.assignedUser ?? "NOME AQ")),
-            Expanded(flex: 3, child: Text(task.estimatePoints.toString())),
+            Expanded(flex: 7, child: Text(task.assignedUser ?? "User AQ")),
+            Expanded(flex: 2, child: Text(task.estimatePoints.toString())),
             Expanded(flex: 5, child: Text(task.status ?? "ASTATAS")),
             Expanded(
-                flex: 2,
+                flex: 4,
                 child: Row(
                   children: [
                     IconButton(
@@ -281,14 +256,4 @@ class _TaskTableState extends State<TaskTable> {
       ],
     );
   }
-}
-
-class Functionality {
-  final String title;
-  final List<Task> tasks;
-
-  Functionality({
-    required this.title,
-    required this.tasks,
-  });
 }

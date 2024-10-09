@@ -19,8 +19,7 @@ class FeatureService {
   static FutureOr<List<Feature>> fetchFeatures(int projectId) async {
     Dio dio = await Connection.defaultDio();
 
-    Response response =
-        await dio.get(path, data: json.encode({'projectId': projectId}));
+    Response response = await dio.get('$path?projectId=$projectId');
 
     return response.data.map<Feature>((map) => Feature.fromJson(map)).toList();
   }
@@ -28,8 +27,7 @@ class FeatureService {
   static FutureOr<void> updateFeature(Feature feature) async {
     var dio = await Connection.defaultDio();
 
-    var response = await dio.put('$path/${feature.id}',
-        data: json.encode(feature.toJson()));
+    await dio.put('$path/${feature.id}', data: json.encode(feature.toJson()));
   }
 
   static FutureOr<Feature> newFeature(Feature feature) async {

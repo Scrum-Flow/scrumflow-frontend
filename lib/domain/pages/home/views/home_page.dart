@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:scrumflow/domain/basics/basics.dart';
 import 'package:scrumflow/domain/pages/feature/views/views.dart';
 import 'package:scrumflow/domain/pages/pages.dart';
-import 'package:scrumflow/models/models.dart';
 import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/page_builder.dart';
 
@@ -47,7 +46,7 @@ class _Body extends StatelessWidget {
                 ProjectPage(),
                 TeamPage(),
                 UsersPage(),
-                TaskPage(feature: Feature.fake()),
+                TaskPage(projectId: 1),
                 FeaturePage(projectId: 1)
               ],
             ),
