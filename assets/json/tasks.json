@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "name": "Tarefa 1",
+    "description": "Essa é a tarefa 1",
+    "estimatePoints": 4,
+    "featureName": "Feature 01",
+    "assignedToUserName": "Gabriel",
+    "createdAt": "2024-10-01T20:32:51",
+    "updatedAt": "2024-10-01T20:32:51"
+  },
+  {
+    "id": 2,
+    "name": "Tarefa 2",
+    "description": "Essa é a tarefa 2",
+    "estimatePoints": 2,
+    "featureName": "Feature 01",
+    "assignedToUserName": "Gabriel",
+    "createdAt": "2024-10-01T20:33:03",
+    "updatedAt": "2024-10-01T20:33:03"
+  },
+  {
+    "id": 3,
+    "name": "Tarefa 3",
+    "description": "Essa é a tarefa 3",
+    "estimatePoints": 5,
+    "featureName": "Feature 01",
+    "assignedToUserName": "Gabriel",
+    "createdAt": "2024-10-01T20:33:03",
+    "updatedAt": "2024-10-01T20:33:03"
+  },
+  {
+    "id": 4,
+    "name": "Tarefa 4",
+    "description": "Essa é a tarefa 4",
+    "estimatePoints": 1,
+    "featureName": "Feature 01",
+    "assignedToUserName": "Gabriel",
+    "createdAt": "2024-10-01T20:33:03",
+    "updatedAt": "2024-10-01T20:33:03"
+  }
+]

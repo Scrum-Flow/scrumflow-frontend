@@ -19,7 +19,8 @@ class AuthService {
 
       return User.fromJson(response.data);
     } catch (e) {
-      throw Exception('Falha ao autenticar com o servidor');
+      throw Exception(
+          'Falha ao autenticar com o servidor\n Erro: ${e.toString()}');
     }
   }
 

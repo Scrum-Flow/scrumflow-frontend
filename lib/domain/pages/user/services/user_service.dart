@@ -10,8 +10,9 @@ class UserService {
   static FutureOr<List<User>> getUsers() async {
     Dio dio = await Connection.defaultDio();
 
-    Response response = await dio.get(path);
+    var response = await dio.get(path);
 
-    return response.data?.map<User>((json) => User.fromJson(json)).toList() ?? [];
+    return response.data?.map<User>((json) => User.fromJson(json)).toList() ??
+        [];
   }
 }

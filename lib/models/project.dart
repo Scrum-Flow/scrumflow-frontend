@@ -1,4 +1,3 @@
-import 'package:scrumflow/utils/helper.dart';
 import 'package:scrumflow/utils/utils.dart';
 
 class Project {
