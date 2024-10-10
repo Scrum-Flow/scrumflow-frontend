@@ -18,6 +18,7 @@ class LoginController extends GetxController {
   @override
   onInit() {
     super.onInit();
+
     pageState.listen((value) {
       Prompts.showSnackBar(value);
 
@@ -28,7 +29,6 @@ class LoginController extends GetxController {
   Future<void> login() async {
     if (formKey.currentState!.validate()) {
       pageState.value = PageState.loading();
-      update();
 
       try {
         final authService = AuthService();
@@ -44,10 +44,9 @@ class LoginController extends GetxController {
       } on DioException catch (e) {
         pageState.value = PageState.error('Erro ${e.message}');
         Prompts.errorSnackBar('Erro', e.message);
-      } catch (e) {
-        pageState.value = PageState.error('Erro ${e.toString()}');
-        Prompts.errorSnackBar(
-            'Erro', 'Falha ao realizar login: ${e.toString()}');
+      } finally {
+        pageState.value = PageState.none();
+        update();
       }
     } else {
       pageState.value = PageState.error('Erro: E-mail ou senha inválidos');

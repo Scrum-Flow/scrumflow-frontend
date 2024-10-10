@@ -27,7 +27,7 @@ class ProjectPageController extends GetxController {
       Prompts.showSnackBar(state);
 
       if (state.status == PageStatus.success) {
-        await Get.to(ProjectFormPage(project: state.data));
+        await Get.toNamed(Routes.projectFormPage, arguments: state.data);
       }
     });
 
@@ -91,7 +91,7 @@ class ProjectPageController extends GetxController {
   void filterProjects() {
     projectListState.value = PageState.loading();
 
-    values = (_projects ?? []).where((element) => (element.name?.camelCase ?? '').isCaseInsensitiveContains(filterValue.value.camelCase ?? '')).toList();
+    values = (_projects ?? []).where((element) => (element.name?.toLowerCase() ?? '').isCaseInsensitiveContains(filterValue.value.toLowerCase() ?? '')).toList();
 
     projectListState.value = PageState.none();
   }

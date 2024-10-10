@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scrumflow/domain/pages/project/services/services.dart';
-import 'package:scrumflow/domain/pages/user/services/services.dart';
 import 'package:scrumflow/models/models.dart';
 import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/prompts.dart';
@@ -23,16 +22,6 @@ class ProjectFormController extends GetxController {
   final Rx<DateTime?> startDate = Rx<DateTime?>(null);
   final Rx<DateTime?> endDate = Rx<DateTime?>(null);
 
-  final RxString teamName = ''.obs;
-  final RxList<User> users = <User>[].obs;
-  final RxList<User> selectedUsers = <User>[].obs;
-
-  final PageController _pageController = PageController();
-
-  void changePage(int index) {
-    _pageController.jumpToPage(index);
-  }
-
   void updateName(String value) => name.value = value;
 
   void updateDescription(String value) => description.value = value;
@@ -40,8 +29,6 @@ class ProjectFormController extends GetxController {
   void updateStartDate(DateTime? value) => startDate.value = value;
 
   void updateEndDate(DateTime? value) => endDate.value = value;
-
-  void updateSelectedUsers(List<User> value) => selectedUsers.value = value;
 
   @override
   onInit() {
@@ -59,21 +46,6 @@ class ProjectFormController extends GetxController {
 
       if (value.status == PageStatus.success) Get.back();
     });
-
-    initialEvent();
-  }
-
-  FutureOr<void> initialEvent() async {
-    initialState.value = PageState.loading();
-    try {
-      users.value = await UserService.getUsers();
-
-      initialState.value = PageState.none();
-    } on DioException catch (e) {
-      initialState.value = PageState.error(e.message);
-    } catch (e) {
-      initialState.value = PageState.error(e.toString());
-    }
   }
 
   FutureOr<void> save() async {
@@ -115,7 +87,7 @@ class ProjectFormController extends GetxController {
   }
 
   Future<void> cancel() async {
-    ;
+    Get.back();
   }
 
   bool validateDates() {
