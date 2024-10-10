@@ -96,7 +96,7 @@ class TaskPageController extends GetxController {
     try {
       await TaskService.deleteTask(taskId);
 
-      fetchTasks();
+      onInit();
 
       taskDeleteState.value = PageState.success(info: 'Tarefa foi excluída!!');
     } on DioException catch (e) {

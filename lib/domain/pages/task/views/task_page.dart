@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scrumflow/domain/basics/basics.dart';
-import 'package:scrumflow/domain/pages/task/controllers/task_page_controller.dart';
+import 'package:scrumflow/domain/pages/pages.dart';
 import 'package:scrumflow/models/models.dart';
 import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/widgets.dart';
@@ -57,20 +57,14 @@ class _TaskPageState extends State<TaskPage> {
                               width: 200,
                               child: BaseButton(
                                 title: 'Criar Tarefa',
-
-                                ///TODO: Modificar form de tarefas para poder escolher a funcionalidade
-                                onPressed:
-                                    () {}, /* => Routes.goTo(
-                                    context,
-                                    TaskFormPage(
-                                      feature: feature,
-                                    )),*/
+                                onPressed: () =>
+                                    Routes.goTo(context, TaskFormPage()),
                               ),
                             ),
                             mobilePage: IconButton(
                               tooltip: 'Nova Tarefa',
-                              onPressed:
-                                  () {} /*=> Routes.goTo(context, ProjectFormPage())*/,
+                              onPressed: () =>
+                                  Routes.goTo(context, TaskFormPage()),
                               icon: Icon(Icons.add_card_outlined),
                             ),
                           ),
@@ -145,11 +139,10 @@ class _TaskList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return const Expanded(
       child: SingleChildScrollView(
         child: Column(
           children: [
-            // Lista das funcionalidades e suas tarefas
             const TaskTable(),
           ],
         ),
@@ -178,17 +171,22 @@ class _TaskTableState extends State<TaskTable> {
               textAlign: TextAlign.center,
             ),
             children: controller.tasksValues
-                .map((task) => task.assignedFeature == feature.name
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: _taskWidget(task))
-                    : const Text("Nenhuma tarefa para essa funcionalidade"))
-                .toList());
+                    .where((task) => task.assignedFeature == feature.name)
+                    .toList()
+                    .isEmpty
+                ? [const Text("Nenhuma tarefa para essa funcionalidade")]
+                : controller.tasksValues
+                    .where((task) => task.assignedFeature == feature.name)
+                    .map((task) => Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: _taskWidget(task, feature),
+                        ))
+                    .toList());
       }).toList(),
     );
   }
 
-  Widget _taskWidget(Task task) {
+  Widget _taskWidget(Task task, Feature feature) {
     return Column(
       children: [
         Row(
@@ -215,7 +213,12 @@ class _TaskTableState extends State<TaskTable> {
                     IconButton(
                       icon: const Icon(Icons.edit),
                       onPressed: () {
-                        // Ação de edição
+                        Routes.goTo(
+                            context,
+                            TaskFormPage(
+                              feature: feature,
+                              task: task,
+                            ));
                       },
                     ),
                     Container(
@@ -240,8 +243,8 @@ class _TaskTableState extends State<TaskTable> {
                             ),
                             TextButton(
                               onPressed: () {
+                                controller.deleteTask(task.id!);
                                 Navigator.of(context).pop();
-                                /*controller.deleteTask(task);*/
                               },
                               child: BaseLabel(text: 'Confirmar'),
                             )
