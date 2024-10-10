@@ -47,17 +47,18 @@ class FeatureFormController extends GetxController {
       pageState.value = PageState.loading();
 
       try {
+        Feature _feature;
         if (feature != null) {
-          await FeatureService.updateFeature(
-            Feature(
-                id: feature!.id,
-                name: name.value,
-                description: description.value,
-                projectId: projectId),
-          );
+          _feature = Feature(
+              id: feature!.id,
+              name: name.value,
+              description: description.value,
+              projectId: projectId);
 
+          await FeatureService.updateFeature(_feature);
+          onInit();
           pageState.value = PageState.success(
-              info: 'Funcionalidade atualizada!!', data: feature);
+              info: 'Funcionalidade atualizada!!', data: _feature);
         } else {
           Feature newFeature = await FeatureService.newFeature(
             Feature(
@@ -65,7 +66,7 @@ class FeatureFormController extends GetxController {
                 description: description.value,
                 projectId: projectId),
           );
-
+          onInit();
           pageState.value = PageState.success(
               info: 'Funcionalidade criada!!', data: newFeature);
         }

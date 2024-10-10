@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:scrumflow/domain/pages/feature/feature.dart';
 import 'package:scrumflow/domain/pages/pages.dart';
 import 'package:scrumflow/models/models.dart';
 import 'package:scrumflow/utils/utils.dart';
@@ -110,6 +109,3 @@ class TaskPageController extends GetxController {
     taskDeleteState.value = PageState.none();
   }
 }
-
-/// Tenho que ter uma lista das features -->
-/// Para cada feature, fazer uma request das tasks dessa feature

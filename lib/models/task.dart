@@ -60,7 +60,7 @@ class Task {
 
   Map<String, dynamic> toJson() {
     return {
-      /*'id': id,*/
+      'id': id,
       'name': name,
       'description': description,
       'estimatePoints': estimatePoints,
@@ -69,24 +69,3 @@ class Task {
     };
   }
 }
-/*
-Para criar a task tem que ser:
-{
-    "name":"Tarefa 2",
-    "description": "Essa é a tarefa 2",
-    "estimatePoints": 2,
-    "featureId": 1,
-    "assignedToUserId": 1
-}
-O que recebe da api:
-{
-    "id": 2,
-    "name": "Tarefa 2",
-    "description": "Essa é a tarefa 2",
-    "estimatePoints": 2,
-    "featureName": "Feature 01",
-    "assignedToUserName": "Gabriel",
-    "createdAt": null,
-    "updatedAt": null
-}
- */

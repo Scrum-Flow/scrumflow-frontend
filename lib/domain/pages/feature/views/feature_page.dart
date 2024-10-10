@@ -3,12 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scrumflow/domain/basics/basics.dart';
-import 'package:scrumflow/domain/pages/feature/controllers/controllers.dart';
+import 'package:scrumflow/domain/pages/feature/feature.dart';
 import 'package:scrumflow/models/models.dart';
-import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/widgets.dart';
-
-import 'views.dart';
 
 class FeaturePage extends StatefulWidget {
   const FeaturePage({super.key, required this.projectId});
@@ -61,17 +58,19 @@ class _FeaturePageState extends State<FeaturePage> {
                               width: 200,
                               child: BaseButton(
                                 title: 'Criar Funcionalidade',
-                                onPressed: () => Routes.goTo(
-                                    context,
-                                    FeatureFormPage(
-                                      projectId: 1,
-                                    )),
+                                onPressed: () => Get.to(FeatureFormPage(
+                                  projectId: 1,
+                                )),
+                                /*,*/
                               ),
                             ),
                             mobilePage: IconButton(
                               tooltip: 'Criar Funcionalidade',
-                              onPressed: () => Routes.goTo(
-                                  context, FeatureFormPage(projectId: 1)),
+                              onPressed: () => Get.to(FeatureFormPage(
+                                projectId: 1,
+                              )),
+                              /*Routes.goTo(
+                                  context, FeatureFormPage(projectId: 1)),*/
                               icon: Icon(Icons.add_card_outlined),
                             ),
                           ),
@@ -168,7 +167,10 @@ class FeatureCard extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.mode_edit_rounded),
                   tooltip: 'Editar',
-                  onPressed: () => controller.fetchFeatureData(feature),
+                  onPressed: () => Get.to(FeatureFormPage(
+                    feature: feature,
+                    projectId: 1,
+                  )),
                 ),
                 const SizedBox(width: 4),
                 IconButton(

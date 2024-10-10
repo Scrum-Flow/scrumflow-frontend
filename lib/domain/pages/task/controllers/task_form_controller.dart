@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:scrumflow/domain/pages/task/services/services.dart';
 import 'package:scrumflow/domain/pages/user/services/services.dart';
 import 'package:scrumflow/models/models.dart';
 import 'package:scrumflow/utils/utils.dart';
@@ -87,6 +87,8 @@ class TaskFormController extends GetxController {
 
           await TaskService.updateTask(_task);
 
+          onInit();
+
           pageState.value =
               PageState.success(info: 'Tarefa atualizada!!', data: _task);
         } else {
@@ -97,6 +99,9 @@ class TaskFormController extends GetxController {
             assignedFeature: chosenFeature.value!.id,
             estimatePoints: estimatePoints.value,
           ));
+
+          onInit();
+
           pageState.value =
               PageState.success(info: 'Tarefa criada!!', data: newTask);
         }
@@ -126,54 +131,10 @@ class TaskFormController extends GetxController {
   }
 
   String? getSelectedFeatureItem() {
+    ///Contorno cotoco para o selectedItem no chosen featuer
     if (feature != null) {
       updateTaskFeature(feature!);
     }
     return feature?.name;
-  }
-}
-
-class TaskService {
-  static String get path => '/task';
-
-  static FutureOr<Task> fetchTask(int? id) async {
-    Dio dio = await Connection.defaultDio();
-
-    var response = await dio.get('$path/$id');
-
-    return Task.fromJson(response.data);
-  }
-
-  static FutureOr<List<Task>> fetchTasks(int? featureId) async {
-    Dio dio = await Connection.defaultDio();
-
-    var response;
-    if (featureId == null) {
-      response = await dio.get(path);
-    } else {
-      response = await dio.get('$path/feature/$featureId');
-    }
-
-    return response.data.map<Task>((map) => Task.fromJson(map)).toList();
-  }
-
-  static FutureOr<Task> newTask(Task task) async {
-    var dio = await Connection.defaultDio();
-
-    var response = await dio.post(path, data: json.encode(task.toJson()));
-
-    return Task.fromJson(response.data);
-  }
-
-  static FutureOr<void> deleteTask(int? id) async {
-    Dio dio = await Connection.defaultDio();
-
-    await dio.delete('$path/$id');
-  }
-
-  static FutureOr<void> updateTask(Task task) async {
-    var dio = await Connection.defaultDio();
-
-    await dio.put('$path/${task.id}', data: json.encode(task.toJson()));
   }
 }

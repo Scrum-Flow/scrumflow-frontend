@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scrumflow/domain/pages/feature/services/services.dart';
-import 'package:scrumflow/domain/pages/feature/views/views.dart';
 import 'package:scrumflow/models/feature.dart';
 import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/widgets.dart';
@@ -26,16 +25,7 @@ class FeaturePageController extends GetxController {
     fetchFeatures();
 
     featureDeleteState.listen(Prompts.showSnackBar);
-    featureState.listen((state) async {
-      Prompts.showSnackBar(state);
-
-      if (state.status == PageStatus.success) {
-        await Get.to(FeatureFormPage(
-          feature: state.data,
-          projectId: state.data.projectId,
-        ));
-      }
-    });
+    featureState.listen(Prompts.showSnackBar);
 
     super.onInit();
   }
@@ -86,19 +76,18 @@ class FeaturePageController extends GetxController {
   }
 
   FutureOr<void> fetchFeatureData(Feature feature) async {
-    featureState.value = PageState.loading('Carregando projeto!');
+    featureState.value = PageState.loading('Carregando Funcionalidade!');
 
     try {
-      //Não rpeciso fazer o fetch. Já é passado o featre
-      // Feature featureData = await FeatureService.fetchFeature(feature.id);
+      Feature featureData = await FeatureService.fetchFeature(feature.id);
 
-      featureState.value = PageState.success(data: feature);
+      featureState.value = PageState.success(data: featureData);
     } on DioException catch (e) {
       debugPrint(e.toString());
-      featureState.value = PageState.error('Erro ao carregar projeto!');
+      featureState.value = PageState.error('Erro ao carregar Funcionalidade!');
     } catch (e) {
       debugPrint(e.toString());
-      featureState.value = PageState.error('Erro ao carregar projeto!');
+      featureState.value = PageState.error('Erro ao carregar Funcionalidade!');
     }
   }
 

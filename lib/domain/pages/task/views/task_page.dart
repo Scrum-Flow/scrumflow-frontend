@@ -56,15 +56,13 @@ class _TaskPageState extends State<TaskPage> {
                             webPage: SizedBox(
                               width: 200,
                               child: BaseButton(
-                                title: 'Criar Tarefa',
-                                onPressed: () =>
-                                    Routes.goTo(context, TaskFormPage()),
-                              ),
+                                  title: 'Criar Tarefa',
+                                  onPressed: () =>
+                                      Get.toNamed(Routes.taskFormPage)),
                             ),
                             mobilePage: IconButton(
                               tooltip: 'Nova Tarefa',
-                              onPressed: () =>
-                                  Routes.goTo(context, TaskFormPage()),
+                              onPressed: () => Get.toNamed(Routes.taskFormPage),
                               icon: Icon(Icons.add_card_outlined),
                             ),
                           ),
@@ -213,12 +211,10 @@ class _TaskTableState extends State<TaskTable> {
                     IconButton(
                       icon: const Icon(Icons.edit),
                       onPressed: () {
-                        Routes.goTo(
-                            context,
-                            TaskFormPage(
-                              feature: feature,
-                              task: task,
-                            ));
+                        Get.to(TaskFormPage(
+                          feature: feature,
+                          task: task,
+                        ));
                       },
                     ),
                     Container(

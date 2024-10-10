@@ -49,6 +49,26 @@ class Routes {
         name: dashboardPage,
         page: () => const DashboardPage(),
       ),
+      GetPage(
+        name: taskPage,
+        page: () {
+          return const TaskPage(projectId: 1);
+        },
+      ),
+      GetPage(
+        name: taskFormPage,
+        page: () => const TaskFormPage(),
+      ),
+      GetPage(
+        name: featurePage,
+        page: () {
+          return const FeaturePage(projectId: 1);
+        },
+      ),
+      GetPage(
+        name: featureFormPage,
+        page: () => const TaskFormPage(),
+      ),
     ];
   }
 
@@ -61,4 +81,8 @@ class Routes {
   static const teamPage = '/team';
   static const usersPage = '/users';
   static const dashboardPage = '/dashboard';
+  static const taskPage = '/task';
+  static const taskFormPage = '$taskPage/taskForm';
+  static const featurePage = '/feature';
+  static const featureFormPage = '$featurePage/featureForm';
 }

@@ -32,6 +32,7 @@ class Feature {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'projectId': projectId,
       'name': name,
       'description': description,
@@ -51,17 +52,3 @@ class Feature {
     return name ?? "";
   }
 }
-/*
-Para criar a feature:
-{
-    "name": "Feature 03",
-    "description": "Essa feature é foda",
-    "projectId": 1
-}
-Recebe da api:
-{
-    "id": 1,
-    "name": "Feature 01",
-    "description": "Essa feature 01 é foda"
-  }
-*/
