@@ -48,7 +48,7 @@ class BaseTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: kMinInteractiveDimension * 2,
+      height: kMinInteractiveDimension * 1.5,
       padding: const EdgeInsets.only(bottom: 4),
       child: TextFormField(
         initialValue: initialValue,

@@ -9,8 +9,7 @@ class WebView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        width: 800,
-        height: 800,
+        constraints: const BoxConstraints(maxWidth: 800),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
