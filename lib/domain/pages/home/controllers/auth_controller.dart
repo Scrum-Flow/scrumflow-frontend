@@ -4,8 +4,6 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:scrumflow/domain/pages/home/home.dart';
-import 'package:scrumflow/domain/pages/login/login.dart';
 import 'package:scrumflow/models/user.dart';
 import 'package:scrumflow/utils/utils.dart';
 
@@ -20,6 +18,8 @@ class AuthController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+
+    initialVerification();
 
     authState.listen((state) {
       if (state == AuthState.unauthorized) {

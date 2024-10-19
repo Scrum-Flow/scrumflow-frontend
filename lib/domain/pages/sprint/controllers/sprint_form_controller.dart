@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:scrumflow/domain/pages/sprint/services/services.dart';
 import 'package:scrumflow/models/models.dart';
 import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/widgets.dart';
@@ -47,7 +48,9 @@ class SprintFormController extends GetxController {
     pageState.listen((value) {
       Prompts.showSnackBar(value);
 
+/*
       if (value.status == PageStatus.success) Get.back();
+*/
     });
   }
 
@@ -107,10 +110,4 @@ class SprintFormController extends GetxController {
 
     return true;
   }
-}
-
-class SprintService {
-  static newSprint(Sprint sprint) {}
-
-  static updateSprint(Sprint sprint) {}
 }
