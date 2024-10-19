@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
+import 'package:scrumflow/domain/pages/backlog/views/backlog_page.dart';
 import 'package:scrumflow/domain/pages/pages.dart';
+import 'package:scrumflow/domain/pages/sprint/views/sprint_form_page.dart';
 import 'package:scrumflow/models/models.dart';
 
 class Routes {
@@ -69,6 +71,12 @@ class Routes {
         name: featureFormPage,
         page: () => const TaskFormPage(),
       ),
+      GetPage(
+        name: backlog,
+        page: () => const BacklogPage(projectId: 1),
+      ),
+      GetPage(
+          name: sprintFormPage, page: () => const SprintFormPage(projectId: 1))
     ];
   }
 
@@ -85,4 +93,6 @@ class Routes {
   static const taskFormPage = '$taskPage/taskForm';
   static const featurePage = '/feature';
   static const featureFormPage = '$featurePage/featureForm';
+  static const sprintFormPage = '$backlog/sprintFormPage';
+  static const backlog = '/backlog';
 }
