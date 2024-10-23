@@ -24,6 +24,14 @@ class FeatureService {
     return response.data.map<Feature>((map) => Feature.fromJson(map)).toList();
   }
 
+  static FutureOr<List<Feature>> fetchFeaturesWithoutSprint() async {
+    Dio dio = await Connection.defaultDio();
+
+    Response response = await dio.get('$path/nosprint');
+
+    return response.data.map<Feature>((map) => Feature.fromJson(map)).toList();
+  }
+
   static FutureOr<void> updateFeature(Feature feature) async {
     var dio = await Connection.defaultDio();
 

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scrumflow/domain/basics/basics.dart';
 import 'package:scrumflow/domain/pages/backlog/backlog.dart';
+import 'package:scrumflow/domain/pages/feature/views/feature_form_page.dart';
+import 'package:scrumflow/models/models.dart';
 import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/widgets.dart';
 
@@ -86,7 +88,7 @@ class _BacklogPageState extends State<BacklogPage> {
                           15.toSizedBoxW(),
                           IconButton(
                             tooltip: 'Atualizar',
-                            onPressed: () => {},
+                            onPressed: () async => await controller.refresh(),
                             icon: const Icon(
                               Icons.refresh,
                             ),
@@ -147,8 +149,108 @@ class _FeaturesWithoutSprint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    BacklogPageController controller = Get.find<BacklogPageController>();
+
+    return Obx(() => controller.featuresWithoutSprintState.value.status ==
+            PageStatus.loading
+        ? const CircularProgressIndicator()
+        : ExpansionTile(
+            title: const Text(
+              'Funcionalidades sem sprint',
+              textAlign: TextAlign.center,
+            ),
+            children: controller.featuresWithoutSprint.toList().isEmpty
+                ? [const Text("Nenhuma funcionalidade sem sprint")]
+                : controller.featuresWithoutSprint
+                    .map((feature) => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: FeatureRow(feature: feature)))
+                    .toList()));
+  }
+}
+
+class FeatureRow extends StatefulWidget {
+  const FeatureRow({Key? key, required this.feature}) : super(key: key);
+
+  final Feature feature;
+  @override
+  _FeatureRowState createState() => _FeatureRowState();
+}
+
+class _FeatureRowState extends State<FeatureRow> {
+  BacklogPageController controller = Get.find<BacklogPageController>();
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
-      children: [Text("Funcionalidades sem Sprint")],
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Container(
+                color: Colors.black38,
+                height: 1,
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Expanded(flex: 3, child: Text(widget.feature.name ?? "NOME AQ")),
+            Expanded(
+                flex: 6, child: Text(widget.feature.description ?? "DESC AQ")),
+            Expanded(
+                flex: 1,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.edit),
+                      tooltip: 'Editar',
+                      onPressed: () {
+                        Get.to(FeatureFormPage(
+                          feature: widget.feature,
+                          projectId: 1,
+                        ));
+                      },
+                    ),
+                    Container(
+                      height: 40,
+                      width: 1,
+                      color: Colors.black12,
+                    ),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.delete_outline_rounded,
+                      ),
+                      tooltip: 'Excluir',
+                      onPressed: () => showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: BaseLabel(
+                              text:
+                                  'Realmente deseja excluir esta funcionalidade?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: BaseLabel(text: 'Cancelar'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                controller.deleteFeature(widget.feature);
+                                Navigator.of(context).pop();
+                              },
+                              child: BaseLabel(text: 'Confirmar'),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                )),
+          ],
+        ),
+      ],
     );
   }
 }
