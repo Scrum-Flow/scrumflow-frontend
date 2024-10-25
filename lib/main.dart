@@ -17,8 +17,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.find<AuthController>().initialVerification();
-
     return GetMaterialApp(
       title: 'ScrumFlow',
       navigatorKey: Get.key,

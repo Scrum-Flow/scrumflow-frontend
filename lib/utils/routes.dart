@@ -1,10 +1,13 @@
 import 'package:get/get.dart';
 import 'package:scrumflow/domain/pages/pages.dart';
+import 'package:scrumflow/domain/pages/team/views/team_form_page.dart';
+import 'package:scrumflow/domain/pages/user/views/user_register_page.dart';
+import 'package:scrumflow/domain/pages/user/views/users_page.dart';
 import 'package:scrumflow/models/models.dart';
 
 class Routes {
   static String first() {
-    return loginPage;
+    return loadingPage;
   }
 
   static List<GetPage> getPages() {
@@ -32,14 +35,22 @@ class Routes {
       GetPage(
         name: projectFormPage,
         page: () {
-          Project? team = Get.arguments;
+          Project? project = Get.arguments;
 
-          return ProjectFormPage(project: team);
+          return ProjectFormPage(project: project);
         },
       ),
       GetPage(
         name: teamPage,
         page: () => const TeamPage(),
+      ),
+      GetPage(
+        name: teamFormPage,
+        page: () {
+          Team? team = Get.arguments;
+
+          return TeamFormPage(team: team);
+        },
       ),
       GetPage(
         name: usersPage,
@@ -79,6 +90,7 @@ class Routes {
   static const projectPage = '/project';
   static const projectFormPage = '$projectPage/projectForm';
   static const teamPage = '/team';
+  static const teamFormPage = '$teamPage/teamFormPage';
   static const usersPage = '/users';
   static const dashboardPage = '/dashboard';
   static const taskPage = '/task';

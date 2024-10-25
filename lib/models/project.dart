@@ -58,6 +58,11 @@ class Project {
   }
 
   @override
+  bool operator ==(Object other) {
+    return id == (other as Project).id;
+  }
+
+  @override
   String toString() {
     return name ?? '';
   }

@@ -4,8 +4,6 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:scrumflow/domain/pages/home/home.dart';
-import 'package:scrumflow/domain/pages/login/login.dart';
 import 'package:scrumflow/models/user.dart';
 import 'package:scrumflow/utils/utils.dart';
 
@@ -18,18 +16,20 @@ class AuthController extends GetxController {
   final Rx<AuthState> authState = AuthState.none.obs;
 
   @override
-  void onInit() {
-    super.onInit();
+  void onInit() async {
+    initialVerification();
 
-    authState.listen((state) {
+    authState.listen((state) async {
       if (state == AuthState.unauthorized) {
-        Get.offNamed(Routes.loginPage);
+        await Get.key.currentState?.pushReplacementNamed(Routes.loginPage);
       } else if (state == AuthState.authorized) {
-        Get.offNamed(Routes.homePage);
+        await Get.key.currentState?.pushReplacementNamed(Routes.homePage);
       } else if (state == AuthState.loading) {
-        Get.offNamed(Routes.loadingPage);
+        await Get.key.currentState?.pushReplacementNamed(Routes.loadingPage);
       }
     });
+
+    super.onInit();
   }
 
   void updateUser(User newUser) {
