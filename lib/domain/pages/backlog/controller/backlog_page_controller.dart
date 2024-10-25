@@ -89,10 +89,15 @@ class BacklogPageController extends GetxController {
     featuresWithoutSprintState.value = PageState.loading();
 
     try {
-      List<Feature> features =
-          await FeatureService.fetchFeaturesWithoutSprint();
+      List<Feature> features = await FeatureService.fetchFeatures(projectId);
 
-      featuresWithoutSprint = features;
+      if (features.isNotEmpty) {
+        for (Feature f in features) {
+          if (f.sprintsId!.isEmpty) {
+            featuresWithoutSprint.add(f);
+          }
+        }
+      }
 
       featuresWithoutSprintState.value = PageState.none();
     } on DioException catch (e) {

@@ -154,18 +154,38 @@ class _FeaturesWithoutSprint extends StatelessWidget {
     return Obx(() => controller.featuresWithoutSprintState.value.status ==
             PageStatus.loading
         ? const CircularProgressIndicator()
-        : ExpansionTile(
-            title: const Text(
-              'Funcionalidades sem sprint',
-              textAlign: TextAlign.center,
-            ),
-            children: controller.featuresWithoutSprint.toList().isEmpty
-                ? [const Text("Nenhuma funcionalidade sem sprint")]
-                : controller.featuresWithoutSprint
-                    .map((feature) => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: FeatureRow(feature: feature)))
-                    .toList()));
+        : Column(
+            children: [
+              linhaDivisoria(),
+              ExpansionTile(
+                  title: const Text(
+                    'Funcionalidades sem sprint',
+                    textAlign: TextAlign.center,
+                  ),
+                  children: controller.featuresWithoutSprint.toList().isEmpty
+                      ? [const Text("Nenhuma funcionalidade sem sprint")]
+                      : controller.featuresWithoutSprint
+                          .map((feature) => Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16.0),
+                              child: FeatureRow(feature: feature)))
+                          .toList()),
+              linhaDivisoria(),
+            ],
+          ));
+  }
+
+  Widget linhaDivisoria() {
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            color: Colors.black38,
+            height: 1,
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -173,6 +193,7 @@ class FeatureRow extends StatefulWidget {
   const FeatureRow({Key? key, required this.feature}) : super(key: key);
 
   final Feature feature;
+
   @override
   _FeatureRowState createState() => _FeatureRowState();
 }
