@@ -27,6 +27,7 @@ class BacklogPageController extends GetxController {
   Rx<PageState> featuresWithoutSprintState = PageState.none().obs;
 
   Rx<PageState> featureDeleteState = PageState.none().obs;
+  Rx<PageState> sprintDeleteState = PageState.none().obs;
 
   @override
   Future<void> onInit() async {
@@ -141,5 +142,66 @@ class BacklogPageController extends GetxController {
   void clearVariables() {
     map.clear();
     sprintValues.clear();
+  }
+
+  Future<void> deleteSprint(Sprint sprint) async {
+    sprintDeleteState.value =
+        PageState.loading('Desassociando funcionalidades dessa sprint');
+
+    try {
+      ///Tenho que desassociar todas as features dessa sprint antes de excluí-la
+      if (featureValues.isNotEmpty) {
+        for (Feature feature in featureValues) {
+          if (feature.sprintsId!.contains(sprint.id)) {
+            await disassociateFeature(
+                sprintId: sprint.id!, featureId: feature.id!);
+          }
+        }
+      }
+
+      sprintDeleteState.value = PageState.loading('Deletando sprint');
+
+      await SprintService.deleteSprint(sprint.id);
+
+      sprintDeleteState.value =
+          PageState.success(info: 'Sprint foi excluída!!');
+
+      await refresh();
+    } on DioException catch (e) {
+      debugPrint(e.toString());
+      sprintDeleteState.value =
+          PageState.error('Erro ao deletar sprintDeleteState!');
+    } catch (e) {
+      debugPrint(e.toString());
+      sprintDeleteState.value =
+          PageState.error('Erro ao deletar sprintDeleteState!');
+    }
+
+    sprintDeleteState.value = PageState.none();
+  }
+
+  Future<void> disassociateFeature(
+      {required int sprintId, required int featureId}) async {
+    featureDeleteState.value =
+        PageState.loading('Desassociando duncionalidade!');
+
+    try {
+      await SprintService.disassociateFeatureWithSprint(sprintId, featureId);
+
+      featureDeleteState.value = PageState.success(
+          info: 'Funcionalidade foi desassociada da sprint!!');
+
+      await refresh();
+    } on DioException catch (e) {
+      debugPrint(e.toString());
+      featureDeleteState.value =
+          PageState.error('Erro ao desassociar Funcionalidade!');
+    } catch (e) {
+      debugPrint(e.toString());
+      featureDeleteState.value =
+          PageState.error('Erro ao desassociar Funcionalidade!');
+    }
+
+    featureDeleteState.value = PageState.none();
   }
 }

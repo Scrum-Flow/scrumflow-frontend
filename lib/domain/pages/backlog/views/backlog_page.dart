@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:scrumflow/domain/basics/basics.dart';
 import 'package:scrumflow/domain/pages/backlog/backlog.dart';
 import 'package:scrumflow/domain/pages/feature/views/feature_form_page.dart';
+import 'package:scrumflow/domain/pages/sprint/sprint.dart';
 import 'package:scrumflow/models/models.dart';
 import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/widgets.dart';
@@ -138,8 +139,41 @@ class _FeaturesPerSprint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [Text("Sprints e suas funcionalidades")],
+    BacklogPageController controller = Get.find<BacklogPageController>();
+
+    return Obx(
+      () => controller.sprintsListState.value.status == PageStatus.loading
+          ? const CircularProgressIndicator()
+          : Column(
+              children: controller.sprintValues
+                  .map((sprint) => Column(
+                        children: [
+                          columnDivider(),
+                          ExpansionTile(
+                            title: SprintRow(
+                              sprint: sprint,
+                            ),
+                            children: controller.featureValues
+                                    .where((feature) =>
+                                        feature.sprintsId!.contains(sprint.id))
+                                    .toList()
+                                    .isEmpty
+                                ? [
+                                    const Text(
+                                        "Nenhuma funcionalidade associadada a essa sprint")
+                                  ]
+                                : controller.featureValues
+                                    .where((feature) =>
+                                        feature.sprintsId!.contains(sprint.id))
+                                    .map((feature) => FeatureRow(
+                                        feature: feature, sprint: sprint))
+                                    .toList(),
+                          ),
+                          columnDivider(),
+                        ],
+                      ))
+                  .toList(),
+            ),
     );
   }
 }
@@ -156,42 +190,27 @@ class _FeaturesWithoutSprint extends StatelessWidget {
         ? const CircularProgressIndicator()
         : Column(
             children: [
-              linhaDivisoria(),
+              columnDivider(),
               ExpansionTile(
                   title: const Text(
                     'Funcionalidades sem sprint',
-                    textAlign: TextAlign.center,
+                    textAlign: TextAlign.start,
                   ),
                   children: controller.featuresWithoutSprint.toList().isEmpty
                       ? [const Text("Nenhuma funcionalidade sem sprint")]
                       : controller.featuresWithoutSprint
-                          .map((feature) => Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: FeatureRow(feature: feature)))
+                          .map((feature) => FeatureRow(feature: feature))
                           .toList()),
-              linhaDivisoria(),
+              columnDivider(),
             ],
           ));
-  }
-
-  Widget linhaDivisoria() {
-    return Row(
-      children: [
-        Expanded(
-          child: Container(
-            color: Colors.black38,
-            height: 1,
-          ),
-        ),
-      ],
-    );
   }
 }
 
 class FeatureRow extends StatefulWidget {
-  const FeatureRow({Key? key, required this.feature}) : super(key: key);
+  FeatureRow({super.key, required this.feature, this.sprint});
 
+  Sprint? sprint;
   final Feature feature;
 
   @override
@@ -203,23 +222,112 @@ class _FeatureRowState extends State<FeatureRow> {
 
   @override
   Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  color: Colors.black38,
+                  height: 1,
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              Expanded(flex: 3, child: Text(widget.feature.name ?? "NOME AQ")),
+              Expanded(
+                  flex: 6,
+                  child: Text(widget.feature.description ?? "DESC AQ")),
+              Expanded(
+                  flex: 1,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        tooltip: 'Editar',
+                        onPressed: () {
+                          Get.to(FeatureFormPage(
+                            feature: widget.feature,
+                            projectId: 1,
+                          ));
+                        },
+                      ),
+                      Container(
+                        height: 40,
+                        width: 1,
+                        color: Colors.black12,
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          widget.sprint != null
+                              ? Icons.close
+                              : Icons.delete_outline_rounded,
+                        ),
+                        tooltip: 'Excluir',
+                        onPressed: () => showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: BaseLabel(
+                                text: widget.sprint != null
+                                    ? 'Realmente deseja desassociar essa funcionalidade da sprint ${widget.sprint!.name}?'
+                                    : 'Realmente deseja excluir esta funcionalidade?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: BaseLabel(text: 'Cancelar'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  widget.sprint != null
+                                      ? controller.disassociateFeature(
+                                          sprintId: widget.sprint!.id!,
+                                          featureId: widget.feature.id!)
+                                      : controller
+                                          .deleteFeature(widget.feature);
+                                  Navigator.of(context).pop();
+                                },
+                                child: BaseLabel(text: 'Confirmar'),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  )),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class SprintRow extends StatefulWidget {
+  const SprintRow({Key? key, required this.sprint}) : super(key: key);
+
+  final Sprint sprint;
+
+  @override
+  _SprintRowState createState() => _SprintRowState();
+}
+
+class _SprintRowState extends State<SprintRow> {
+  BacklogPageController controller = Get.find<BacklogPageController>();
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
         Row(
           children: [
+            Expanded(flex: 3, child: Text(widget.sprint.name ?? "NOME AQ")),
             Expanded(
-              child: Container(
-                color: Colors.black38,
-                height: 1,
-              ),
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            Expanded(flex: 3, child: Text(widget.feature.name ?? "NOME AQ")),
-            Expanded(
-                flex: 6, child: Text(widget.feature.description ?? "DESC AQ")),
+                flex: 6, child: Text(widget.sprint.description ?? "DESC AQ")),
             Expanded(
                 flex: 1,
                 child: Row(
@@ -229,8 +337,8 @@ class _FeatureRowState extends State<FeatureRow> {
                       icon: const Icon(Icons.edit),
                       tooltip: 'Editar',
                       onPressed: () {
-                        Get.to(FeatureFormPage(
-                          feature: widget.feature,
+                        Get.to(SprintFormPage(
+                          sprint: widget.sprint,
                           projectId: 1,
                         ));
                       },
@@ -249,8 +357,7 @@ class _FeatureRowState extends State<FeatureRow> {
                         context: context,
                         builder: (context) => AlertDialog(
                           title: BaseLabel(
-                              text:
-                                  'Realmente deseja excluir esta funcionalidade?'),
+                              text: 'Realmente deseja excluir esta sprint?'),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.of(context).pop(),
@@ -258,7 +365,7 @@ class _FeatureRowState extends State<FeatureRow> {
                             ),
                             TextButton(
                               onPressed: () {
-                                controller.deleteFeature(widget.feature);
+                                controller.deleteSprint(widget.sprint);
                                 Navigator.of(context).pop();
                               },
                               child: BaseLabel(text: 'Confirmar'),

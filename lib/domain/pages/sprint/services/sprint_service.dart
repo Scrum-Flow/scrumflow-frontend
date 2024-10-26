@@ -54,4 +54,18 @@ class SprintService {
 
     await dio.delete('$path/$id');
   }
+
+  static FutureOr<void> disassociateFeatureWithSprint(
+      int sprintId, int featureId) async {
+    Dio dio = await Connection.defaultDio();
+
+    await dio.delete('$path/$sprintId/features/$featureId');
+  }
+
+  static FutureOr<void> associateFeatureWithSprint(
+      int sprintId, int featureId) async {
+    Dio dio = await Connection.defaultDio();
+
+    await dio.post('$path/$sprintId/features/$featureId');
+  }
 }
