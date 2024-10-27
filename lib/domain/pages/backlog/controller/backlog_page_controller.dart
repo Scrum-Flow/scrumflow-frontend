@@ -67,11 +67,11 @@ class BacklogPageController extends GetxController {
 
     try {
       for (Sprint sprint in sprintValues) {
-        featureValues = await SprintService.fetchSprintFeatures(sprint.id!);
+        featureValues = [];
+
+        featureValues = await FeatureService.fetchFeatures(projectId);
 
         map[sprint] = featureValues;
-
-        featureValues = [];
       }
 
       featuresListState.value = PageState.none();

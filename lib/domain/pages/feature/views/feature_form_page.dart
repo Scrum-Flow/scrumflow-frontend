@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:scrumflow/domain/basics/basics.dart';
 import 'package:scrumflow/domain/pages/feature/controllers/controllers.dart';
 import 'package:scrumflow/models/models.dart';
@@ -18,7 +19,7 @@ class FeatureFormPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Get.put<FeatureFormController>(
-        FeatureFormController(feature, projectId: projectId));
+        FeatureFormController(feature, projectId: projectId, sprint: sprint));
 
     return Scaffold(
       appBar: AppBar(
@@ -75,6 +76,34 @@ class _FeatureForm extends StatelessWidget {
                       errorText: 'Campo obrigatório'),
                   onChanged: featureFormViewController.updateDescription,
                 ),
+                Obx(() => LoadingWidget(
+                      isLoading: featureFormViewController
+                              .fetchProjectSprintsState.value.status ==
+                          PageStatus.loading,
+                      child: MultiSelectDialogField<Sprint>(
+                        initialValue: featureFormViewController.projectSprints
+                            .where((sprint) {
+                          for (Sprint s
+                              in featureFormViewController.oldFeatureSprints) {
+                            if (sprint.id! == s.id) return true;
+                          }
+                          return false;
+                        }).toList(),
+                        buttonText: Text('Selecione as sprints'),
+                        title: BaseLabel(text: 'Sprints'),
+                        items: featureFormViewController.projectSprints
+                            .map((e) => MultiSelectItem(e, e.name ?? ''))
+                            .toList(),
+                        onConfirm: (sprints) => featureFormViewController
+                            .newFeatureSprints = sprints,
+                        chipDisplay: MultiSelectChipDisplay(
+                          scroll: true,
+                          textStyle: TextStyle(fontSize: fsSmall),
+                          scrollBar: HorizontalScrollBar(isAlwaysShown: true),
+                        ),
+                        listType: MultiSelectListType.CHIP,
+                      ),
+                    )),
                 25.toSizedBoxH(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

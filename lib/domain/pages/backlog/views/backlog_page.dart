@@ -142,7 +142,8 @@ class _FeaturesPerSprint extends StatelessWidget {
     BacklogPageController controller = Get.find<BacklogPageController>();
 
     return Obx(
-      () => controller.sprintsListState.value.status == PageStatus.loading
+      () => controller.sprintsListState.value.status == PageStatus.loading ||
+              controller.featuresListState.value.status == PageStatus.loading
           ? const CircularProgressIndicator()
           : Column(
               children: controller.sprintValues
@@ -268,7 +269,9 @@ class _FeatureRowState extends State<FeatureRow> {
                               ? Icons.close
                               : Icons.delete_outline_rounded,
                         ),
-                        tooltip: 'Excluir funcionalidade',
+                        tooltip: widget.sprint != null
+                            ? 'Desassociar funcionalidade'
+                            : 'Excluir funcionalidade',
                         onPressed: () => showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
