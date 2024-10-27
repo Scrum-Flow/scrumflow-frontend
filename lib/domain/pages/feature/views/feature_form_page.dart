@@ -8,10 +8,12 @@ import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/widgets.dart';
 
 class FeatureFormPage extends StatelessWidget {
-  const FeatureFormPage({this.feature, required this.projectId, super.key});
+  const FeatureFormPage(
+      {this.feature, required this.projectId, super.key, this.sprint});
 
   final int projectId;
   final Feature? feature;
+  final Sprint? sprint;
 
   @override
   Widget build(BuildContext context) {

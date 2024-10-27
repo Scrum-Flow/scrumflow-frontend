@@ -249,7 +249,7 @@ class _FeatureRowState extends State<FeatureRow> {
                     children: [
                       IconButton(
                         icon: const Icon(Icons.edit),
-                        tooltip: 'Editar',
+                        tooltip: 'Editar funcionalidade',
                         onPressed: () {
                           Get.to(FeatureFormPage(
                             feature: widget.feature,
@@ -268,7 +268,7 @@ class _FeatureRowState extends State<FeatureRow> {
                               ? Icons.close
                               : Icons.delete_outline_rounded,
                         ),
-                        tooltip: 'Excluir',
+                        tooltip: 'Excluir funcionalidade',
                         onPressed: () => showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
@@ -334,8 +334,23 @@ class _SprintRowState extends State<SprintRow> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     IconButton(
+                      icon: const Icon(Icons.add),
+                      tooltip: 'Nova funcionalidade para essa sprint',
+                      onPressed: () {
+                        Get.to(FeatureFormPage(
+                          sprint: widget.sprint,
+                          projectId: 1,
+                        ));
+                      },
+                    ),
+                    Container(
+                      height: 40,
+                      width: 1,
+                      color: Colors.black12,
+                    ),
+                    IconButton(
                       icon: const Icon(Icons.edit),
-                      tooltip: 'Editar',
+                      tooltip: 'Editar sprint',
                       onPressed: () {
                         Get.to(SprintFormPage(
                           sprint: widget.sprint,
@@ -352,7 +367,7 @@ class _SprintRowState extends State<SprintRow> {
                       icon: const Icon(
                         Icons.delete_outline_rounded,
                       ),
-                      tooltip: 'Excluir',
+                      tooltip: 'Excluir sprint',
                       onPressed: () => showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
