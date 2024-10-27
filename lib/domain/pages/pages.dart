@@ -6,4 +6,3 @@ export 'project/projects.dart';
 export 'splash/views/splash_page.dart';
 export 'task/task.dart';
 export 'team/team.dart';
-export 'user/user.dart';

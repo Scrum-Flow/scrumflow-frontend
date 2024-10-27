@@ -17,7 +17,7 @@ class AuthService {
 
       await Connection.setToken(jsonEncode(response.data ?? ''));
 
-      return User.fromJson(response.data);
+      return User.fromJson(response.data['user']);
     } catch (e) {
       throw Exception(
           'Falha ao autenticar com o servidor\n Erro: ${e.toString()}');
@@ -26,13 +26,8 @@ class AuthService {
 
   static FutureOr<User> register(User user) async {
     var dio = await Connection.jsonDio();
-    try {
-      var response =
-          await dio.post('/auth/register', data: json.encode(user.toJson()));
+    var response = await dio.post('/auth/register', data: json.encode(user.toJson()));
 
-      return User.fromJson(response.data);
-    } catch (e) {
-      throw Exception('Falha ao cadastrar usuário.\nErro: ${e.toString()}');
-    }
+    return User.fromJson(response.data);
   }
 }

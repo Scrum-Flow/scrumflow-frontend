@@ -5,10 +5,6 @@ import 'package:scrumflow/utils/utils.dart';
 
 class Prompts {
   static void showSnackBar(PageState state) {
-    if (Get.isSnackbarOpen) {
-      Get.closeAllSnackbars();
-    }
-
     if (state.info != null) {
       switch (state.status) {
         case PageStatus.loading:
@@ -27,8 +23,7 @@ class Prompts {
   }
 
   static void alertSnackBar(String title, [String? message]) {
-    _showSnackBar(title, message, Color(0xffFB8C00),
-        AppTheme.theme.colorScheme.onSecondary);
+    _showSnackBar(title, message, Color(0xffFB8C00), AppTheme.theme.colorScheme.onSecondary);
   }
 
   static void successSnackBar(String title, [String? message]) {
@@ -36,12 +31,10 @@ class Prompts {
   }
 
   static void errorSnackBar(String title, [String? message]) {
-    _showSnackBar(title, message, AppTheme.theme.colorScheme.error,
-        AppTheme.theme.colorScheme.onError);
+    _showSnackBar(title, message, AppTheme.theme.colorScheme.error, AppTheme.theme.colorScheme.onError);
   }
 
-  static void _showSnackBar(
-      String title, String? message, Color backgroundColor, Color textColor) {
+  static void _showSnackBar(String title, String? message, Color backgroundColor, Color textColor) {
     Get.snackbar(
       title,
       message ?? 'Ocorreu um erro inesperado',

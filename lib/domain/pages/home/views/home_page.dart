@@ -6,6 +6,7 @@ import 'package:scrumflow/domain/basics/basics.dart';
 import 'package:scrumflow/domain/pages/backlog/backlog.dart';
 import 'package:scrumflow/domain/pages/pages.dart';
 import 'package:scrumflow/domain/pages/sprint/sprint.dart';
+import 'package:scrumflow/domain/pages/user/user.dart';
 import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/page_builder.dart';
 

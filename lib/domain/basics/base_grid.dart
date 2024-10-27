@@ -8,6 +8,8 @@ class BaseGrid<T> extends StatelessWidget {
   const BaseGrid({
     required this.items,
     required this.itemBuilder,
+    this.maxCrossAxisExtent = 350,
+    this.mainAxisExtent = 200,
     this.pageState,
     this.shrinkWrap = false,
     this.padding,
@@ -21,6 +23,8 @@ class BaseGrid<T> extends StatelessWidget {
   final bool shrinkWrap;
   final EdgeInsetsGeometry? padding;
   final Function? onRefresh;
+  final double maxCrossAxisExtent;
+  final double? mainAxisExtent;
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +50,7 @@ class BaseGrid<T> extends StatelessWidget {
     if (items.isEmpty) {
       return Center(
         child: Column(
+          mainAxisSize: MainAxisSize.max,
           children: [
             BaseLabel(
               text: 'Ops! Nenhum item encontrado',
@@ -70,9 +75,9 @@ class BaseGrid<T> extends StatelessWidget {
       shrinkWrap: shrinkWrap,
       padding: padding,
       itemCount: items.length,
-      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 350,
-        mainAxisExtent: 200,
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: maxCrossAxisExtent,
+        mainAxisExtent: mainAxisExtent,
         childAspectRatio: 1.5,
         crossAxisSpacing: 24,
         mainAxisSpacing: 24,

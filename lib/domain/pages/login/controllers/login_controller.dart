@@ -21,8 +21,6 @@ class LoginController extends GetxController {
 
     pageState.listen((value) {
       Prompts.showSnackBar(value);
-
-      if (value.status == PageStatus.success) Get.back();
     });
   }
 

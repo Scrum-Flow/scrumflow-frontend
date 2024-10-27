@@ -37,4 +37,27 @@ class Team {
       'users': users?.map((user) => user.id).toList(),
     };
   }
+
+  Team copyWith({
+    int? id,
+    String? name,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Project? project,
+    List<User>? users,
+  }) {
+    return Team(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      project: project ?? this.project,
+      users: users ?? this.users,
+    );
+  }
+
+  @override
+  String toString() {
+    return name ?? '';
+  }
 }

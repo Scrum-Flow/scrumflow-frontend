@@ -22,36 +22,22 @@ class LoginState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    Get.put<LoginController>(LoginController());
+
     return Scaffold(
       body: PageBuilder(
-        mobilePage: addBody(),
-        webPage: WebView(addBody()),
+        mobilePage: _Body(),
+        webPage: WebView(_Body()),
       ),
     );
   }
+}
 
-  Widget newAccount() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const BaseLabel(
-          text: 'Ainda não tem uma conta? ',
-          color: Colors.black,
-          fontSize: 14,
-        ),
-        InkWell(
-          onTap: () => Get.toNamed(Routes.registerPage),
-          child: BaseLabel(
-            text: 'Crie agora',
-            color: AppTheme.theme.colorScheme.onPrimary,
-            decoration: TextDecoration.underline,
-          ),
-        ),
-      ],
-    );
-  }
+class _Body extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    LoginController controller = Get.find<LoginController>();
 
-  Widget addBody() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
       child: Column(
@@ -61,10 +47,7 @@ class LoginState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.max,
             children: [
-              SizedBox(
-                  width: 150,
-                  height: 150,
-                  child: Image.asset('assets/images/logo.png')),
+              SizedBox(width: 150, height: 150, child: Image.asset('assets/images/logo.png')),
               10.toSizedBoxH(),
               const BaseLabel(
                 text: "ScrumFlow",
@@ -97,30 +80,23 @@ class LoginState extends State<LoginPage> {
                         keyboardType: TextInputType.emailAddress,
                         autofillHints: const [AutofillHints.email],
                         validator: FormBuilderValidators.compose(
-                          [
-                            FormBuilderValidators.required(
-                                errorText: 'Campo obrigatório'),
-                            FormBuilderValidators.email(
-                                errorText: 'Email inválido')
-                          ],
+                          [FormBuilderValidators.required(errorText: 'Campo obrigatório'), FormBuilderValidators.email(errorText: 'Email inválido')],
                         ),
                         onChanged: (value) => controller.email.value = value),
                     BasePasswordField(
                       hint: 'Senha',
-                      validator: FormBuilderValidators.required(
-                          errorText: 'Campo obrigatório'),
+                      validator: FormBuilderValidators.required(errorText: 'Campo obrigatório'),
                       onChanged: (value) => controller.password.value = value,
                     ),
                     Obx(
                       () => BaseButton(
                         title: "Continuar",
-                        isLoading: controller.pageState.value.status ==
-                            PageStatus.loading,
+                        isLoading: controller.pageState.value.status == PageStatus.loading,
                         onPressed: () => controller.login(),
                       ),
                     ),
                     10.toSizedBoxH(),
-                    newAccount(),
+                    const NewAccount(),
                   ],
                 ),
               ),
@@ -128,6 +104,32 @@ class LoginState extends State<LoginPage> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class NewAccount extends StatelessWidget {
+  const NewAccount({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const BaseLabel(
+          text: 'Ainda não tem uma conta? ',
+          color: Colors.black,
+          fontSize: 14,
+        ),
+        InkWell(
+          onTap: () => Get.toNamed(Routes.registerPage),
+          child: BaseLabel(
+            text: 'Crie agora',
+            color: AppTheme.theme.colorScheme.onPrimary,
+            decoration: TextDecoration.underline,
+          ),
+        ),
+      ],
     );
   }
 }

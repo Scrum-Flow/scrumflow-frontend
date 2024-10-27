@@ -1,6 +1,5 @@
+import 'package:scrumflow/models/user_role.dart';
 import 'package:scrumflow/utils/utils.dart';
-
-enum UserCategory { admin, scrumMaster, user }
 
 class User {
   final int? id;
@@ -9,7 +8,7 @@ class User {
   final String? email;
   final DateTime? createdAt;
   final bool? active;
-  final UserCategory? userCategory;
+  final List<UserRole>? roles;
 
   User({
     this.id,
@@ -18,17 +17,18 @@ class User {
     this.email,
     this.createdAt,
     this.active,
-    this.userCategory = UserCategory.user,
+    this.roles,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-        id: Helper.keyExists<int>(json, 'id'),
-        name: Helper.keyExists<String>(json, 'name'),
-        email: Helper.keyExists<String>(json, 'email'),
-        createdAt: Helper.toDateTime(Helper.keyExists(json, 'dt_created')),
-        active: Helper.toBool(Helper.keyExists(json, 'active')),
-        userCategory: Helper.toEnum(UserCategory.values, Helper.keyExists(json, 'userCategory'), base: UserCategory.user.index));
+      id: Helper.keyExists<int>(json, 'id'),
+      name: Helper.keyExists<String>(json, 'name'),
+      email: Helper.keyExists<String>(json, 'email'),
+      createdAt: Helper.toDateTime(Helper.keyExists(json, 'dt_created')),
+      active: Helper.toBool(Helper.keyExists(json, 'active')),
+      roles: Helper.keyExists(json, 'roles')?.map<UserRole>((json) => UserRole.fromJson(json)).toList() ?? [],
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -39,7 +39,7 @@ class User {
       'email': email,
       'dt_created': createdAt?.toIso8601String() ?? '',
       'active': active,
-      'userCategory': userCategory?.index,
+      'roles': roles?.map((role) => role.toJson()).toList(),
     };
   }
 
@@ -50,7 +50,7 @@ class User {
     String? email,
     DateTime? createdAt,
     bool? active,
-    UserCategory? userCategory,
+    List<UserRole>? roles,
   }) {
     return User(
       id: id ?? this.id,
@@ -59,7 +59,15 @@ class User {
       email: email ?? this.email,
       createdAt: createdAt ?? this.createdAt,
       active: active ?? this.active,
-      userCategory: userCategory ?? this.userCategory,
+      roles: roles ?? this.roles,
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    return id == (other as User).id;
+  }
+
+  @override
+  String toString() => name ?? '';
 }

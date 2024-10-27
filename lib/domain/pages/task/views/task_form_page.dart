@@ -16,8 +16,7 @@ class TaskFormPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put<TaskFormController>(
-        TaskFormController(task, feature: feature)..initialEvent());
+    Get.put<TaskFormController>(TaskFormController(task, feature: feature)..initialEvent());
 
     return Scaffold(
       appBar: AppBar(
@@ -63,15 +62,13 @@ class _TaskForm extends StatelessWidget {
                 BaseTextField(
                   hint: "Nome da tarefa",
                   initialValue: taskFormViewController.task?.name,
-                  validator: FormBuilderValidators.required(
-                      errorText: 'Campo obrigatório'),
+                  validator: FormBuilderValidators.required(errorText: 'Campo obrigatório'),
                   onChanged: taskFormViewController.updateName,
                 ),
                 BaseTextField(
                   hint: "Descrição da tarefa",
                   initialValue: taskFormViewController.task?.description,
-                  validator: FormBuilderValidators.required(
-                      errorText: 'Campo obrigatório'),
+                  validator: FormBuilderValidators.required(errorText: 'Campo obrigatório'),
                   onChanged: taskFormViewController.updateDescription,
                 ),
                 Row(
@@ -81,28 +78,19 @@ class _TaskForm extends StatelessWidget {
                       child: DropdownSearch<int>(
                         items: (f, cs) => List.generate(15, (i) => i + 1),
                         decoratorProps: const DropDownDecoratorProps(
-                          decoration: InputDecoration(
-                              labelText: "Pontos estimados",
-                              hintText: "Selecione um número"),
+                          decoration: InputDecoration(labelText: "Pontos estimados", hintText: "Selecione um número"),
                         ),
-                        selectedItem:
-                            taskFormViewController.task?.estimatePoints,
-                        onChanged: (value) => taskFormViewController
-                            .updateEstimatePoints(value ?? 0),
-                        validator: FormBuilderValidators.required(
-                            errorText: 'Campo obrigatório'),
+                        selectedItem: taskFormViewController.task?.estimatePoints,
+                        onChanged: (value) => taskFormViewController.updateEstimatePoints(value ?? 0),
+                        validator: FormBuilderValidators.required(errorText: 'Campo obrigatório'),
                         popupProps: PopupProps.dialog(
                           title: Container(
-                            decoration: const BoxDecoration(
-                                color: AppTheme.ligthBlueScrum),
+                            decoration: const BoxDecoration(color: AppTheme.ligthBlueScrum),
                             alignment: Alignment.center,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             child: const Text(
                               'Pontos estimados',
-                              style: TextStyle(
-                                  fontSize: 21,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white70),
+                              style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold, color: Colors.white70),
                             ),
                           ),
                           dialogProps: DialogProps(
@@ -120,37 +108,25 @@ class _TaskForm extends StatelessWidget {
                       flex: 7,
                       child: Obx(
                         () => LoadingWidget(
-                          isLoading: taskFormViewController
-                                  .initialState.value.status ==
-                              PageStatus.loading,
+                          isLoading: taskFormViewController.initialState.value.status == PageStatus.loading,
                           child: DropdownSearch<String>(
                             suffixProps: const DropdownSuffixProps(
-                              clearButtonProps:
-                                  ClearButtonProps(isVisible: true),
+                              clearButtonProps: ClearButtonProps(isVisible: true),
                               dropdownButtonProps: DropdownButtonProps(
                                 iconClosed: Icon(Icons.keyboard_arrow_down),
                                 iconOpened: Icon(Icons.keyboard_arrow_up),
                               ),
                             ),
-                            validator: FormBuilderValidators.required(
-                                errorText: 'Campo obrigatório'),
-                            items: (filter, props) => taskFormViewController
-                                .users
-                                .map((user) => user.name ?? '')
-                                .where((e) => e
-                                    .toLowerCase()
-                                    .contains(filter.toLowerCase()))
-                                .toList(),
+                            validator: FormBuilderValidators.required(errorText: 'Campo obrigatório'),
+                            items: (filter, props) =>
+                                taskFormViewController.users.map((user) => user.name ?? '').where((e) => e.toLowerCase().contains(filter.toLowerCase())).toList(),
                             onChanged: (selectedUserName) {
-                              var selectedUser =
-                                  taskFormViewController.users.firstWhere(
+                              var selectedUser = taskFormViewController.users.firstWhere(
                                 (user) => user.name == selectedUserName,
                               );
-                              taskFormViewController
-                                  .updateResponsibleUser(selectedUser.id!);
+                              taskFormViewController.updateResponsibleUser(selectedUser.id!);
                             },
-                            selectedItem:
-                                taskFormViewController.getSelectedUserItem(),
+                            selectedItem: taskFormViewController.getSelectedUserItem(),
                             decoratorProps: const DropDownDecoratorProps(
                               decoration: InputDecoration(
                                 labelText: "Selecione o responsável",
@@ -160,16 +136,12 @@ class _TaskForm extends StatelessWidget {
                             ),
                             popupProps: PopupProps.menu(
                               showSearchBox: true,
-                              itemBuilder:
-                                  (context, item, isDisabled, isSelected) {
+                              itemBuilder: (context, item, isDisabled, isSelected) {
                                 return Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 12.0),
+                                  padding: const EdgeInsets.symmetric(vertical: 12.0),
                                   child: Text(
                                     item,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18),
+                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                                     textAlign: TextAlign.center,
                                   ),
                                 );
@@ -186,9 +158,7 @@ class _TaskForm extends StatelessWidget {
                 25.toSizedBoxH(),
                 Obx(
                   () => LoadingWidget(
-                    isLoading:
-                        taskFormViewController.initialState.value.status ==
-                            PageStatus.loading,
+                    isLoading: taskFormViewController.initialState.value.status == PageStatus.loading,
                     child: DropdownSearch<String>(
                       suffixProps: const DropdownSuffixProps(
                         clearButtonProps: ClearButtonProps(isVisible: true),
@@ -197,23 +167,15 @@ class _TaskForm extends StatelessWidget {
                           iconOpened: Icon(Icons.keyboard_arrow_up),
                         ),
                       ),
-                      validator: FormBuilderValidators.required(
-                          errorText: 'Campo obrigatório'),
-                      items: (filter, props) => controller.featureValues
-                          .map((feature) => feature.name ?? '')
-                          .where((e) =>
-                              e.toLowerCase().contains(filter.toLowerCase()))
-                          .toList(),
+                      validator: FormBuilderValidators.required(errorText: 'Campo obrigatório'),
+                      items: (filter, props) => controller.featureValues.map((feature) => feature.name ?? '').where((e) => e.toLowerCase().contains(filter.toLowerCase())).toList(),
                       onChanged: (selectedFeatureName) {
-                        var selectedFeature =
-                            controller.featureValues.firstWhere(
+                        var selectedFeature = controller.featureValues.firstWhere(
                           (feature) => feature.name == selectedFeatureName,
                         );
-                        taskFormViewController
-                            .updateTaskFeature(selectedFeature);
+                        taskFormViewController.updateTaskFeature(selectedFeature);
                       },
-                      selectedItem:
-                          taskFormViewController.getSelectedFeatureItem(),
+                      selectedItem: taskFormViewController.getSelectedFeatureItem(),
                       decoratorProps: const DropDownDecoratorProps(
                         decoration: InputDecoration(
                           labelText: "Selecione a funcionalidade",
@@ -228,8 +190,7 @@ class _TaskForm extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(vertical: 12.0),
                             child: Text(
                               item,
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18),
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                               textAlign: TextAlign.center,
                             ),
                           );
@@ -247,9 +208,7 @@ class _TaskForm extends StatelessWidget {
                     Expanded(
                       child: BaseButton(
                           title: 'Cancelar',
-                          isLoading:
-                              taskFormViewController.pageState.value.status ==
-                                  PageStatus.loading,
+                          isLoading: taskFormViewController.pageState.value.status == PageStatus.loading,
                           onPressed: () {
                             Get.delete<TaskFormController>();
                             Get.back();
@@ -259,11 +218,8 @@ class _TaskForm extends StatelessWidget {
                     Expanded(
                       child: BaseButton(
                         title: 'Salvar',
-                        isLoading:
-                            taskFormViewController.pageState.value.status ==
-                                PageStatus.loading,
-                        onPressed: () async =>
-                            await taskFormViewController.save(),
+                        isLoading: taskFormViewController.pageState.value.status == PageStatus.loading,
+                        onPressed: () async => await taskFormViewController.save(),
                       ),
                     ),
                   ],
