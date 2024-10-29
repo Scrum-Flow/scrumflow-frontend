@@ -5,15 +5,20 @@ class Feature {
   final String? name;
   final String? description;
   int? projectId;
+  final List<int>? sprintsId;
 
-  Feature({this.id, this.name, this.description, this.projectId});
+  Feature(
+      {this.id, this.name, this.description, this.projectId, this.sprintsId});
 
   factory Feature.fromJson(Map<String, dynamic> json) {
     return Feature(
         id: Helper.keyExists<int>(json, 'id'),
         name: Helper.keyExists<String>(json, 'name'),
         description: Helper.keyExists<String>(json, 'description'),
-        projectId: Helper.keyExists<int>(json, 'projectId'));
+        projectId: Helper.keyExists<int>(json, 'projectId'),
+        sprintsId: Helper.keyExists<List<dynamic>>(json, 'sprintsId')
+            ?.map((sprint) => sprint as int)
+            .toList());
   }
 
   Feature copyWith({
@@ -21,13 +26,14 @@ class Feature {
     String? name,
     String? description,
     int? projectId,
+    List<int>? sprintsId,
   }) {
     return Feature(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      description: description ?? this.description,
-      projectId: projectId ?? projectId,
-    );
+        id: id ?? this.id,
+        name: name ?? this.name,
+        description: description ?? this.description,
+        projectId: projectId ?? projectId,
+        sprintsId: sprintsId ?? sprintsId);
   }
 
   Map<String, dynamic> toJson() {
@@ -36,6 +42,7 @@ class Feature {
       'projectId': projectId,
       'name': name,
       'description': description,
+      'sprintsId': sprintsId,
     };
   }
 

@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:scrumflow/domain/basics/basics.dart';
-import 'package:scrumflow/domain/pages/feature/views/views.dart';
+import 'package:scrumflow/domain/pages/backlog/backlog.dart';
 import 'package:scrumflow/domain/pages/pages.dart';
+import 'package:scrumflow/domain/pages/sprint/sprint.dart';
 import 'package:scrumflow/domain/pages/user/user.dart';
 import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/page_builder.dart';
@@ -48,7 +49,9 @@ class _Body extends StatelessWidget {
                 TeamPage(),
                 UsersPage(),
                 TaskPage(projectId: 1),
-                FeaturePage(projectId: 1)
+                FeaturePage(projectId: 1),
+                SprintFormPage(projectId: 1),
+                BacklogPage(projectId: 1),
               ],
             ),
           ),
