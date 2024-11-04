@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:scrumflow/domain/pages/backlog/views/backlog_page.dart';
+import 'package:scrumflow/domain/pages/kanban/views/kanban_page.dart';
 import 'package:scrumflow/domain/pages/pages.dart';
 import 'package:scrumflow/domain/pages/sprint/views/sprint_form_page.dart';
 import 'package:scrumflow/domain/pages/team/views/team_form_page.dart';
@@ -25,6 +26,14 @@ class Routes {
       GetPage(
         name: homePage,
         page: () => const HomePage(),
+      ),
+      GetPage(
+        name: kanbanPage,
+        page: () {
+          Project project = Get.arguments;
+
+          return KanbanPage(project: project);
+        },
       ),
       GetPage(
         name: loadingPage,
@@ -86,8 +95,7 @@ class Routes {
         name: backlog,
         page: () => const BacklogPage(projectId: 1),
       ),
-      GetPage(
-          name: sprintFormPage, page: () => const SprintFormPage(projectId: 1))
+      GetPage(name: sprintFormPage, page: () => const SprintFormPage(projectId: 1))
     ];
   }
 
@@ -107,4 +115,5 @@ class Routes {
   static const featureFormPage = '$featurePage/featureForm';
   static const sprintFormPage = '$backlog/sprintFormPage';
   static const backlog = '/backlog';
+  static const kanbanPage = '/kanban';
 }

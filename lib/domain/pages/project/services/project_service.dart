@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:scrumflow/domain/pages/project/data/data.dart';
 import 'package:scrumflow/models/project.dart';
 import 'package:scrumflow/utils/utils.dart';
 
@@ -20,6 +21,14 @@ class ProjectService {
     Dio dio = await Connection.defaultDio();
 
     Response response = await dio.get(path);
+
+    return response.data.map<Project>((map) => Project.fromJson(map)).toList();
+  }
+
+  static FutureOr<List<Project>> fetchProjectsByFilter(ProjectFilter filter) async {
+    Dio dio = await Connection.defaultDio();
+
+    Response response = await dio.get(path, data: json.encode(filter.toMap()));
 
     return response.data.map<Project>((map) => Project.fromJson(map)).toList();
   }

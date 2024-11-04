@@ -5,11 +5,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:scrumflow/domain/pages/pages.dart';
 import 'package:scrumflow/domain/pages/project/services/services.dart';
-import 'package:scrumflow/models/project.dart';
+import 'package:scrumflow/models/models.dart';
 import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/widgets.dart';
 
 class ProjectPageController extends GetxController {
+  ProjectPageController({this.user, this.onSelectProject});
+
+  final User? user;
+  final Function(Project project)? onSelectProject;
+
   List<Project>? _projects;
 
   List<Project> values = [];
@@ -20,7 +25,7 @@ class ProjectPageController extends GetxController {
 
   @override
   onInit() {
-    fetchProjects();
+    fetchProjects(user);
 
     projectDeleteState.listen(Prompts.showSnackBar);
     projectState.listen((state) async {
@@ -34,7 +39,7 @@ class ProjectPageController extends GetxController {
     super.onInit();
   }
 
-  FutureOr<void> fetchProjects() async {
+  FutureOr<void> fetchProjects(User? user) async {
     projectListState.value = PageState.loading();
 
     try {
@@ -58,7 +63,7 @@ class ProjectPageController extends GetxController {
     try {
       await ProjectService.deleteProject(project.id);
 
-      fetchProjects();
+      fetchProjects(user);
 
       projectDeleteState.value = PageState.success(info: 'Project foi excluído!!');
     } on DioException catch (e) {

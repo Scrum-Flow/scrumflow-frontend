@@ -4,13 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scrumflow/domain/basics/basics.dart';
 import 'package:scrumflow/domain/pages/project/projects.dart';
-import 'package:scrumflow/models/project.dart';
+import 'package:scrumflow/models/models.dart';
 import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/page_builder.dart';
 import 'package:scrumflow/widgets/search_field.dart';
 
 class ProjectPage extends StatefulWidget {
-  const ProjectPage({super.key});
+  const ProjectPage({
+    super.key,
+    this.user,
+    this.tag = Routes.projectPage,
+    this.onSelectProject,
+  });
+
+  final User? user;
+  final String tag;
+  final Function(Project project)? onSelectProject;
 
   @override
   State<ProjectPage> createState() => _ProjectPageState();
@@ -19,7 +28,7 @@ class ProjectPage extends StatefulWidget {
 class _ProjectPageState extends State<ProjectPage> {
   @override
   Widget build(BuildContext context) {
-    ProjectPageController controller = Get.put<ProjectPageController>(ProjectPageController());
+    final ProjectPageController controller = Get.put<ProjectPageController>(ProjectPageController(user: widget.user, onSelectProject: widget.onSelectProject), tag: widget.tag);
 
     return Scaffold(
       backgroundColor: Colors.grey[200],
@@ -68,7 +77,7 @@ class _ProjectPageState extends State<ProjectPage> {
                         ],
                       ),
                     ),
-                    _ProjectList(),
+                    _ProjectList(widget.tag),
                   ],
                 ),
               ),
@@ -87,19 +96,23 @@ class _ProjectPageState extends State<ProjectPage> {
 }
 
 class _ProjectList extends StatelessWidget {
+  const _ProjectList(this.tag);
+
+  final String tag;
+
   @override
   Widget build(BuildContext context) {
-    ProjectPageController controller = Get.find<ProjectPageController>();
+    ProjectPageController controller = Get.find<ProjectPageController>(tag: tag);
 
     return Obx(
       () => Expanded(
         child: BaseGrid(
-          onRefresh: () => controller.fetchProjects(),
+          onRefresh: () => controller.fetchProjects(controller.user),
           shrinkWrap: true,
           padding: const EdgeInsets.symmetric(horizontal: 24).add(const EdgeInsets.only(bottom: 12)),
           pageState: controller.projectListState.value,
           items: controller.values,
-          itemBuilder: (context, item) => ProjectCard(item),
+          itemBuilder: (context, item) => ProjectCard(item, tag),
         ),
       ),
     );
@@ -107,96 +120,100 @@ class _ProjectList extends StatelessWidget {
 }
 
 class ProjectCard extends StatelessWidget {
-  const ProjectCard(this.project, {super.key});
+  const ProjectCard(this.project, this.tag, {super.key});
 
   final Project project;
+  final String tag;
 
   @override
   Widget build(BuildContext context) {
-    ProjectPageController controller = Get.find<ProjectPageController>();
+    ProjectPageController controller = Get.find<ProjectPageController>(tag: tag);
 
     var projectPercent = controller.getProjectPercent(project);
 
-    return Card(
-      shadowColor: Colors.black45,
-      elevation: 2,
-      color: Colors.grey[250],
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        alignment: Alignment.center,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Container(
-              decoration: BoxDecoration(color: Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(0.2), borderRadius: BorderRadius.circular(20)),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              child: BaseLabel(
-                text: project.toString(),
-                color: Colors.black,
-                fontWeight: fwBold,
+    return GestureDetector(
+      onTap: () => controller.onSelectProject?.call(project),
+      child: Card(
+        shadowColor: Colors.black45,
+        elevation: 2,
+        color: Colors.grey[250],
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          alignment: Alignment.center,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Container(
+                decoration: BoxDecoration(color: Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(0.2), borderRadius: BorderRadius.circular(20)),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                child: BaseLabel(
+                  text: project.toString(),
+                  color: Colors.black,
+                  fontWeight: fwBold,
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            BaseLabel(
-              text: (project.description != null && project.description!.isNotEmpty ? project.description : 'n/d') ?? '',
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              color: Colors.black,
-            ),
-            const SizedBox(height: 8),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                BaseLabel(text: Helper.formatPercent(projectPercent)),
-                const SizedBox(height: 4),
-                LinearProgressIndicator(
-                  borderRadius: BorderRadius.circular(4),
-                  minHeight: 8,
-                  value: projectPercent,
-                  color: Colors.blue[300],
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.mode_edit_rounded),
-                  tooltip: 'Editar',
-                  onPressed: () => controller.fetchProjectData(project),
-                ),
-                const SizedBox(width: 4),
-                IconButton(
-                  icon: const Icon(
-                    Icons.delete_outline_rounded,
+              const SizedBox(height: 8),
+              BaseLabel(
+                text: (project.description != null && project.description!.isNotEmpty ? project.description : 'n/d') ?? '',
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                color: Colors.black,
+              ),
+              const SizedBox(height: 8),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  BaseLabel(text: Helper.formatPercent(projectPercent)),
+                  const SizedBox(height: 4),
+                  LinearProgressIndicator(
+                    borderRadius: BorderRadius.circular(4),
+                    minHeight: 8,
+                    value: projectPercent,
+                    color: Colors.blue[300],
                   ),
-                  tooltip: 'Excluir',
-                  onPressed: () => showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: BaseLabel(text: 'Realmente deseja excluir este projeto?'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: BaseLabel(text: 'Cancelar'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            controller.deleteProject(project);
-                          },
-                          child: BaseLabel(text: 'Confirmar'),
-                        )
-                      ],
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.mode_edit_rounded),
+                    tooltip: 'Editar',
+                    onPressed: () => controller.fetchProjectData(project),
+                  ),
+                  const SizedBox(width: 4),
+                  IconButton(
+                    icon: const Icon(
+                      Icons.delete_outline_rounded,
+                    ),
+                    tooltip: 'Excluir',
+                    onPressed: () => showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: BaseLabel(text: 'Realmente deseja excluir este projeto?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: BaseLabel(text: 'Cancelar'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              controller.deleteProject(project);
+                            },
+                            child: BaseLabel(text: 'Confirmar'),
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

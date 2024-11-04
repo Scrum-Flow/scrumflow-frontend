@@ -11,6 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  appflowy_board: ^0.1.2
   cupertino_icons: ^1.0.6
   dio: ^5.6.0                           #https://pub.dev/packages/dio/install
   dropdown_search: ^6.0.1               #https://pub.dev/packages/dropdown_search/install
