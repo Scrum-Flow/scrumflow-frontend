@@ -1,149 +1,107 @@
 import 'package:appflowy_board/appflowy_board.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:scrumflow/domain/basics/base_label.dart';
+import 'package:scrumflow/domain/pages/kanban/controllers/kanban_controller.dart';
 import 'package:scrumflow/models/models.dart';
+import 'package:scrumflow/utils/utils.dart';
 
-class KanbanPage extends StatefulWidget {
-  const KanbanPage({required this.project, super.key});
+class KanbanPage extends StatelessWidget {
+  const KanbanPage({
+    required this.project,
+    super.key,
+  });
 
   final Project project;
 
   @override
-  State<KanbanPage> createState() => _KanbanPageState();
-}
-
-class _KanbanPageState extends State<KanbanPage> {
-  final AppFlowyBoardController controller = AppFlowyBoardController(
-    onMoveGroup: (fromGroupId, fromIndex, toGroupId, toIndex) {
-      debugPrint('Move item from $fromIndex to $toIndex');
-    },
-    onMoveGroupItem: (groupId, fromIndex, toIndex) {
-      debugPrint('Move $groupId:$fromIndex to $groupId:$toIndex');
-    },
-    onMoveGroupItemToGroup: (fromGroupId, fromIndex, toGroupId, toIndex) {
-      debugPrint('Move $fromGroupId:$fromIndex to $toGroupId:$toIndex');
-    },
-  );
-
-  late AppFlowyBoardScrollController boardController;
-
-  void initState() {
-    boardController = AppFlowyBoardScrollController();
-
-    final group1 = AppFlowyGroupData(id: "To Do", name: "To Do", items: [
-      TextItem("Card 1"),
-      TextItem("Card 2"),
-      RichTextItem(title: "Card 3", subtitle: 'Aug 1, 2020 4:05 PM'),
-      TextItem("Card 4"),
-      TextItem("Card 5"),
-    ]);
-
-    final group2 = AppFlowyGroupData(
-      id: "In Progress",
-      name: "In Progress",
-      items: <AppFlowyGroupItem>[
-        TextItem("Card 6"),
-        RichTextItem(title: "Card 7", subtitle: 'Aug 1, 2020 4:05 PM'),
-        RichTextItem(title: "Card 8", subtitle: 'Aug 1, 2020 4:05 PM'),
-      ],
-    );
-
-    final group3 = AppFlowyGroupData(id: "Pending", name: "Pending", items: <AppFlowyGroupItem>[
-      TextItem("Card 9"),
-      RichTextItem(title: "Card 10", subtitle: 'Aug 1, 2020 4:05 PM'),
-      TextItem("Card 11"),
-      TextItem("Card 12"),
-    ]);
-    final group4 = AppFlowyGroupData(id: "Canceled", name: "Canceled", items: <AppFlowyGroupItem>[
-      TextItem("Card 13"),
-      TextItem("Card 14"),
-      TextItem("Card 15"),
-    ]);
-    final group5 = AppFlowyGroupData(id: "Urgent", name: "Urgent", items: <AppFlowyGroupItem>[
-      TextItem("Card 14"),
-      TextItem("Card 15"),
-    ]);
-
-    controller.addGroup(group1);
-    controller.addGroup(group2);
-    controller.addGroup(group3);
-    controller.addGroup(group4);
-    controller.addGroup(group5);
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final config = AppFlowyBoardConfig(
-      groupBackgroundColor: HexColor.fromHex('#F7F8FC'),
-      stretchGroupHeight: false,
-    );
+    Get.put(KanbanController(project));
 
     return Scaffold(
       appBar: AppBar(
         title: const BaseLabel(text: 'Kanban', fontSize: fsVeryBig, fontWeight: fwMedium),
       ),
-      body: AppFlowyBoard(
-        controller: controller,
-        cardBuilder: (context, group, groupItem) {
-          return AppFlowyGroupCard(
-            key: ValueKey(groupItem.id),
-            child: _buildCard(groupItem),
-          );
-        },
-        boardScrollController: boardController,
-        footerBuilder: (context, columnData) {
-          return AppFlowyGroupFooter(
-            icon: const Icon(Icons.add, size: 20),
-            title: const Text('New'),
-            height: 50,
-            margin: config.groupBodyPadding,
-            onAddButtonClick: () {
-              boardController.scrollToBottom(columnData.id);
-            },
-          );
-        },
-        headerBuilder: (context, columnData) {
-          return AppFlowyGroupHeader(
-            icon: const Icon(Icons.lightbulb_circle),
-            title: SizedBox(
-              width: 60,
-              child: TextField(
-                controller: TextEditingController()..text = columnData.headerData.groupName,
-                onSubmitted: (val) {
-                  controller.getGroupController(columnData.headerData.groupId)!.updateGroupName(val);
-                },
-              ),
-            ),
-            addIcon: const Icon(Icons.add, size: 20),
-            moreIcon: const Icon(Icons.more_horiz, size: 20),
-            height: 50,
-            margin: config.groupBodyPadding,
-          );
-        },
-        groupConstraints: const BoxConstraints.tightFor(width: 240),
-        config: config,
-      ),
+      body: _Body(),
     );
   }
 }
 
-Widget _buildCard(AppFlowyGroupItem item) {
-  if (item is TextItem) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-        child: Text(item.s),
+class _Body extends GetView<KanbanController> {
+  @override
+  Widget build(BuildContext context) {
+    final config = AppFlowyBoardConfig(
+      groupBackgroundColor: HexColor.fromHex('#F7F8FC'),
+      stretchGroupHeight: false,
+      groupMargin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      groupBodyPadding: const EdgeInsets.symmetric(horizontal: 8),
+    );
+
+    final KanbanController controller = Get.find<KanbanController>();
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      child: controller.obx(
+        (state) {
+          if (state == null) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          for (KanbanBoards board in KanbanBoards.values) {
+            var appFlowyGroupData = AppFlowyGroupData(
+              id: board.toString(),
+              name: board.toString(),
+              items: board == KanbanBoards.todo
+                  ? List<AppFlowyGroupItem>.from(controller.features.values
+                      .expand((value) => value)
+                      .map((task) => RichTextItem(title: task.toString(), subtitle: Helper.formatDate(task.createdAt) ?? ''))
+                      .toList())
+                  : [],
+            );
+
+            appFlowyGroupData.draggable = false;
+
+            controller.kanbanController.addGroup(appFlowyGroupData);
+          }
+
+          return AppFlowyBoard(
+            controller: controller.kanbanController,
+            cardBuilder: (context, group, groupItem) => AppFlowyGroupCard(
+              key: ValueKey(groupItem.id),
+              child: _buildCard(groupItem),
+            ),
+            boardScrollController: controller.boardScrollController,
+            footerBuilder: (context, columnData) => AppFlowyGroupFooter(
+              icon: const Icon(Icons.add, size: 20),
+              title: const Text('New'),
+              height: 50,
+              margin: config.groupBodyPadding,
+              // onAddButtonClick: () => controller.boardScrollController.scrollToBottom(columnData.id),
+            ),
+            headerBuilder: (context, columnData) => AppFlowyGroupHeader(
+              icon: const Icon(Icons.lightbulb_circle),
+              title: SizedBox(
+                width: 130,
+                child: Text(columnData.headerData.groupName),
+              ),
+              height: 50,
+              margin: config.groupBodyPadding,
+            ),
+            groupConstraints: const BoxConstraints.tightFor(width: 300),
+            config: config,
+          );
+        },
+        onLoading: const Center(child: CircularProgressIndicator()),
+        onError: (error) => Center(
+          child: Text(
+            error ?? '',
+            style: const TextStyle(fontSize: 18),
+            textAlign: TextAlign.center,
+          ),
+        ),
       ),
     );
   }
-
-  if (item is RichTextItem) {
-    return RichTextCard(item: item);
-  }
-
-  throw UnimplementedError();
 }
 
 class RichTextCard extends StatefulWidget {
@@ -202,6 +160,24 @@ class RichTextItem extends AppFlowyGroupItem {
 
   @override
   String get id => title;
+}
+
+Widget _buildCard(AppFlowyGroupItem item) {
+  if (item is TextItem) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+        child: Text(item.s),
+      ),
+    );
+  }
+
+  if (item is RichTextItem) {
+    return RichTextCard(item: item);
+  }
+
+  throw UnimplementedError();
 }
 
 extension HexColor on Color {
