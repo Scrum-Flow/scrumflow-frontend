@@ -59,7 +59,7 @@ class _FeaturePageState extends State<FeaturePage> {
                               child: BaseButton(
                                 title: 'Criar Funcionalidade',
                                 onPressed: () => Get.to(FeatureFormPage(
-                                  projectId: 1,
+                                  projectId: Get.find<Project>().id!,
                                 )),
                                 /*,*/
                               ),
@@ -67,7 +67,7 @@ class _FeaturePageState extends State<FeaturePage> {
                             mobilePage: IconButton(
                               tooltip: 'Criar Funcionalidade',
                               onPressed: () => Get.to(FeatureFormPage(
-                                projectId: 1,
+                                projectId: Get.find<Project>().id!,
                               )),
                               /*Routes.goTo(
                                   context, FeatureFormPage(projectId: 1)),*/
@@ -169,7 +169,7 @@ class FeatureCard extends StatelessWidget {
                   tooltip: 'Editar',
                   onPressed: () => Get.to(FeatureFormPage(
                     feature: feature,
-                    projectId: 1,
+                    projectId: Get.find<Project>().id!,
                   )),
                 ),
                 const SizedBox(width: 4),

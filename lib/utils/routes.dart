@@ -74,7 +74,7 @@ class Routes {
       GetPage(
         name: taskPage,
         page: () {
-          return const TaskPage(projectId: 1);
+          return TaskPage(projectId: Get.find<Project>().id!);
         },
       ),
       GetPage(
@@ -84,18 +84,22 @@ class Routes {
       GetPage(
         name: featurePage,
         page: () {
-          return const FeaturePage(projectId: 1);
+          return FeaturePage(projectId: Get.find<Project>().id!);
         },
       ),
       GetPage(
         name: featureFormPage,
-        page: () => const TaskFormPage(),
+        page: () => FeatureFormPage(
+          projectId: Get.find<Project>().id!,
+        ),
       ),
       GetPage(
         name: backlog,
-        page: () => const BacklogPage(projectId: 1),
+        page: () => BacklogPage(projectId: Get.find<Project>().id!),
       ),
-      GetPage(name: sprintFormPage, page: () => const SprintFormPage(projectId: 1))
+      GetPage(
+          name: sprintFormPage,
+          page: () => SprintFormPage(projectId: Get.find<Project>().id!))
     ];
   }
 
@@ -112,7 +116,7 @@ class Routes {
   static const taskPage = '/task';
   static const taskFormPage = '$taskPage/taskForm';
   static const featurePage = '/feature';
-  static const featureFormPage = '$featurePage/featureForm';
+  static const featureFormPage = '/featureForm';
   static const sprintFormPage = '$backlog/sprintFormPage';
   static const backlog = '/backlog';
   static const kanbanPage = '/kanban';

@@ -254,7 +254,7 @@ class _FeatureRowState extends State<FeatureRow> {
                         tooltip: 'Editar funcionalidade',
                         onPressed: () {
                           Get.to(FeatureFormPage(
-                            projectId: 1,
+                            projectId: Get.find<Project>().id!,
                             feature: widget.feature,
                           ));
                         },
@@ -375,7 +375,7 @@ class _SprintRowState extends State<SprintRow> {
                       onPressed: () {
                         Get.to(SprintFormPage(
                           sprint: widget.sprint,
-                          projectId: 1,
+                          projectId: Get.find<Project>().id!,
                         ));
                       },
                     ),

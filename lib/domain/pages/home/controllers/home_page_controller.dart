@@ -7,21 +7,13 @@ enum Pages {
   dashboard,
   projects,
   team,
-  users,
-  tasks,
-  features,
-  sprints,
-  backlog;
+  users;
 
   String get icon => switch (this) {
         Pages.dashboard => PathIcons.dashboard.getIcon(),
         Pages.projects => PathIcons.projects.getIcon(),
         Pages.team => PathIcons.team.getIcon(),
         Pages.users => PathIcons.users.getIcon(),
-        Pages.tasks => PathIcons.tasks.getIcon(),
-        Pages.features => PathIcons.tasks.getIcon(),
-        Pages.sprints => PathIcons.tasks.getIcon(),
-        Pages.backlog => PathIcons.tasks.getIcon(),
       };
 
   String get name => switch (this) {
@@ -29,10 +21,6 @@ enum Pages {
         Pages.projects => 'Projetos',
         Pages.team => 'Times',
         Pages.users => 'Usuários',
-        Pages.tasks => 'Tarefas',
-        Pages.features => 'Funcionalidades',
-        Pages.sprints => 'Sprints',
-        Pages.backlog => 'Backlog',
       };
 }
 
