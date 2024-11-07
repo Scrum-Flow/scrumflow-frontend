@@ -11,16 +11,7 @@ class Task {
   var assignedUser;
   var assignedFeature;
 
-  Task(
-      {this.id,
-      this.name,
-      this.description,
-      this.estimatePoints,
-      this.assignedUser,
-      this.assignedFeature,
-      this.status,
-      this.createdAt,
-      this.updatedAt});
+  Task({this.id, this.name, this.description, this.estimatePoints, this.assignedUser, this.assignedFeature, this.status, this.createdAt, this.updatedAt});
 
   factory Task.fromJson(Map<String, dynamic> json) {
     return Task(
@@ -67,5 +58,10 @@ class Task {
       'assignedToUserId': assignedUser,
       'featureId': assignedFeature,
     };
+  }
+
+  @override
+  String toString() {
+    return name ?? '';
   }
 }
