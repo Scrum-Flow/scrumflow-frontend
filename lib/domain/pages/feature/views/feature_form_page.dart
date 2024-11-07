@@ -10,7 +10,7 @@ import 'package:scrumflow/widgets/widgets.dart';
 
 class FeatureFormPage extends StatelessWidget {
   const FeatureFormPage(
-      {this.feature, required this.projectId, super.key, this.sprint});
+      {super.key, this.feature, this.sprint, required this.projectId});
 
   final int projectId;
   final Feature? feature;

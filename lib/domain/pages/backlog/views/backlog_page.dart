@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:scrumflow/domain/basics/basics.dart';
 import 'package:scrumflow/domain/pages/backlog/backlog.dart';
 import 'package:scrumflow/domain/pages/feature/views/feature_form_page.dart';
@@ -253,8 +254,8 @@ class _FeatureRowState extends State<FeatureRow> {
                         tooltip: 'Editar funcionalidade',
                         onPressed: () {
                           Get.to(FeatureFormPage(
-                            feature: widget.feature,
                             projectId: 1,
+                            feature: widget.feature,
                           ));
                         },
                       ),
@@ -330,20 +331,37 @@ class _SprintRowState extends State<SprintRow> {
           children: [
             Expanded(flex: 3, child: Text(widget.sprint.name ?? "NOME AQ")),
             Expanded(
-                flex: 6, child: Text(widget.sprint.description ?? "DESC AQ")),
+                flex: 5, child: Text(widget.sprint.description ?? "DESC AQ")),
             Expanded(
-                flex: 1,
+                flex: 2,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     IconButton(
                       icon: const Icon(Icons.add),
-                      tooltip: 'Nova funcionalidade para essa sprint',
-                      onPressed: () {
-                        Get.to(FeatureFormPage(
-                          sprint: widget.sprint,
-                          projectId: 1,
-                        ));
+                      tooltip: 'Associar funcionalidades para essa sprint',
+                      onPressed: () async {
+                        await showDialog(
+                          context: context,
+                          builder: (ctx) {
+                            return MultiSelectDialog<Feature>(
+                              initialValue: controller
+                                  .initialFeaturesInSprint(widget.sprint.id!),
+                              title: const BaseLabel(
+                                  text:
+                                      'Clique nas funcionalidades que deseja incluir à essa sprint'),
+                              items: controller.featureValues
+                                  .map((e) => MultiSelectItem(e, e.name ?? ''))
+                                  .toList(),
+                              onConfirm: (features) async =>
+                                  await controller.associateFeature(
+                                sprintId: widget.sprint.id!,
+                                features: features,
+                              ),
+                              listType: MultiSelectListType.CHIP,
+                            );
+                          },
+                        );
                       },
                     ),
                     Container(

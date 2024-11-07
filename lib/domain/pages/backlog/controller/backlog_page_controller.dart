@@ -12,9 +12,6 @@ class BacklogPageController extends GetxController {
 
   BacklogPageController({required this.projectId});
 
-  /// ao iniciar a página, devo obter todas as sprints do projeto.
-  /// Com isso, para cada sprint, consigo obter as funcionalidades que cada uma possui
-
   Rx<PageState> sprintsListState = PageState.none().obs;
   List<Sprint> sprintValues = [];
 
@@ -26,7 +23,11 @@ class BacklogPageController extends GetxController {
   List<Feature> featuresWithoutSprint = [];
   Rx<PageState> featuresWithoutSprintState = PageState.none().obs;
 
+  List<Feature> newFeaturesInSprint = [];
+  List<Feature> oldFeaturesInSprint = [];
+
   Rx<PageState> featureDeleteState = PageState.none().obs;
+  Rx<PageState> featureAssociateState = PageState.none().obs;
   Rx<PageState> sprintDeleteState = PageState.none().obs;
 
   @override
@@ -142,6 +143,7 @@ class BacklogPageController extends GetxController {
   void clearVariables() {
     map.clear();
     sprintValues.clear();
+    featuresWithoutSprint.clear();
   }
 
   Future<void> deleteSprint(Sprint sprint) async {
@@ -183,7 +185,7 @@ class BacklogPageController extends GetxController {
   Future<void> disassociateFeature(
       {required int sprintId, required int featureId}) async {
     featureDeleteState.value =
-        PageState.loading('Desassociando duncionalidade!');
+        PageState.loading('Desassociando funcionalidade!');
 
     try {
       await SprintService.disassociateFeatureWithSprint(sprintId, featureId);
@@ -203,5 +205,58 @@ class BacklogPageController extends GetxController {
     }
 
     featureDeleteState.value = PageState.none();
+  }
+
+  Future<void> associateFeature(
+      {required int sprintId, required List<Feature> features}) async {
+    featureAssociateState.value =
+        PageState.loading('Associando funcionalidade!');
+
+    try {
+      if (features.isNotEmpty) {
+        List<Feature> addedFeatures = features
+            .where((feature) => !feature.sprintsId!.contains(sprintId))
+            .toList();
+
+        List<Feature> removedFeatures = oldFeaturesInSprint
+            .where((oldFeature) =>
+                !features.any((newFeature) => newFeature.id! == oldFeature.id))
+            .toList();
+
+        if (removedFeatures.isNotEmpty) {
+          for (Feature f in removedFeatures) {
+            await SprintService.disassociateFeatureWithSprint(sprintId, f.id!);
+          }
+        }
+
+        if (addedFeatures.isNotEmpty) {
+          for (Feature f in addedFeatures) {
+            await SprintService.associateFeatureWithSprint(sprintId, f.id!);
+          }
+        }
+
+        featureAssociateState.value =
+            PageState.success(info: 'Funcionalidade foi associada na sprint!!');
+
+        await refresh();
+      }
+    } on DioException catch (e) {
+      debugPrint(e.toString());
+      featureAssociateState.value =
+          PageState.error('Erro ao associar Funcionalidade!');
+    } catch (e) {
+      debugPrint(e.toString());
+      featureAssociateState.value =
+          PageState.error('Erro ao associar Funcionalidade!');
+    }
+
+    featureAssociateState.value = PageState.none();
+  }
+
+  List<Feature> initialFeaturesInSprint(int sprintId) {
+    return oldFeaturesInSprint = featureValues
+            .where((e) => e.sprintsId?.contains(sprintId) ?? false)
+            .toList() ??
+        [];
   }
 }
