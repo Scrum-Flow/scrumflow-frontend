@@ -1,7 +1,10 @@
 export 'feature.dart';
+export 'feature_details.dart';
 export 'project.dart';
+export 'project_details.dart';
 export 'request_exception.dart';
 export 'sprint.dart';
+export 'sprint_details.dart';
 export 'task.dart';
 export 'team.dart';
 export 'user.dart';

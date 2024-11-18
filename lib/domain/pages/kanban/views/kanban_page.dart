@@ -6,7 +6,7 @@ import 'package:scrumflow/domain/pages/kanban/controllers/kanban_controller.dart
 import 'package:scrumflow/models/models.dart';
 import 'package:scrumflow/utils/utils.dart';
 
-class KanbanPage extends StatelessWidget {
+class KanbanPage extends StatefulWidget {
   const KanbanPage({
     required this.project,
     super.key,
@@ -15,8 +15,13 @@ class KanbanPage extends StatelessWidget {
   final Project project;
 
   @override
+  State<KanbanPage> createState() => _KanbanPageState();
+}
+
+class _KanbanPageState extends State<KanbanPage> {
+  @override
   Widget build(BuildContext context) {
-    Get.put(KanbanController(project));
+    Get.put(KanbanController(widget.project));
 
     return Scaffold(
       appBar: AppBar(
@@ -30,65 +35,30 @@ class KanbanPage extends StatelessWidget {
 class _Body extends GetView<KanbanController> {
   @override
   Widget build(BuildContext context) {
-    final config = AppFlowyBoardConfig(
-      groupBackgroundColor: HexColor.fromHex('#F7F8FC'),
-      stretchGroupHeight: false,
-      groupMargin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      groupBodyPadding: const EdgeInsets.symmetric(horizontal: 8),
-    );
-
     final KanbanController controller = Get.find<KanbanController>();
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       child: controller.obx(
         (state) {
           if (state == null) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          for (KanbanBoards board in KanbanBoards.values) {
-            var appFlowyGroupData = AppFlowyGroupData(
-              id: board.toString(),
-              name: board.toString(),
-              items: board == KanbanBoards.todo
-                  ? List<AppFlowyGroupItem>.from(controller.features.values
-                      .expand((value) => value)
-                      .map((task) => RichTextItem(title: task.toString(), subtitle: Helper.formatDate(task.createdAt) ?? ''))
-                      .toList())
-                  : [],
-            );
-
-            appFlowyGroupData.draggable = false;
-
-            controller.kanbanController.addGroup(appFlowyGroupData);
-          }
-
-          return AppFlowyBoard(
-            controller: controller.kanbanController,
-            cardBuilder: (context, group, groupItem) => AppFlowyGroupCard(
-              key: ValueKey(groupItem.id),
-              child: _buildCard(groupItem),
-            ),
-            boardScrollController: controller.boardScrollController,
-            footerBuilder: (context, columnData) => AppFlowyGroupFooter(
-              icon: const Icon(Icons.add, size: 20),
-              title: const Text('New'),
-              height: 50,
-              margin: config.groupBodyPadding,
-              // onAddButtonClick: () => controller.boardScrollController.scrollToBottom(columnData.id),
-            ),
-            headerBuilder: (context, columnData) => AppFlowyGroupHeader(
-              icon: const Icon(Icons.lightbulb_circle),
-              title: SizedBox(
-                width: 130,
-                child: Text(columnData.headerData.groupName),
+          return Column(
+            children: [
+              DropdownButtonFormField<SprintDetails>(
+                items: state.keys
+                    .map(
+                      (sprint) => DropdownMenuItem(
+                        value: sprint,
+                        child: BaseLabel(text: sprint.name ?? ''),
+                      ),
+                    )
+                    .toList(),
+                onChanged: controller.onChangeSprintSelected,
               ),
-              height: 50,
-              margin: config.groupBodyPadding,
-            ),
-            groupConstraints: const BoxConstraints.tightFor(width: 300),
-            config: config,
+              Expanded(child: _KanbanBoard()),
+            ],
           );
         },
         onLoading: const Center(child: CircularProgressIndicator()),
@@ -100,6 +70,47 @@ class _Body extends GetView<KanbanController> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _KanbanBoard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final config = AppFlowyBoardConfig(
+      groupBackgroundColor: HexColor.fromHex('#F7F8FC'),
+      stretchGroupHeight: false,
+      groupMargin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      groupBodyPadding: const EdgeInsets.symmetric(horizontal: 8),
+    );
+
+    final KanbanController controller = Get.find<KanbanController>();
+
+    return AppFlowyBoard(
+      controller: controller.kanbanController,
+      cardBuilder: (context, group, groupItem) => AppFlowyGroupCard(
+        key: ValueKey(groupItem.id),
+        child: _buildCard(groupItem),
+      ),
+      boardScrollController: controller.boardScrollController,
+      footerBuilder: (context, columnData) => AppFlowyGroupFooter(
+        icon: const Icon(Icons.add, size: 20),
+        title: const Text('New'),
+        height: 50,
+        margin: config.groupBodyPadding,
+        // onAddButtonClick: () => controller.boardScrollController.scrollToBottom(columnData.id),
+      ),
+      headerBuilder: (context, columnData) => AppFlowyGroupHeader(
+        icon: const Icon(Icons.lightbulb_circle),
+        title: SizedBox(
+          width: 130,
+          child: Text(columnData.headerData.groupName),
+        ),
+        height: 50,
+        margin: config.groupBodyPadding,
+      ),
+      groupConstraints: const BoxConstraints.tightFor(width: 300),
+      config: config,
     );
   }
 }
