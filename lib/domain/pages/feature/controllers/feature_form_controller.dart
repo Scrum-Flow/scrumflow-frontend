@@ -37,7 +37,7 @@ class FeatureFormController extends GetxController {
     if (feature != null) {
       name.value = feature!.name ?? '';
       description.value = feature!.description ?? '';
-      projectId = feature!.projectId;
+      projectId = projectId ?? feature!.projectId;
       await fetchSprints();
     }
 
