@@ -55,8 +55,9 @@ class ProjectFormController extends GetxController {
 
         try {
           if (project != null) {
-            Project updatedProject = await ProjectService.updateProject(
+            await ProjectService.updateProject(
               Project(
+                id: project!.id,
                 name: name.value,
                 description: description.value,
                 startDate: startDate.value,
@@ -64,7 +65,7 @@ class ProjectFormController extends GetxController {
               ),
             );
 
-            pageState.value = PageState.success(info: 'Projeto atualizado!!', data: updatedProject);
+            pageState.value = PageState.success(info: 'Projeto atualizado!!');
           } else {
             Project newProject = await ProjectService.newProject(
               Project(
@@ -75,7 +76,8 @@ class ProjectFormController extends GetxController {
               ),
             );
 
-            pageState.value = PageState.success(info: 'Projeto criado!!', data: newProject);
+            pageState.value =
+                PageState.success(info: 'Projeto criado!!', data: newProject);
           }
         } on DioException catch (e) {
           pageState.value = PageState.error(e.message);
@@ -97,7 +99,8 @@ class ProjectFormController extends GetxController {
     }
 
     if (startDate.value!.isAfter(endDate.value!)) {
-      Prompts.errorSnackBar('Erro', "Data inicial deve ser anterior à data final");
+      Prompts.errorSnackBar(
+          'Erro', "Data inicial deve ser anterior à data final");
       return false;
     }
 

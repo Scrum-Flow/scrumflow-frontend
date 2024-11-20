@@ -25,7 +25,8 @@ class ProjectService {
     return response.data.map<Project>((map) => Project.fromJson(map)).toList();
   }
 
-  static FutureOr<List<Project>> fetchProjectsByFilter(ProjectFilter filter) async {
+  static FutureOr<List<Project>> fetchProjectsByFilter(
+      ProjectFilter filter) async {
     Dio dio = await Connection.defaultDio();
 
     Response response = await dio.get(path, data: json.encode(filter.toMap()));
@@ -36,17 +37,17 @@ class ProjectService {
   static FutureOr<Project> newProject(Project project) async {
     var dio = await Connection.defaultDio();
 
-    var response = await dio.post('/project', data: json.encode(project.toJson()));
+    var response =
+        await dio.post('/project', data: json.encode(project.toJson()));
 
     return Project.fromJson(response.data);
   }
 
-  static FutureOr<Project> updateProject(Project project) async {
+  static FutureOr<void> updateProject(Project project) async {
     var dio = await Connection.defaultDio();
 
-    var response = await dio.put('/project/${project.id}', data: json.encode(project.toJson()));
-
-    return Project.fromJson(response.data);
+    await dio.put('/project/${project.id}',
+        data: json.encode(project.toJson()));
   }
 
   static FutureOr<void> deleteProject(int? id) async {
