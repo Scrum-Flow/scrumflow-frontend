@@ -63,12 +63,12 @@ class SprintFormController extends GetxController {
           if (sprint != null) {
             Sprint updatedSprint = await SprintService.updateSprint(
               Sprint(
-                id: id,
-                name: name.value,
-                description: description.value,
-                startDate: startDate.value,
-                endDate: endDate.value,
-              ),
+                  id: id,
+                  name: name.value,
+                  description: description.value,
+                  startDate: startDate.value,
+                  endDate: endDate.value,
+                  projectId: projectId),
             );
 
             pageState.value = PageState.success(
