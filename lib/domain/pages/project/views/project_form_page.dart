@@ -45,64 +45,76 @@ class ProjectFormView extends StatelessWidget {
 class _ProjectForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    ProjectFormController projectFormViewController = Get.find<ProjectFormController>();
+    ProjectFormController projectFormViewController =
+        Get.find<ProjectFormController>();
 
-    return SizedBox(
-      width: Helper.screenWidth(),
-      height: Helper.screenHeight(),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-        child: Form(
-          key: projectFormViewController.projectFormKey,
-          autovalidateMode: AutovalidateMode.disabled,
-          child: ListView(
-            children: [
-              BaseTextField(
-                hint: "Nome do projeto",
-                initialValue: projectFormViewController.project?.name,
-                validator: FormBuilderValidators.required(errorText: 'Campo obrigatório'),
-                onChanged: projectFormViewController.updateName,
-              ),
-              BaseTextField(
-                hint: "Descrição do projeto",
-                initialValue: projectFormViewController.project?.description,
-                validator: FormBuilderValidators.required(errorText: 'Campo obrigatório'),
-                onChanged: projectFormViewController.updateDescription,
-              ),
-              BaseDatePicker(
-                hint: 'Data de início do projeto',
-                initialValue: projectFormViewController.project?.startDate,
-                validator: FormBuilderValidators.required(errorText: 'Campo obrigatório'),
-                onChanged: projectFormViewController.updateStartDate,
-              ),
-              BaseDatePicker(
-                hint: 'Data de fim do projeto',
-                initialValue: projectFormViewController.project?.endDate,
-                validator: FormBuilderValidators.required(errorText: 'Campo obrigatório'),
-                onChanged: projectFormViewController.updateEndDate,
-              ),
-              25.toSizedBoxH(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: BaseButton(
-                      title: 'Cancelar',
-                      isLoading: projectFormViewController.pageState.value.status == PageStatus.loading,
-                      onPressed: () => Get.back(),
+    return Obx(
+      () => SizedBox(
+        width: Helper.screenWidth(),
+        height: Helper.screenHeight(),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+          child: Form(
+            key: projectFormViewController.projectFormKey,
+            autovalidateMode: AutovalidateMode.disabled,
+            child: ListView(
+              children: [
+                BaseTextField(
+                  hint: "Nome do projeto",
+                  initialValue: projectFormViewController.project?.name,
+                  validator: FormBuilderValidators.required(
+                      errorText: 'Campo obrigatório'),
+                  onChanged: projectFormViewController.updateName,
+                ),
+                BaseTextField(
+                  hint: "Descrição do projeto",
+                  initialValue: projectFormViewController.project?.description,
+                  validator: FormBuilderValidators.required(
+                      errorText: 'Campo obrigatório'),
+                  onChanged: projectFormViewController.updateDescription,
+                ),
+                BaseDatePicker(
+                  hint: 'Data de início do projeto',
+                  initialValue: projectFormViewController.project?.startDate,
+                  validator: FormBuilderValidators.required(
+                      errorText: 'Campo obrigatório'),
+                  onChanged: projectFormViewController.updateStartDate,
+                ),
+                BaseDatePicker(
+                  hint: 'Data de fim do projeto',
+                  initialValue: projectFormViewController.project?.endDate,
+                  validator: FormBuilderValidators.required(
+                      errorText: 'Campo obrigatório'),
+                  onChanged: projectFormViewController.updateEndDate,
+                ),
+                25.toSizedBoxH(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: BaseButton(
+                        title: 'Cancelar',
+                        isLoading:
+                            projectFormViewController.pageState.value.status ==
+                                PageStatus.loading,
+                        onPressed: () => Get.back(),
+                      ),
                     ),
-                  ),
-                  25.toSizedBoxW(),
-                  Expanded(
-                    child: BaseButton(
-                      title: 'Salvar',
-                      isLoading: projectFormViewController.pageState.value.status == PageStatus.loading,
-                      onPressed: () async => await projectFormViewController.save(),
+                    25.toSizedBoxW(),
+                    Expanded(
+                      child: BaseButton(
+                        title: 'Salvar',
+                        isLoading:
+                            projectFormViewController.pageState.value.status ==
+                                PageStatus.loading,
+                        onPressed: () async =>
+                            await projectFormViewController.save(),
+                      ),
                     ),
-                  ),
-                ],
-              )
-            ],
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),

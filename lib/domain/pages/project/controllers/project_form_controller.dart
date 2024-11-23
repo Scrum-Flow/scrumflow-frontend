@@ -16,7 +16,6 @@ class ProjectFormController extends GetxController {
   final GlobalKey<FormState> projectFormKey = GlobalKey<FormState>();
 
   final Rx<PageState> pageState = PageState.none().obs;
-  final Rx<PageState> initialState = PageState.none().obs;
   final RxString name = ''.obs;
   final RxString description = ''.obs;
   final Rx<DateTime?> startDate = Rx<DateTime?>(null);
@@ -32,8 +31,6 @@ class ProjectFormController extends GetxController {
 
   @override
   onInit() {
-    super.onInit();
-
     if (project != null) {
       name.value = project?.name ?? '';
       description.value = project?.description ?? '';
@@ -42,10 +39,12 @@ class ProjectFormController extends GetxController {
     }
 
     pageState.listen((value) {
-      Prompts.showSnackBar(value);
-
-      if (value.status == PageStatus.success) Get.back();
+      if (value.status == PageStatus.success) {
+        Get.back(result: true);
+      }
     });
+
+    super.onInit();
   }
 
   FutureOr<void> save() async {

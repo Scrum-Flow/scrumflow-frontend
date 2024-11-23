@@ -24,15 +24,19 @@ class ProjectPageController extends GetxController {
   RxString filterValue = ''.obs;
 
   @override
-  onInit() {
-    fetchProjects(user);
+  onInit() async {
+    await fetchProjects(user);
 
     projectDeleteState.listen(Prompts.showSnackBar);
     projectState.listen((state) async {
       Prompts.showSnackBar(state);
 
       if (state.status == PageStatus.success) {
-        await Get.toNamed(Routes.projectFormPage, arguments: state.data);
+        Future.delayed(const Duration(milliseconds: 1000), () async {
+          var result =
+              await Get.toNamed(Routes.projectFormPage, arguments: state.data);
+          if (result == true) await fetchProjects(user);
+        });
       }
     });
 
@@ -45,7 +49,8 @@ class ProjectPageController extends GetxController {
     try {
       List<Project> projects = await ProjectService.fetchProjects();
 
-      values = _projects = projects.where((element) => element.active == true).toList();
+      values = _projects =
+          projects.where((element) => element.active == true).toList();
     } on DioException catch (e) {
       debugPrint(e.toString());
       projectListState.value = PageState.error();
@@ -65,7 +70,8 @@ class ProjectPageController extends GetxController {
 
       fetchProjects(user);
 
-      projectDeleteState.value = PageState.success(info: 'Project foi excluído!!');
+      projectDeleteState.value =
+          PageState.success(info: 'Project foi excluído!!');
     } on DioException catch (e) {
       debugPrint(e.toString());
       projectDeleteState.value = PageState.error('Erro ao deletar projeto!');
@@ -96,7 +102,10 @@ class ProjectPageController extends GetxController {
   void filterProjects() {
     projectListState.value = PageState.loading();
 
-    values = (_projects ?? []).where((element) => (element.name?.toLowerCase() ?? '').isCaseInsensitiveContains(filterValue.value.toLowerCase() ?? '')).toList();
+    values = (_projects ?? [])
+        .where((element) => (element.name?.toLowerCase() ?? '')
+            .isCaseInsensitiveContains(filterValue.value.toLowerCase() ?? ''))
+        .toList();
 
     projectListState.value = PageState.none();
   }
@@ -106,5 +115,7 @@ class ProjectPageController extends GetxController {
     filterProjects();
   }
 
-  double getProjectPercent(Project project) => Helper.daysBetween(project.startDate, DateTime.now()) / Helper.daysBetween(project.startDate, project.endDate);
+  double getProjectPercent(Project project) =>
+      Helper.daysBetween(project.startDate, DateTime.now()) /
+      Helper.daysBetween(project.startDate, project.endDate);
 }

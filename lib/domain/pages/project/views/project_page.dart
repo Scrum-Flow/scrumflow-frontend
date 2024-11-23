@@ -28,7 +28,10 @@ class ProjectPage extends StatefulWidget {
 class _ProjectPageState extends State<ProjectPage> {
   @override
   Widget build(BuildContext context) {
-    final ProjectPageController controller = Get.put<ProjectPageController>(ProjectPageController(user: widget.user, onSelectProject: widget.onSelectProject), tag: widget.tag);
+    final ProjectPageController controller = Get.put<ProjectPageController>(
+        ProjectPageController(
+            user: widget.user, onSelectProject: widget.onSelectProject),
+        tag: widget.tag);
 
     return Scaffold(
       backgroundColor: Colors.grey[200],
@@ -49,7 +52,8 @@ class _ProjectPageState extends State<ProjectPage> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 12),
                       child: Row(
                         children: [
                           const Expanded(
@@ -64,13 +68,18 @@ class _ProjectPageState extends State<ProjectPage> {
                             webPage: SizedBox(
                               width: 200,
                               child: BaseButton(
-                                title: 'Criar Projeto',
-                                onPressed: () => Get.toNamed(Routes.projectFormPage),
-                              ),
+                                  title: 'Criar Projeto',
+                                  onPressed: () async {
+                                    var result = await Get.toNamed(
+                                        Routes.projectFormPage);
+                                    if (result == true)
+                                      controller.fetchProjects(controller.user);
+                                  }),
                             ),
                             mobilePage: IconButton(
                               tooltip: 'Criar Projeto',
-                              onPressed: () => Get.toNamed(Routes.projectFormPage),
+                              onPressed: () =>
+                                  Get.toNamed(Routes.projectFormPage),
                               icon: Icon(Icons.add_card_outlined),
                             ),
                           ),
@@ -90,7 +99,7 @@ class _ProjectPageState extends State<ProjectPage> {
 
   @override
   dispose() {
-    Get.delete<ProjectPageController>();
+    Get.delete<ProjectPageController>(tag: widget.tag);
     super.dispose();
   }
 }
@@ -102,14 +111,16 @@ class _ProjectList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ProjectPageController controller = Get.find<ProjectPageController>(tag: tag);
+    ProjectPageController controller =
+        Get.find<ProjectPageController>(tag: tag);
 
     return Obx(
       () => Expanded(
         child: BaseGrid(
           onRefresh: () => controller.fetchProjects(controller.user),
           shrinkWrap: true,
-          padding: const EdgeInsets.symmetric(horizontal: 24).add(const EdgeInsets.only(bottom: 12)),
+          padding: const EdgeInsets.symmetric(horizontal: 24)
+              .add(const EdgeInsets.only(bottom: 12)),
           pageState: controller.projectListState.value,
           items: controller.values,
           itemBuilder: (context, item) => ProjectCard(item, tag),
@@ -127,7 +138,8 @@ class ProjectCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ProjectPageController controller = Get.find<ProjectPageController>(tag: tag);
+    ProjectPageController controller =
+        Get.find<ProjectPageController>(tag: tag);
 
     var projectPercent = controller.getProjectPercent(project);
 
@@ -146,8 +158,12 @@ class ProjectCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             children: [
               Container(
-                decoration: BoxDecoration(color: Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(0.2), borderRadius: BorderRadius.circular(20)),
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                    color: Color((Random().nextDouble() * 0xFFFFFF).toInt())
+                        .withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(20)),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 child: BaseLabel(
                   text: project.toString(),
                   color: Colors.black,
@@ -156,7 +172,11 @@ class ProjectCard extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               BaseLabel(
-                text: (project.description != null && project.description!.isNotEmpty ? project.description : 'n/d') ?? '',
+                text: (project.description != null &&
+                            project.description!.isNotEmpty
+                        ? project.description
+                        : 'n/d') ??
+                    '',
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 color: Colors.black,
@@ -193,7 +213,8 @@ class ProjectCard extends StatelessWidget {
                     onPressed: () => showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: BaseLabel(text: 'Realmente deseja excluir este projeto?'),
+                        title: BaseLabel(
+                            text: 'Realmente deseja excluir este projeto?'),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.of(context).pop(),

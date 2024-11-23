@@ -25,7 +25,9 @@ class TeamController extends GetxController {
       Prompts.showSnackBar(state);
 
       if (state.status == PageStatus.success) {
-        await Get.toNamed(Routes.teamFormPage, arguments: state.data);
+        var result =
+            await Get.toNamed(Routes.teamFormPage, arguments: state.data);
+        if (result != null) await fetchTeams();
       }
     });
 
@@ -49,7 +51,10 @@ class TeamController extends GetxController {
   void filterTeams() {
     teamListState.value = PageState.loading();
 
-    values = (_teams ?? []).where((element) => (element.name?.toLowerCase() ?? '').isCaseInsensitiveContains(filterValue.value.toLowerCase())).toList();
+    values = (_teams ?? [])
+        .where((element) => (element.name?.toLowerCase() ?? '')
+            .isCaseInsensitiveContains(filterValue.value.toLowerCase()))
+        .toList();
 
     teamListState.value = PageState.none();
   }
