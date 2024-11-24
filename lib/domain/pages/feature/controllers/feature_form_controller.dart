@@ -9,7 +9,7 @@ import 'package:scrumflow/models/models.dart';
 import 'package:scrumflow/utils/utils.dart';
 
 class FeatureFormController extends GetxController {
-  FeatureFormController(this.feature, {this.projectId, this.sprint});
+  FeatureFormController(this.feature, {this.projectId /*, this.sprint*/});
 
   final GlobalKey<FormState> featureFormKey = GlobalKey<FormState>();
 
@@ -24,7 +24,9 @@ class FeatureFormController extends GetxController {
   int? projectId;
   List<Sprint> newFeatureSprints = [];
   List<Sprint> oldFeatureSprints = [];
+/*
   Sprint? sprint;
+*/
   List<Sprint> projectSprints = [];
 
   void updateName(String value) => name.value = value;
@@ -40,9 +42,9 @@ class FeatureFormController extends GetxController {
       await fetchSprints();
     }
 
-    if (sprint != null) {
+    /*if (sprint != null) {
       oldFeatureSprints.add(sprint!);
-    }
+    }*/
 
     await fetchProjectSprints();
 
@@ -70,7 +72,7 @@ class FeatureFormController extends GetxController {
 
           //sprints removidas ?
           List<Sprint> removedSprints = oldFeatureSprints
-              .where((sprint) => !newFeatureSprints.contains(sprint))
+              .where((sprint) => newFeatureSprints.contains(sprint))
               .toList();
 
           // sprints adicionadas ?

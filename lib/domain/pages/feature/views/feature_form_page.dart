@@ -10,16 +10,16 @@ import 'package:scrumflow/widgets/widgets.dart';
 
 class FeatureFormPage extends StatelessWidget {
   const FeatureFormPage(
-      {super.key, this.feature, this.sprint, required this.projectId});
+      {super.key, this.feature /*, this.sprint*/, required this.projectId});
 
   final int projectId;
   final Feature? feature;
-  final Sprint? sprint;
+  /*final Sprint? sprint;*/
 
   @override
   Widget build(BuildContext context) {
-    Get.put<FeatureFormController>(
-        FeatureFormController(feature, projectId: projectId, sprint: sprint));
+    Get.put<FeatureFormController>(FeatureFormController(feature,
+        projectId: projectId /*, sprint: sprint*/));
 
     return Scaffold(
       appBar: AppBar(

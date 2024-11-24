@@ -32,8 +32,8 @@ class Feature {
         id: id ?? this.id,
         name: name ?? this.name,
         description: description ?? this.description,
-        projectId: projectId ?? projectId,
-        sprintsId: sprintsId ?? sprintsId);
+        projectId: projectId ?? this.projectId,
+        sprintsId: sprintsId ?? this.sprintsId);
   }
 
   Map<String, dynamic> toJson() {
