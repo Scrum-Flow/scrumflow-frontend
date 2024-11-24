@@ -214,13 +214,14 @@ class _TaskTableState extends State<TaskTable> {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.edit),
+                      tooltip: "Editar tarefa",
                       onPressed: () async {
                         var result = await Get.to(TaskFormPage(
                           feature: feature,
                           task: task,
                         ));
                         if (result != null) {
-                          await controller.fetchFeatures();
+                          await controller.onInit();
                         }
                       },
                     ),

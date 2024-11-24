@@ -1,3 +1,4 @@
+import 'package:scrumflow/utils/enums/enum_status.dart';
 import 'package:scrumflow/utils/utils.dart';
 
 class Task {
@@ -11,7 +12,16 @@ class Task {
   var assignedUser;
   var assignedFeature;
 
-  Task({this.id, this.name, this.description, this.estimatePoints, this.assignedUser, this.assignedFeature, this.status, this.createdAt, this.updatedAt});
+  Task(
+      {this.id,
+      this.name,
+      this.description,
+      this.estimatePoints,
+      this.assignedUser,
+      this.assignedFeature,
+      this.status,
+      this.createdAt,
+      this.updatedAt});
 
   factory Task.fromJson(Map<String, dynamic> json) {
     return Task(
@@ -23,7 +33,8 @@ class Task {
         assignedFeature: Helper.keyExists<String>(json, 'featureName'),
         createdAt: Helper.toDateTime(Helper.keyExists(json, 'createdAt')),
         updatedAt: Helper.toDateTime(Helper.keyExists(json, 'updatedAt')),
-        status: 'STATUS');
+        status: Helper.keyExists<String>(json, 'status') ??
+            ObjectStatus.NOT_STARTED.getDescription());
   }
 
   Task copyWith({
@@ -46,13 +57,14 @@ class Task {
         assignedFeature: assignedFeature ?? this.assignedFeature,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
-        status: status ?? 'STATUS');
+        status: status ?? ObjectStatus.NOT_STARTED.getDescription());
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'name': name,
+      'status': status,
       'description': description,
       'estimatePoints': estimatePoints,
       'assignedToUserId': assignedUser,

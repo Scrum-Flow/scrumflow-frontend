@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:scrumflow/domain/pages/task/services/services.dart';
 import 'package:scrumflow/domain/pages/user/services/services.dart';
 import 'package:scrumflow/models/models.dart';
+import 'package:scrumflow/utils/enums/enum_status.dart';
 import 'package:scrumflow/utils/utils.dart';
 
 class TaskFormController extends GetxController {
@@ -76,6 +77,7 @@ class TaskFormController extends GetxController {
           _task = Task(
             id: task!.id,
             name: name.value,
+            status: ObjectStatus.getStringToJson(task!.status!),
             description: description.value,
             assignedUser: responsibleUser.value,
             assignedFeature: chosenFeature.value!.id,
