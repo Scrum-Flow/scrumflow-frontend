@@ -94,30 +94,32 @@ class _SprintForm extends StatelessWidget {
                 ],
               ),
               25.toSizedBoxH(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: BaseButton(
-                      title: 'Cancelar',
-                      isLoading:
-                          SprintFormViewController.pageState.value.status ==
-                              PageStatus.loading,
-                      onPressed: () => Get.back(),
+              Obx(
+                () => Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: BaseButton(
+                        title: 'Cancelar',
+                        isLoading:
+                            SprintFormViewController.pageState.value.status ==
+                                PageStatus.loading,
+                        onPressed: () => Get.back(result: false),
+                      ),
                     ),
-                  ),
-                  25.toSizedBoxW(),
-                  Expanded(
-                    child: BaseButton(
-                      title: 'Salvar',
-                      isLoading:
-                          SprintFormViewController.pageState.value.status ==
-                              PageStatus.loading,
-                      onPressed: () async =>
-                          await SprintFormViewController.save(),
+                    25.toSizedBoxW(),
+                    Expanded(
+                      child: BaseButton(
+                        title: 'Salvar',
+                        isLoading:
+                            SprintFormViewController.pageState.value.status ==
+                                PageStatus.loading,
+                        onPressed: () async =>
+                            await SprintFormViewController.save(),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               )
             ],
           ),

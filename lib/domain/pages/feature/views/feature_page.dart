@@ -57,12 +57,14 @@ class _FeaturePageState extends State<FeaturePage> {
                             webPage: SizedBox(
                               width: 200,
                               child: BaseButton(
-                                title: 'Criar Funcionalidade',
-                                onPressed: () => Get.to(FeatureFormPage(
-                                  projectId: Get.find<Project>().id!,
-                                )),
-                                /*,*/
-                              ),
+                                  title: 'Criar Funcionalidade',
+                                  onPressed: () async {
+                                    var result = await Get.to(FeatureFormPage(
+                                      projectId: Get.find<Project>().id!,
+                                    ));
+                                    if (result == true)
+                                      featureController.fetchFeatures();
+                                  }),
                             ),
                             mobilePage: IconButton(
                               tooltip: 'Criar Funcionalidade',
@@ -165,13 +167,15 @@ class FeatureCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.mode_edit_rounded),
-                  tooltip: 'Editar',
-                  onPressed: () => Get.to(FeatureFormPage(
-                    feature: feature,
-                    projectId: Get.find<Project>().id!,
-                  )),
-                ),
+                    icon: const Icon(Icons.mode_edit_rounded),
+                    tooltip: 'Editar',
+                    onPressed: () async {
+                      var result = await Get.to(FeatureFormPage(
+                        feature: feature,
+                        projectId: Get.find<Project>().id!,
+                      ));
+                      if (result == true) controller.fetchFeatures();
+                    }),
                 const SizedBox(width: 4),
                 IconButton(
                   icon: const Icon(

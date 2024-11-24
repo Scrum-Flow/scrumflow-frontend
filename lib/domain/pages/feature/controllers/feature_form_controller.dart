@@ -7,7 +7,6 @@ import 'package:scrumflow/domain/pages/feature/services/services.dart';
 import 'package:scrumflow/domain/pages/sprint/services/services.dart';
 import 'package:scrumflow/models/models.dart';
 import 'package:scrumflow/utils/utils.dart';
-import 'package:scrumflow/widgets/widgets.dart';
 
 class FeatureFormController extends GetxController {
   FeatureFormController(this.feature, {this.projectId, this.sprint});
@@ -48,9 +47,7 @@ class FeatureFormController extends GetxController {
     await fetchProjectSprints();
 
     pageState.listen((value) {
-      Prompts.showSnackBar(value);
-
-      if (value.status == PageStatus.success) Get.back();
+      if (value.status == PageStatus.success) Get.back(result: true);
     });
 
     super.onInit();

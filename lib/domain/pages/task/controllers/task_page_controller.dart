@@ -24,10 +24,10 @@ class TaskPageController extends GetxController {
   Rx<PageState> taskDeleteState = PageState.none().obs;
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     pageState.value = PageState.loading();
 
-    fetchFeatures();
+    await fetchFeatures();
 
     taskDeleteState.listen(Prompts.showSnackBar);
 

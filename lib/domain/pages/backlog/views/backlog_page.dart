@@ -60,8 +60,12 @@ class _BacklogPageState extends State<BacklogPage> {
                               width: 200,
                               child: BaseButton(
                                   title: 'Criar Sprint',
-                                  onPressed: () =>
-                                      Get.toNamed(Routes.sprintFormPage)),
+                                  onPressed: () async {
+                                    var result = await Get.toNamed(
+                                        Routes.sprintFormPage);
+
+                                    if (result == true) controller.refresh();
+                                  }),
                             ),
                             mobilePage: IconButton(
                               tooltip: 'Nova Sprint',
@@ -77,8 +81,11 @@ class _BacklogPageState extends State<BacklogPage> {
                               width: 200,
                               child: BaseButton(
                                   title: 'Criar Funcionalidade',
-                                  onPressed: () =>
-                                      Get.toNamed(Routes.featureFormPage)),
+                                  onPressed: () async {
+                                    var result = await Get.toNamed(
+                                        Routes.featureFormPage);
+                                    if (result == true) controller.refresh();
+                                  }),
                             ),
                             mobilePage: IconButton(
                               tooltip: 'Nova Funcionalidade',
@@ -252,11 +259,12 @@ class _FeatureRowState extends State<FeatureRow> {
                       IconButton(
                         icon: const Icon(Icons.edit),
                         tooltip: 'Editar funcionalidade',
-                        onPressed: () {
-                          Get.to(FeatureFormPage(
+                        onPressed: () async {
+                          var result = await Get.to(FeatureFormPage(
                             projectId: Get.find<Project>().id!,
                             feature: widget.feature,
                           ));
+                          if (result == true) controller.refresh();
                         },
                       ),
                       Container(
@@ -372,11 +380,12 @@ class _SprintRowState extends State<SprintRow> {
                     IconButton(
                       icon: const Icon(Icons.edit),
                       tooltip: 'Editar sprint',
-                      onPressed: () {
-                        Get.to(SprintFormPage(
+                      onPressed: () async {
+                        var result = await Get.to(SprintFormPage(
                           sprint: widget.sprint,
                           projectId: Get.find<Project>().id!,
                         ));
+                        if (result == true) controller.refresh();
                       },
                     ),
                     Container(

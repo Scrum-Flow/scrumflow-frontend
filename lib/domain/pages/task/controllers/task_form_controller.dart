@@ -7,7 +7,6 @@ import 'package:scrumflow/domain/pages/task/services/services.dart';
 import 'package:scrumflow/domain/pages/user/services/services.dart';
 import 'package:scrumflow/models/models.dart';
 import 'package:scrumflow/utils/utils.dart';
-import 'package:scrumflow/widgets/widgets.dart';
 
 class TaskFormController extends GetxController {
   TaskFormController(this.task, {this.feature});
@@ -49,9 +48,7 @@ class TaskFormController extends GetxController {
     }
 
     pageState.listen((value) {
-      Prompts.showSnackBar(value);
-
-      if (value.status == PageStatus.success) Get.back();
+      if (value.status == PageStatus.success) Get.back(result: true);
     });
 
     initialEvent();
@@ -87,7 +84,7 @@ class TaskFormController extends GetxController {
 
           await TaskService.updateTask(_task);
 
-          onInit();
+          // onInit();
 
           pageState.value =
               PageState.success(info: 'Tarefa atualizada!!', data: _task);
@@ -100,7 +97,7 @@ class TaskFormController extends GetxController {
             estimatePoints: estimatePoints.value,
           ));
 
-          onInit();
+          // onInit();
 
           pageState.value =
               PageState.success(info: 'Tarefa criada!!', data: newTask);

@@ -57,8 +57,14 @@ class _TaskPageState extends State<TaskPage> {
                               width: 200,
                               child: BaseButton(
                                   title: 'Criar Tarefa',
-                                  onPressed: () =>
-                                      Get.toNamed(Routes.taskFormPage)),
+                                  onPressed: () async {
+                                    var result =
+                                        await Get.toNamed(Routes.taskFormPage);
+
+                                    if (result == true) {
+                                      await controller.onInit();
+                                    }
+                                  }),
                             ),
                             mobilePage: IconButton(
                               tooltip: 'Nova Tarefa',
@@ -70,12 +76,10 @@ class _TaskPageState extends State<TaskPage> {
                       ),
                     ),
                     _header(),
-                    Obx(
-                      () => controller.pageState.value.status ==
-                              PageStatus.loading
-                          ? 0.toSizedBoxH()
-                          : _TaskList(),
-                    ),
+                    Obx(() =>
+                        controller.pageState.value.status == PageStatus.loading
+                            ? const CircularProgressIndicator()
+                            : _TaskList()),
                   ],
                 ),
               ),
@@ -210,11 +214,14 @@ class _TaskTableState extends State<TaskTable> {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.edit),
-                      onPressed: () {
-                        Get.to(TaskFormPage(
+                      onPressed: () async {
+                        var result = await Get.to(TaskFormPage(
                           feature: feature,
                           task: task,
                         ));
+                        if (result != null) {
+                          await controller.fetchFeatures();
+                        }
                       },
                     ),
                     Container(

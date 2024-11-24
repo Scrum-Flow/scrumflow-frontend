@@ -46,11 +46,7 @@ class SprintFormController extends GetxController {
     }
 
     pageState.listen((value) {
-      Prompts.showSnackBar(value);
-
-/*
-      if (value.status == PageStatus.success) Get.back();
-*/
+      if (value.status == PageStatus.success) Get.back(result: true);
     });
   }
 
