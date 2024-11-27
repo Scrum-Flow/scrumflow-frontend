@@ -1,4 +1,3 @@
-import 'package:appflowy_board/appflowy_board.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -139,87 +138,77 @@ class _KanbanBoardState extends State<_KanbanBoard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: controller.obx(
-        (state) {
-          if (state == null) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      child: Obx(
+        () => controller.pageState.value.status == PageStatus.loading
+            ? Center(child: CircularProgressIndicator())
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Flexible(
-                    flex: 3,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: DropdownButtonFormField<SprintDetails>(
-                        items: state.keys
-                            .map(
-                              (sprint) => DropdownMenuItem(
-                                value: sprint,
-                                child: BaseLabel(text: sprint.name ?? ''),
-                              ),
-                            )
-                            .toList(),
-                        onChanged: controller.onChangeSprintSelected,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Flexible(
+                        flex: 3,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 50),
+                          child: DropdownButtonFormField<SprintDetails>(
+                            items: controller.projectDetails.sprints
+                                ?.map(
+                                  (sprint) => DropdownMenuItem(
+                                    value: sprint,
+                                    child: BaseLabel(text: sprint.name ?? ''),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: controller.onChangeSprintSelected,
+                          ),
+                        ),
                       ),
-                    ),
+                      Flexible(
+                        flex: 1,
+                        child: IconButton(
+                          icon: const Icon(Icons.settings),
+                          onPressed: _showSettingsDialog,
+                        ),
+                      ),
+                    ],
                   ),
-                  Flexible(
-                    flex: 1,
-                    child: IconButton(
-                      icon: const Icon(Icons.settings),
-                      onPressed: _showSettingsDialog,
+                  Expanded(
+                    child: Container(
+                      constraints: BoxConstraints(
+                        maxWidth: Helper.screenWidth() * 0.9,
+                        minWidth: Helper.screenWidth() * 0.9,
+                      ),
+                      child: DragAndDropLists(
+                        listWidth: 200,
+                        axis: Axis.horizontal,
+                        disableScrolling: false,
+                        itemDivider: const Divider(thickness: 1, height: 1),
+                        listDragOnLongPress: false,
+                        onItemReorder: _onItemReorder,
+                        onListReorder: (_, __) {},
+                        children: [
+                          for (var i = 0; i < _lists.length; i++)
+                            if (visibilityStatus[ObjectStatus.values[i]] ??
+                                false)
+                              _lists[i],
+                        ],
+                        // itemDraggingWidth: 200,
+                        listPadding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10),
+                        listDecoration: BoxDecoration(
+                          color: Colors.grey.shade200,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.grey.shade400, blurRadius: 4),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
-              Expanded(
-                child: Container(
-                  constraints: BoxConstraints(
-                    maxWidth: Helper.screenWidth() * 0.9,
-                    minWidth: Helper.screenWidth() * 0.9,
-                  ),
-                  child: DragAndDropLists(
-                    listWidth: 200,
-                    axis: Axis.horizontal,
-                    disableScrolling: false,
-                    itemDivider: const Divider(thickness: 1, height: 1),
-                    listDragOnLongPress: false,
-                    onItemReorder: _onItemReorder,
-                    onListReorder: (_, __) {},
-                    children: [
-                      for (var i = 0; i < _lists.length; i++)
-                        if (visibilityStatus[ObjectStatus.values[i]] ?? false)
-                          _lists[i],
-                    ],
-                    // itemDraggingWidth: 200,
-                    listPadding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 10),
-                    listDecoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(color: Colors.grey.shade400, blurRadius: 4),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-        onLoading: const Center(child: CircularProgressIndicator()),
-        onError: (error) => Center(
-          child: Text(
-            error ?? '',
-            style: const TextStyle(fontSize: 18),
-            textAlign: TextAlign.center,
-          ),
-        ),
       ),
     );
   }
@@ -269,7 +258,7 @@ class _KanbanBoardState extends State<_KanbanBoard> {
     );
   }
 }
-
+/*
 class _KanbanBoard2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -395,3 +384,5 @@ extension HexColor on Color {
     return Color(int.parse(buffer.toString(), radix: 16));
   }
 }
+
+ */
