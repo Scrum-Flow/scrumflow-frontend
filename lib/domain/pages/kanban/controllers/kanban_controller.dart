@@ -15,8 +15,6 @@ class KanbanController extends GetxController {
 
   Map<SprintDetails, List<Task>> get sprintTasks => _sprintTasks ?? {};
 
-  late ProjectDetails projectDetails;
-
   Map<SprintDetails, List<Task>>? _sprintTasks;
   Rx<SprintDetails?> selectedSprint = Rxn();
   Rx<PageState> pageState = PageState.none().obs;
@@ -24,6 +22,7 @@ class KanbanController extends GetxController {
 
   @override
   void onInit() async {
+    pageState.value = PageState.loading();
     pageState.listen((value) => Prompts.showSnackBar(value));
 
     await fetchProjectDetails();
@@ -31,13 +30,21 @@ class KanbanController extends GetxController {
     // resetGroups();
 
     super.onInit();
+    pageState.value = PageState.none();
   }
 
   FutureOr<void> fetchProjectDetails() async {
     projectDetailsState.value = PageState.loading();
 
     try {
-      projectDetails = await KanbanService.projectDetails(project.id ?? 0);
+      ProjectDetails projectDetails =
+          await KanbanService.projectDetails(project.id ?? 0);
+
+      if (projectDetails.sprints != null) {
+        buildMapSprintTask(projectDetails.sprints!);
+      } else {
+        throw Exception("O projeto não possui sprints");
+      }
     } on DioException catch (e) {
       debugPrint(e.toString());
       projectDetailsState.value = PageState.error();
@@ -51,8 +58,6 @@ class KanbanController extends GetxController {
 
   void onChangeSprintSelected(SprintDetails? selected) {
     selectedSprint.value = selected;
-
-    updateKanbanBoard();
   }
 
   // void resetGroups([List<Task>? tasks]) {
@@ -64,4 +69,16 @@ class KanbanController extends GetxController {
   // }
 
   void updateKanbanBoard() {}
+
+  void buildMapSprintTask(List<SprintDetails> sprints) {
+    final Map<SprintDetails, List<Task>> sprintTaskMap = {};
+
+    for (var sprint in sprints) {
+      final tasks =
+          sprint.features!.expand((feature) => feature.tasks!).toList();
+
+      sprintTaskMap[sprint] = tasks;
+    }
+    _sprintTasks = sprintTaskMap;
+  }
 }
