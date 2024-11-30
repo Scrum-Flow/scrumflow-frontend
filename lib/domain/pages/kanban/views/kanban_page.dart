@@ -24,9 +24,9 @@ class _KanbanPageState extends State<KanbanPage> {
 
   @override
   void initState() {
-    super.initState();
-
     controller = Get.put(KanbanController(widget.project)).onInit();
+
+    super.initState();
   }
 
   @override
@@ -41,12 +41,20 @@ class _KanbanPageState extends State<KanbanPage> {
           }
           return Scaffold(
             appBar: AppBar(
+              automaticallyImplyLeading: false,
               title: const BaseLabel(
                   text: 'Kanban', fontSize: fsVeryBig, fontWeight: fwMedium),
             ),
             body: _KanbanBoard(),
           );
         });
+  }
+
+  @override
+  void dispose() {
+    Get.delete<KanbanController>();
+
+    super.dispose();
   }
 }
 
@@ -58,9 +66,6 @@ class _KanbanBoard extends StatefulWidget {
 class _KanbanBoardState extends State<_KanbanBoard> {
   final KanbanController controller = Get.find<KanbanController>();
 
-  late List<DragAndDropList> _lists;
-
-  ///Esse cara vai ter que ser salvo no bd -> E vai ter que ser obtido também
   Map<ObjectStatus, bool> visibilityStatus = {
     for (var status in ObjectStatus.values) status: true,
   };
@@ -68,51 +73,7 @@ class _KanbanBoardState extends State<_KanbanBoard> {
   @override
   void initState() {
     super.initState();
-
-    _lists = createDragAndDropLists();
-    // _initializeLists();
   }
-
-  void _initializeLists() {
-    _lists = ObjectStatus.values.map((status) {
-      return DragAndDropList(
-        contentsWhenEmpty: const Text("Sem tarefas"),
-        // footer:
-        canDrag: false,
-        header: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Icon(Icons.lightbulb_circle),
-              10.toSizedBoxW(),
-              Text(
-                status.getDescription(),
-                style:
-                    const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-        ),
-        children: [
-          DragAndDropItem(
-            child: _card('Titulo Tarefa', 'Subtitulo Tarefa'),
-          ),
-          DragAndDropItem(
-            child: _card('Titulo Tarefa', 'Subtitulo Tarefa'),
-          ),
-        ],
-      );
-    }).toList();
-  }
-
-  /*
-   void _toggleVisibility(ObjectStatus status, bool isVisible) {
-    setState(() {
-      visibilityStatus[status] = isVisible;
-    });
-  }
-  */
 
   void _showSettingsDialog() {
     showDialog(
@@ -157,7 +118,7 @@ class _KanbanBoardState extends State<_KanbanBoard> {
     return Container(
       child: Obx(
         () => controller.pageState.value.status == PageStatus.loading
-            ? Center(child: CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator())
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -169,16 +130,31 @@ class _KanbanBoardState extends State<_KanbanBoard> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 50),
                           child: DropdownButtonFormField<SprintDetails>(
-                            hint: const Text("Selecione uma sprint"),
+                            hint: const Padding(
+                              padding: EdgeInsets.only(left: 20.0),
+                              child: Text("Selecione uma sprint"),
+                            ),
+                            value: controller.selectedSprint.value,
                             items: controller.sprintTasks.keys
                                 .map(
                                   (sprint) => DropdownMenuItem(
                                     value: sprint,
-                                    child: BaseLabel(text: sprint.name ?? ''),
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(left: 20.0),
+                                      child: BaseLabel(text: sprint.name ?? ''),
+                                    ),
                                   ),
                                 )
                                 .toList(),
-                            onChanged: controller.onChangeSprintSelected,
+                            onChanged: (sprint) async {
+                              controller.onChangeSprintSelected(sprint);
+                            },
+                            icon: IconButton(
+                              onPressed: () async =>
+                                  await controller.onChangeSprintSelected(null),
+                              icon: const Icon(Icons.highlight_remove),
+                            ),
                           ),
                         ),
                       ),
@@ -191,21 +167,15 @@ class _KanbanBoardState extends State<_KanbanBoard> {
                       ),
                     ],
                   ),
-                  Obx(
-                    () => controller.selectedSprint.value == null
-                        ? const Center(
-                            child: Text(
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
-                                "É necessário selecionar uma sprint"),
-                          )
-                        : Expanded(
-                            child: Container(
-                              constraints: BoxConstraints(
-                                maxWidth: Helper.screenWidth() * 0.95,
-                                minWidth: Helper.screenWidth() * 0.95,
-                              ),
-                              child: DragAndDropLists(
+                  Expanded(
+                    child: Container(
+                      constraints: BoxConstraints(
+                        maxWidth: Helper.screenWidth() * 0.95,
+                        minWidth: Helper.screenWidth() * 0.95,
+                      ),
+                      child: Obx(
+                        () => controller.statusTaskMap.isNotEmpty
+                            ? DragAndDropLists(
                                 listWidth: 180,
                                 axis: Axis.horizontal,
                                 disableScrolling: false,
@@ -214,16 +184,12 @@ class _KanbanBoardState extends State<_KanbanBoard> {
                                 listDragOnLongPress: false,
                                 onItemReorder: _onItemReorder,
                                 onListReorder: (_, __) {},
-                                children: [
-                                  for (var i = 0; i < _lists.length; i++)
-                                    if (visibilityStatus[
-                                            ObjectStatus.values[i]] ??
-                                        false)
-                                      _lists[i],
-                                ],
+                                children: createDragAndDropLists(),
                                 // itemDraggingWidth: 200,
                                 listPadding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 10),
+                                  horizontal: 10,
+                                  vertical: 10,
+                                ),
                                 listDecoration: BoxDecoration(
                                   color: Colors.grey.shade200,
                                   borderRadius: BorderRadius.circular(10),
@@ -233,64 +199,36 @@ class _KanbanBoardState extends State<_KanbanBoard> {
                                         blurRadius: 4),
                                   ],
                                 ),
-                              ),
-                            ),
-                          ),
+                              )
+                            : 0.toSizedBoxW(),
+                      ),
+                    ),
                   ),
+                  /*),*/
                 ],
               ),
       ),
     );
   }
 
-  // void _onItemReorder(
-  //     int oldItemIndex, int oldListIndex, int newItemIndex, int newListIndex) {
-  //   setState(() {
-  //     final movedItem = _lists[oldListIndex].children.removeAt(oldItemIndex);
-  //     _lists[newListIndex].children.insert(newItemIndex, movedItem);
-  //   });
-  // }
+  Future<void> _onItemReorder(int oldItemIndex, int oldListIndex,
+      int newItemIndex, int newListIndex) async {
+    final oldStatus = ObjectStatus.values[oldListIndex];
+    final newStatus = ObjectStatus.values[newListIndex];
 
-  void _onItemReorder(
-      int oldItemIndex, int oldListIndex, int newItemIndex, int newListIndex) {
-    setState(() {
-      final oldStatus = ObjectStatus.values[oldListIndex];
-      final newStatus = ObjectStatus.values[newListIndex];
-
-      // Garantir que as listas existem
-      if (controller.statusTaskMap[oldStatus] == null ||
-          controller.statusTaskMap[newStatus] == null) {
-        debugPrint("Uma das listas está nula!");
-        return;
-      }
-
-      // Garantir que os índices estão dentro dos limites
-      if (oldItemIndex < 0 ||
-          oldItemIndex >= controller.statusTaskMap[oldStatus]!.length ||
-          newItemIndex < 0) {
-        debugPrint("Índice fora dos limites!");
-        return;
-      }
-
-      final movedTask =
-          controller.statusTaskMap[oldStatus]!.removeAt(oldItemIndex);
-
-      controller.statusTaskMap[newStatus]!.insert(newItemIndex, movedTask);
-
-      // final movedTask = controller
-      //     .statusTaskMap[ObjectStatus.values[oldListIndex]]!
-      //     .removeAt(oldItemIndex);
-      //
-      // controller.statusTaskMap[ObjectStatus.values[newListIndex]]!
-      //     .insert(newItemIndex, movedTask);
-    });
+    await controller.updateTaskStatus(
+        oStatus: oldStatus,
+        oIndex: oldItemIndex,
+        nStatus: newStatus,
+        nIndex: newItemIndex);
   }
 
   List<DragAndDropList> createDragAndDropLists() {
-    return ObjectStatus.values.map((status) {
+    return ObjectStatus.values
+        .where((status) => visibilityStatus[status] ?? false)
+        .map((status) {
       return DragAndDropList(
         contentsWhenEmpty: const Text("Sem tarefas"),
-        // footer:
         canDrag: false,
         header: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
@@ -310,16 +248,24 @@ class _KanbanBoardState extends State<_KanbanBoard> {
         children: controller.statusTaskMap[status]!.map((task) {
           return DragAndDropItem(
             child: _card(
-              task.name ?? 'Sem nome',
-              task.description ?? 'Sem descrição',
-            ),
+                title: task.name ?? 'Sem nome',
+                subtitle: task.description ?? 'Sem descrição',
+                sprint: controller.getSprintName(task.id),
+                feature: controller.getFeatureName(task.id),
+                responsible: task.assignedUser),
           );
         }).toList(),
       );
     }).toList();
   }
 
-  Widget _card(String title, String subtitle) {
+  Widget _card({
+    required String title,
+    required String subtitle,
+    required String sprint,
+    required String feature,
+    required String responsible,
+  }) {
     return Padding(
       padding: const EdgeInsets.all(5.0),
       child: Container(
@@ -351,85 +297,47 @@ class _KanbanBoardState extends State<_KanbanBoard> {
                 color: Colors.grey,
               ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-/*
-class _KanbanBoard2 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final config = AppFlowyBoardConfig(
-      groupBackgroundColor: HexColor.fromHex('#F7F8FC'),
-      stretchGroupHeight: false,
-      groupMargin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      groupBodyPadding: const EdgeInsets.symmetric(horizontal: 8),
-    );
-
-    final KanbanController controller = Get.find<KanbanController>();
-
-    return AppFlowyBoard(
-      controller: controller.kanbanController,
-      cardBuilder: (context, group, groupItem) => AppFlowyGroupCard(
-        key: ValueKey(groupItem.id),
-        child: _buildCard(groupItem),
-      ),
-      boardScrollController: controller.boardScrollController,
-      footerBuilder: (context, columnData) => AppFlowyGroupFooter(
-        icon: const Icon(Icons.add, size: 20),
-        title: const Text('New'),
-        height: 50,
-        margin: config.groupBodyPadding,
-        // onAddButtonClick: () => controller.boardScrollController.scrollToBottom(columnData.id),
-      ),
-      headerBuilder: (context, columnData) => AppFlowyGroupHeader(
-        icon: const Icon(Icons.lightbulb_circle),
-        title: SizedBox(
-          width: 130,
-          child: Text(columnData.headerData.groupName),
-        ),
-        height: 50,
-        margin: config.groupBodyPadding,
-      ),
-      groupConstraints: const BoxConstraints.tightFor(width: 300),
-      config: config,
-    );
-  }
-}
-
-class RichTextCard extends StatefulWidget {
-  final RichTextItem item;
-
-  const RichTextCard({
-    required this.item,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  State<RichTextCard> createState() => _RichTextCardState();
-}
-
-class _RichTextCardState extends State<RichTextCard> {
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              widget.item.title,
-              style: const TextStyle(fontSize: 14),
-              textAlign: TextAlign.left,
+            8.toSizedBoxH(),
+            Tooltip(
+              message: "Sprint",
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                    color: Colors.greenAccent.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(5)),
+                child: Text(
+                  sprint,
+                  style: const TextStyle(fontSize: 12),
+                ),
+              ),
             ),
-            const SizedBox(height: 10),
-            Text(
-              widget.item.subtitle,
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
+            8.toSizedBoxH(),
+            Tooltip(
+              message: "Funcionalidade",
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                    color: Colors.redAccent.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(5)),
+                child: Text(
+                  feature,
+                  style: const TextStyle(fontSize: 12),
+                ),
+              ),
+            ),
+            8.toSizedBoxH(),
+            Tooltip(
+              message: "Responsável",
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                    color: Colors.blue.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(5)),
+                child: Text(
+                  responsible,
+                  style: const TextStyle(fontSize: 12),
+                ),
+              ),
             )
           ],
         ),
@@ -437,51 +345,3 @@ class _RichTextCardState extends State<RichTextCard> {
     );
   }
 }
-
-class TextItem extends AppFlowyGroupItem {
-  final String s;
-
-  TextItem(this.s);
-
-  @override
-  String get id => s;
-}
-
-class RichTextItem extends AppFlowyGroupItem {
-  final String title;
-  final String subtitle;
-
-  RichTextItem({required this.title, required this.subtitle});
-
-  @override
-  String get id => title;
-}
-
-Widget _buildCard(AppFlowyGroupItem item) {
-  if (item is TextItem) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-        child: Text(item.s),
-      ),
-    );
-  }
-
-  if (item is RichTextItem) {
-    return RichTextCard(item: item);
-  }
-
-  throw UnimplementedError();
-}
-
-extension HexColor on Color {
-  static Color fromHex(String hexString) {
-    final buffer = StringBuffer();
-    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
-    buffer.write(hexString.replaceFirst('#', ''));
-    return Color(int.parse(buffer.toString(), radix: 16));
-  }
-}
-
- */

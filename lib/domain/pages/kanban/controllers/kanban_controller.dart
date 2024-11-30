@@ -15,9 +15,9 @@ class KanbanController extends GetxController {
   final Project project;
 
   Map<SprintDetails, List<Task>> get sprintTasks => _sprintTasks ?? {};
-
-  // Map da lista de status
-  Map<ObjectStatus, List<Task>> statusTaskMap = {};
+  late ProjectDetails projectDetails;
+  RxMap<ObjectStatus, List<Task>> statusTaskMap =
+      <ObjectStatus, List<Task>>{}.obs;
 
   Map<SprintDetails, List<Task>>? _sprintTasks;
   Rx<SprintDetails?> selectedSprint = Rxn();
@@ -32,7 +32,6 @@ class KanbanController extends GetxController {
     await fetchProjectDetails();
 
     distributeTasksOnLists();
-    // resetGroups();
 
     super.onInit();
     pageState.value = PageState.none();
@@ -42,8 +41,7 @@ class KanbanController extends GetxController {
     projectDetailsState.value = PageState.loading();
 
     try {
-      ProjectDetails projectDetails =
-          await KanbanService.projectDetails(project.id ?? 0);
+      projectDetails = await KanbanService.projectDetails(project.id ?? 0);
 
       if (projectDetails.sprints != null) {
         buildMapSprintTask(projectDetails.sprints!);
@@ -61,28 +59,37 @@ class KanbanController extends GetxController {
     projectDetailsState.value = PageState.none();
   }
 
-  void onChangeSprintSelected(SprintDetails? selected) {
+  Future<void> onChangeSprintSelected(SprintDetails? selected) async {
     selectedSprint.value = selected;
+
+    if (selected == null) {
+      await onInit();
+    } else {
+      _sprintTasks?.clear();
+
+      buildMapSprintTask(projectDetails.sprints!);
+
+      distributeTasksOnLists();
+    }
   }
-
-  // void resetGroups([List<Task>? tasks]) {
-  //   List<AppFlowyGroupItem> todoTasks = (tasks ?? [])
-  //       .map((task) => RichTextItem(
-  //           title: task.name ?? '',
-  //           subtitle: Helper.formatDate(task.createdAt) ?? ''))
-  //       .toList();
-  // }
-
-  void updateKanbanBoard() {}
 
   void buildMapSprintTask(List<SprintDetails> sprints) {
     final Map<SprintDetails, List<Task>> sprintTaskMap = {};
 
     for (var sprint in sprints) {
-      final tasks =
-          sprint.features!.expand((feature) => feature.tasks!).toList();
+      if (selectedSprint.value == null) {
+        final tasks =
+            sprint.features!.expand((feature) => feature.tasks!).toList();
 
-      sprintTaskMap[sprint] = tasks;
+        sprintTaskMap[sprint] = tasks;
+      } else {
+        if (sprint.id == selectedSprint.value!.id) {
+          final tasks =
+              sprint.features!.expand((feature) => feature.tasks!).toList();
+
+          sprintTaskMap[sprint] = tasks;
+        }
+      }
     }
     _sprintTasks = sprintTaskMap;
   }
@@ -100,4 +107,60 @@ class KanbanController extends GetxController {
       }
     });
   }
+
+  Future<void> updateTaskStatus(
+      {required ObjectStatus oStatus,
+      required int oIndex,
+      required ObjectStatus nStatus,
+      required int nIndex}) async {
+    final movedTask = statusTaskMap[oStatus]!.removeAt(oIndex);
+
+    statusTaskMap[nStatus]!.insert(nIndex, movedTask);
+
+    // await updateTask(movedTask, nStatus);
+
+    statusTaskMap.refresh();
+  }
+
+  String getSprintName(int? taskId) {
+    for (var sprint in projectDetails.sprints ?? []) {
+      for (var feature in sprint.features ?? []) {
+        for (var task in feature.tasks ?? []) {
+          if (task.id == taskId) {
+            return sprint.name;
+          }
+        }
+      }
+    }
+    return "Sem Sprint";
+  }
+
+  String getFeatureName(int? taskId) {
+    for (var sprint in projectDetails.sprints ?? []) {
+      for (var feature in sprint.features ?? []) {
+        for (var task in feature.tasks ?? []) {
+          if (task.id == taskId) {
+            return feature.name;
+          }
+        }
+      }
+    }
+    return "Sem Funcionalidade";
+  }
+
+  /*Future<void> updateTask(Task task, ObjectStatus status) async {
+    try {
+      await TaskService.updateTask(Task(
+        id: task.id,
+        name: task.name,
+        status: status.name,
+        description: task.description,
+        assignedToUserId: task.assignedUser.,
+        assignedFeature: chosenFeature.value!.id,
+        estimatePoints: estimatePoints.value,
+      ));
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }*/
 }
