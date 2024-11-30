@@ -20,17 +20,33 @@ class KanbanPage extends StatefulWidget {
 }
 
 class _KanbanPageState extends State<KanbanPage> {
+  late Future<void> controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller = Get.put(KanbanController(widget.project)).onInit();
+  }
+
   @override
   Widget build(BuildContext context) {
-    Get.put(KanbanController(widget.project));
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const BaseLabel(
-            text: 'Kanban', fontSize: fsVeryBig, fontWeight: fwMedium),
-      ),
-      body: _KanbanBoard(),
-    );
+    return FutureBuilder<void>(
+        future: controller,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return const Center(child: Text('Erro ao carregar os dados'));
+          }
+          return Scaffold(
+            appBar: AppBar(
+              title: const BaseLabel(
+                  text: 'Kanban', fontSize: fsVeryBig, fontWeight: fwMedium),
+            ),
+            body: _KanbanBoard(),
+          );
+        });
   }
 }
 
@@ -53,7 +69,8 @@ class _KanbanBoardState extends State<_KanbanBoard> {
   void initState() {
     super.initState();
 
-    _initializeLists();
+    _lists = createDragAndDropLists();
+    // _initializeLists();
   }
 
   void _initializeLists() {
@@ -226,12 +243,80 @@ class _KanbanBoardState extends State<_KanbanBoard> {
     );
   }
 
+  // void _onItemReorder(
+  //     int oldItemIndex, int oldListIndex, int newItemIndex, int newListIndex) {
+  //   setState(() {
+  //     final movedItem = _lists[oldListIndex].children.removeAt(oldItemIndex);
+  //     _lists[newListIndex].children.insert(newItemIndex, movedItem);
+  //   });
+  // }
+
   void _onItemReorder(
       int oldItemIndex, int oldListIndex, int newItemIndex, int newListIndex) {
     setState(() {
-      final movedItem = _lists[oldListIndex].children.removeAt(oldItemIndex);
-      _lists[newListIndex].children.insert(newItemIndex, movedItem);
+      final oldStatus = ObjectStatus.values[oldListIndex];
+      final newStatus = ObjectStatus.values[newListIndex];
+
+      // Garantir que as listas existem
+      if (controller.statusTaskMap[oldStatus] == null ||
+          controller.statusTaskMap[newStatus] == null) {
+        debugPrint("Uma das listas está nula!");
+        return;
+      }
+
+      // Garantir que os índices estão dentro dos limites
+      if (oldItemIndex < 0 ||
+          oldItemIndex >= controller.statusTaskMap[oldStatus]!.length ||
+          newItemIndex < 0) {
+        debugPrint("Índice fora dos limites!");
+        return;
+      }
+
+      final movedTask =
+          controller.statusTaskMap[oldStatus]!.removeAt(oldItemIndex);
+
+      controller.statusTaskMap[newStatus]!.insert(newItemIndex, movedTask);
+
+      // final movedTask = controller
+      //     .statusTaskMap[ObjectStatus.values[oldListIndex]]!
+      //     .removeAt(oldItemIndex);
+      //
+      // controller.statusTaskMap[ObjectStatus.values[newListIndex]]!
+      //     .insert(newItemIndex, movedTask);
     });
+  }
+
+  List<DragAndDropList> createDragAndDropLists() {
+    return ObjectStatus.values.map((status) {
+      return DragAndDropList(
+        contentsWhenEmpty: const Text("Sem tarefas"),
+        // footer:
+        canDrag: false,
+        header: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Icon(Icons.lightbulb_circle),
+              10.toSizedBoxW(),
+              Text(
+                status.getDescription(),
+                style:
+                    const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ),
+        children: controller.statusTaskMap[status]!.map((task) {
+          return DragAndDropItem(
+            child: _card(
+              task.name ?? 'Sem nome',
+              task.description ?? 'Sem descrição',
+            ),
+          );
+        }).toList(),
+      );
+    }).toList();
   }
 
   Widget _card(String title, String subtitle) {

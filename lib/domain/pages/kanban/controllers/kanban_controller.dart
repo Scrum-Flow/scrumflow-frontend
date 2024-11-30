@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scrumflow/domain/pages/kanban/services/services.dart';
 import 'package:scrumflow/models/models.dart';
+import 'package:scrumflow/utils/enums/enum_status.dart';
 import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/widgets.dart';
 
@@ -15,18 +16,22 @@ class KanbanController extends GetxController {
 
   Map<SprintDetails, List<Task>> get sprintTasks => _sprintTasks ?? {};
 
+  // Map da lista de status
+  Map<ObjectStatus, List<Task>> statusTaskMap = {};
+
   Map<SprintDetails, List<Task>>? _sprintTasks;
   Rx<SprintDetails?> selectedSprint = Rxn();
   Rx<PageState> pageState = PageState.none().obs;
   Rx<PageState> projectDetailsState = PageState.none().obs;
 
   @override
-  void onInit() async {
+  Future<void> onInit() async {
     pageState.value = PageState.loading();
     pageState.listen((value) => Prompts.showSnackBar(value));
 
     await fetchProjectDetails();
 
+    distributeTasksOnLists();
     // resetGroups();
 
     super.onInit();
@@ -80,5 +85,19 @@ class KanbanController extends GetxController {
       sprintTaskMap[sprint] = tasks;
     }
     _sprintTasks = sprintTaskMap;
+  }
+
+  void distributeTasksOnLists() {
+    for (var status in ObjectStatus.values) {
+      statusTaskMap[status] = [];
+    }
+
+    _sprintTasks!.values.forEach((tasks) {
+      for (var task in tasks) {
+        final status =
+            ObjectStatus.values.firstWhere((sts) => sts.name == task.status);
+        statusTaskMap[status]!.add(task);
+      }
+    });
   }
 }
