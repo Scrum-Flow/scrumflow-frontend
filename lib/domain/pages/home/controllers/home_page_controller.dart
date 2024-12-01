@@ -28,10 +28,10 @@ class HomePageController extends GetxController {
   late PageController pageController = PageController();
   final SideMenuController sideMenu = SideMenuController();
 
-  int index = 0;
+  var index = 0.obs;
 
   void changePage(int index) {
-    this.index = index;
+    this.index.value = index;
 
     sideMenu.changePage(index);
 

@@ -29,6 +29,7 @@ class _BodyMobile extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       children: [
         Flexible(
+          flex: 1,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.max,
@@ -46,7 +47,7 @@ class _BodyMobile extends StatelessWidget {
             ],
           ),
         ),
-        Flexible(child: _Form()),
+        Flexible(flex: 2, child: _Form()),
       ],
     );
   }
