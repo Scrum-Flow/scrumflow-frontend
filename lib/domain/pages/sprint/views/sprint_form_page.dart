@@ -20,6 +20,7 @@ class SprintFormPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text("Cadastro de Sprint"),
       ),
       body: const PageBuilder(
@@ -70,29 +71,9 @@ class _SprintForm extends StatelessWidget {
                 initialValue: SprintFormViewController.sprint?.description,
                 onChanged: SprintFormViewController.updateDescription,
               ),
-              Row(
-                children: [
-                  Expanded(
-                    child: BaseDatePicker(
-                      hint: 'Data de início da sprint',
-                      initialValue: SprintFormViewController.sprint?.startDate,
-                      validator: FormBuilderValidators.required(
-                          errorText: 'Campo obrigatório'),
-                      onChanged: SprintFormViewController.updateStartDate,
-                    ),
-                  ),
-                  20.toSizedBoxW(),
-                  Expanded(
-                    child: BaseDatePicker(
-                      hint: 'Data de fim da sprint',
-                      initialValue: SprintFormViewController.sprint?.endDate,
-                      validator: FormBuilderValidators.required(
-                          errorText: 'Campo obrigatório'),
-                      onChanged: SprintFormViewController.updateEndDate,
-                    ),
-                  ),
-                ],
-              ),
+              Helper.isMobile()
+                  ? wdgtSprintDatesSelectorMobile(SprintFormViewController)
+                  : wdgtSprintDatesSelectorWeb(SprintFormViewController),
               25.toSizedBoxH(),
               Obx(
                 () => Row(
@@ -125,6 +106,49 @@ class _SprintForm extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget wdgtSprintDatesSelectorMobile(
+      SprintFormController sprintFormViewController) {
+    return Column(
+      children: [
+        initialDate(sprintFormViewController),
+        finalDate(sprintFormViewController),
+      ],
+    );
+  }
+
+  Widget wdgtSprintDatesSelectorWeb(
+      SprintFormController sprintFormViewController) {
+    return Row(
+      children: [
+        Expanded(
+          child: initialDate(sprintFormViewController),
+        ),
+        20.toSizedBoxW(),
+        Expanded(
+          child: finalDate(sprintFormViewController),
+        ),
+      ],
+    );
+  }
+
+  Widget finalDate(SprintFormController sprintFormViewController) {
+    return BaseDatePicker(
+      hint: 'Data de fim da sprint',
+      initialValue: sprintFormViewController.sprint?.endDate,
+      validator: FormBuilderValidators.required(errorText: 'Campo obrigatório'),
+      onChanged: sprintFormViewController.updateEndDate,
+    );
+  }
+
+  Widget initialDate(SprintFormController sprintFormViewController) {
+    return BaseDatePicker(
+      hint: 'Data de início da sprint',
+      initialValue: sprintFormViewController.sprint?.startDate,
+      validator: FormBuilderValidators.required(errorText: 'Campo obrigatório'),
+      onChanged: sprintFormViewController.updateStartDate,
     );
   }
 }
