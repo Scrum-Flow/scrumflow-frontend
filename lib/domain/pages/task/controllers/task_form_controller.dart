@@ -36,7 +36,7 @@ class TaskFormController extends GetxController {
 
   void updateResponsibleUser(int value) => responsibleUser.value = value;
 
-  void updateTaskFeature(Feature value) => chosenFeature.value = value;
+  void updateTaskFeature(Feature? value) => chosenFeature.value = value;
 
   @override
   onInit() {

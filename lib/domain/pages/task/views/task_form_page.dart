@@ -75,115 +75,9 @@ class _TaskForm extends StatelessWidget {
                         errorText: 'Campo obrigatório'),
                     onChanged: taskFormViewController.updateDescription,
                   ),
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: DropdownSearch<int>(
-                          items: (f, cs) => List.generate(15, (i) => i + 1),
-                          decoratorProps: const DropDownDecoratorProps(
-                            decoration: InputDecoration(
-                                labelText: "Pontos estimados",
-                                hintText: "Selecione um número"),
-                          ),
-                          selectedItem:
-                              taskFormViewController.task?.estimatePoints,
-                          onChanged: (value) => taskFormViewController
-                              .updateEstimatePoints(value ?? 0),
-                          validator: FormBuilderValidators.required(
-                              errorText: 'Campo obrigatório'),
-                          popupProps: PopupProps.dialog(
-                            title: Container(
-                              decoration: const BoxDecoration(
-                                  color: AppTheme.ligthBlueScrum),
-                              alignment: Alignment.center,
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              child: const Text(
-                                'Pontos estimados',
-                                style: TextStyle(
-                                    fontSize: 21,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white70),
-                              ),
-                            ),
-                            dialogProps: DialogProps(
-                              clipBehavior: Clip.antiAlias,
-                              shape: OutlineInputBorder(
-                                borderSide: const BorderSide(width: 1),
-                                borderRadius: BorderRadius.circular(25),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      20.toSizedBoxW(),
-                      Expanded(
-                        flex: 7,
-                        child: Obx(
-                          () => LoadingWidget(
-                            isLoading: taskFormViewController
-                                    .initialState.value.status ==
-                                PageStatus.loading,
-                            child: DropdownSearch<String>(
-                              suffixProps: const DropdownSuffixProps(
-                                clearButtonProps:
-                                    ClearButtonProps(isVisible: true),
-                                dropdownButtonProps: DropdownButtonProps(
-                                  iconClosed: Icon(Icons.keyboard_arrow_down),
-                                  iconOpened: Icon(Icons.keyboard_arrow_up),
-                                ),
-                              ),
-                              validator: FormBuilderValidators.required(
-                                  errorText: 'Campo obrigatório'),
-                              items: (filter, props) => taskFormViewController
-                                  .users
-                                  .map((user) => user.name ?? '')
-                                  .where((e) => e
-                                      .toLowerCase()
-                                      .contains(filter.toLowerCase()))
-                                  .toList(),
-                              onChanged: (selectedUserName) {
-                                var selectedUser =
-                                    taskFormViewController.users.firstWhere(
-                                  (user) => user.name == selectedUserName,
-                                );
-                                taskFormViewController
-                                    .updateResponsibleUser(selectedUser.id!);
-                              },
-                              selectedItem:
-                                  taskFormViewController.getSelectedUserItem(),
-                              decoratorProps: const DropDownDecoratorProps(
-                                decoration: InputDecoration(
-                                  labelText: "Selecione o responsável",
-                                  hintText: "Escolha um usuário",
-                                  border: OutlineInputBorder(),
-                                ),
-                              ),
-                              popupProps: PopupProps.menu(
-                                showSearchBox: true,
-                                itemBuilder:
-                                    (context, item, isDisabled, isSelected) {
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 12.0),
-                                    child: Text(
-                                      item,
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  );
-                                },
-                                fit: FlexFit.loose,
-                                constraints: BoxConstraints(maxHeight: 400),
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
+                  Helper.isMobile()
+                      ? _widgetMobile(taskFormViewController)
+                      : _widgetWeb(taskFormViewController),
                   25.toSizedBoxH(),
                   Obx(
                     () => LoadingWidget(
@@ -206,12 +100,16 @@ class _TaskForm extends StatelessWidget {
                                 e.toLowerCase().contains(filter.toLowerCase()))
                             .toList(),
                         onChanged: (selectedFeatureName) {
-                          var selectedFeature =
-                              controller.featureValues.firstWhere(
-                            (feature) => feature.name == selectedFeatureName,
-                          );
-                          taskFormViewController
-                              .updateTaskFeature(selectedFeature);
+                          if (selectedFeatureName != null) {
+                            var selectedFeature =
+                                controller.featureValues.firstWhere(
+                              (feature) => feature.name == selectedFeatureName,
+                            );
+                            taskFormViewController
+                                .updateTaskFeature(selectedFeature);
+                          } else {
+                            taskFormViewController.updateTaskFeature(null);
+                          }
                         },
                         selectedItem:
                             taskFormViewController.getSelectedFeatureItem(),
@@ -273,6 +171,125 @@ class _TaskForm extends StatelessWidget {
                 ],
               ),
             )),
+      ),
+    );
+  }
+
+  Widget _widgetMobile(TaskFormController taskFormViewController) {
+    return Column(
+      children: [
+        wdgtSelectEstimatedPoints(taskFormViewController),
+        25.toSizedBoxH(),
+        wdgtSelectResponsible(taskFormViewController),
+      ],
+    );
+  }
+
+  Widget _widgetWeb(TaskFormController taskFormViewController) {
+    return Row(
+      children: [
+        Expanded(
+          flex: 3,
+          child: wdgtSelectEstimatedPoints(taskFormViewController),
+        ),
+        20.toSizedBoxW(),
+        Expanded(
+          flex: 7,
+          child: wdgtSelectResponsible(taskFormViewController),
+        )
+      ],
+    );
+  }
+
+  Widget wdgtSelectEstimatedPoints(TaskFormController taskFormViewController) {
+    return DropdownSearch<int>(
+      items: (f, cs) => List.generate(15, (i) => i + 1),
+      decoratorProps: const DropDownDecoratorProps(
+        decoration: InputDecoration(
+            labelText: "Pontos estimados", hintText: "Selecione um número"),
+      ),
+      selectedItem: taskFormViewController.task?.estimatePoints,
+      onChanged: (value) =>
+          taskFormViewController.updateEstimatePoints(value ?? 0),
+      validator: FormBuilderValidators.required(errorText: 'Campo obrigatório'),
+      popupProps: PopupProps.dialog(
+        title: Container(
+          decoration: const BoxDecoration(color: AppTheme.ligthBlueScrum),
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: const Text(
+            'Pontos estimados',
+            style: TextStyle(
+                fontSize: 21,
+                fontWeight: FontWeight.bold,
+                color: Colors.white70),
+          ),
+        ),
+        dialogProps: DialogProps(
+          clipBehavior: Clip.antiAlias,
+          shape: OutlineInputBorder(
+            borderSide: const BorderSide(width: 1),
+            borderRadius: BorderRadius.circular(25),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget wdgtSelectResponsible(TaskFormController taskFormViewController) {
+    return Obx(
+      () => LoadingWidget(
+        isLoading: taskFormViewController.initialState.value.status ==
+            PageStatus.loading,
+        child: DropdownSearch<String>(
+          suffixProps: const DropdownSuffixProps(
+            clearButtonProps: ClearButtonProps(isVisible: true),
+            dropdownButtonProps: DropdownButtonProps(
+              iconClosed: Icon(Icons.keyboard_arrow_down),
+              iconOpened: Icon(Icons.keyboard_arrow_up),
+            ),
+          ),
+          validator:
+              FormBuilderValidators.required(errorText: 'Campo obrigatório'),
+          items: (filter, props) => taskFormViewController.users
+              .map((user) => user.name ?? '')
+              .where((e) => e.toLowerCase().contains(filter.toLowerCase()))
+              .toList(),
+          onChanged: (selectedUserName) {
+            if (selectedUserName != null) {
+              var selectedUser = taskFormViewController.users.firstWhere(
+                (user) => user.name == selectedUserName,
+              );
+              taskFormViewController.updateResponsibleUser(selectedUser.id!);
+            } else {
+              taskFormViewController.updateResponsibleUser(0);
+            }
+          },
+          selectedItem: taskFormViewController.getSelectedUserItem(),
+          decoratorProps: const DropDownDecoratorProps(
+            decoration: InputDecoration(
+              labelText: "Selecione o responsável",
+              hintText: "Escolha um usuário",
+              border: OutlineInputBorder(),
+            ),
+          ),
+          popupProps: PopupProps.menu(
+            showSearchBox: true,
+            itemBuilder: (context, item, isDisabled, isSelected) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12.0),
+                child: Text(
+                  item,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 18),
+                  textAlign: TextAlign.center,
+                ),
+              );
+            },
+            fit: FlexFit.loose,
+            constraints: BoxConstraints(maxHeight: 400),
+          ),
+        ),
       ),
     );
   }
