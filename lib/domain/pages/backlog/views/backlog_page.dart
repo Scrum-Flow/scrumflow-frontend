@@ -30,10 +30,6 @@ class _BacklogPageState extends State<BacklogPage> {
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
         child: Column(
           children: [
-            /*SearchField(
-               onFieldSubmitted: controller.filterSubmitted,
-              onClear: controller.filterSubmitted,
-                ),*/
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
@@ -69,8 +65,12 @@ class _BacklogPageState extends State<BacklogPage> {
                             ),
                             mobilePage: IconButton(
                               tooltip: 'Nova Sprint',
-                              onPressed: () =>
-                                  Get.toNamed(Routes.sprintFormPage),
+                              onPressed: () async {
+                                var result =
+                                    await Get.toNamed(Routes.sprintFormPage);
+
+                                if (result == true) controller.refresh();
+                              },
                               icon: Icon(Icons.library_add_outlined),
                             ),
                           ),
@@ -89,8 +89,11 @@ class _BacklogPageState extends State<BacklogPage> {
                             ),
                             mobilePage: IconButton(
                               tooltip: 'Nova Funcionalidade',
-                              onPressed: () =>
-                                  Get.toNamed(Routes.featureFormPage),
+                              onPressed: () async {
+                                var result =
+                                    await Get.toNamed(Routes.featureFormPage);
+                                if (result == true) controller.refresh();
+                              },
                               icon: Icon(Icons.featured_video_outlined),
                             ),
                           ),
@@ -231,6 +234,98 @@ class _FeatureRowState extends State<FeatureRow> {
 
   @override
   Widget build(BuildContext context) {
+    return Helper.isMobile() ? featureRowMobile() : featureRowWeb();
+  }
+
+  Widget featureRowMobile() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  color: Colors.black38,
+                  height: 1,
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: Text(widget.feature.name ?? "Funcionalidade"),
+              ),
+              Expanded(
+                flex: 1,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.edit),
+                      tooltip: 'Editar funcionalidade',
+                      onPressed: () async {
+                        var result = await Get.to(FeatureFormPage(
+                          projectId: Get.find<Project>().id!,
+                          feature: widget.feature,
+                        ));
+                        if (result == true) controller.refresh();
+                      },
+                    ),
+                    Container(
+                      height: 40,
+                      width: 1,
+                      color: Colors.black12,
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        widget.sprint != null
+                            ? Icons.close
+                            : Icons.delete_outline_rounded,
+                      ),
+                      tooltip: widget.sprint != null
+                          ? 'Desassociar funcionalidade'
+                          : 'Excluir funcionalidade',
+                      onPressed: () => showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: BaseLabel(
+                              text: widget.sprint != null
+                                  ? 'Realmente deseja desassociar essa funcionalidade da sprint ${widget.sprint!.name}?'
+                                  : 'Realmente deseja excluir esta funcionalidade?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: BaseLabel(text: 'Cancelar'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                widget.sprint != null
+                                    ? controller.disassociateFeature(
+                                        sprintId: widget.sprint!.id!,
+                                        featureId: widget.feature.id!)
+                                    : controller.deleteFeature(widget.feature);
+                                Navigator.of(context).pop();
+                              },
+                              child: BaseLabel(text: 'Confirmar'),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget featureRowWeb() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
@@ -333,6 +428,10 @@ class _SprintRowState extends State<SprintRow> {
 
   @override
   Widget build(BuildContext context) {
+    return Helper.isMobile() ? sprintRowMobile() : sprintRowWeb();
+  }
+
+  Widget sprintRowWeb() {
     return Column(
       children: [
         Row(
@@ -341,86 +440,181 @@ class _SprintRowState extends State<SprintRow> {
             Expanded(
                 flex: 5, child: Text(widget.sprint.description ?? "DESC AQ")),
             Expanded(
-                flex: 2,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.add),
-                      tooltip: 'Associar funcionalidades para essa sprint',
-                      onPressed: () async {
-                        await showDialog(
-                          context: context,
-                          builder: (ctx) {
-                            return MultiSelectDialog<Feature>(
-                              initialValue: controller
-                                  .initialFeaturesInSprint(widget.sprint.id!),
-                              title: const BaseLabel(
-                                  text:
-                                      'Clique nas funcionalidades que deseja incluir à essa sprint'),
-                              items: controller.featureValues
-                                  .map((e) => MultiSelectItem(e, e.name ?? ''))
-                                  .toList(),
-                              onConfirm: (features) async =>
-                                  await controller.associateFeature(
-                                sprintId: widget.sprint.id!,
-                                features: features,
-                              ),
-                              listType: MultiSelectListType.CHIP,
-                            );
-                          },
-                        );
-                      },
-                    ),
-                    Container(
-                      height: 40,
-                      width: 1,
-                      color: Colors.black12,
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.edit),
-                      tooltip: 'Editar sprint',
-                      onPressed: () async {
-                        var result = await Get.to(SprintFormPage(
-                          sprint: widget.sprint,
-                          projectId: Get.find<Project>().id!,
-                        ));
-                        if (result == true) controller.refresh();
-                      },
-                    ),
-                    Container(
-                      height: 40,
-                      width: 1,
-                      color: Colors.black12,
-                    ),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.delete_outline_rounded,
-                      ),
-                      tooltip: 'Excluir sprint',
-                      onPressed: () => showDialog(
+              flex: 2,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.add),
+                    tooltip: 'Associar funcionalidades para essa sprint',
+                    onPressed: () async {
+                      await showDialog(
                         context: context,
-                        builder: (context) => AlertDialog(
-                          title: BaseLabel(
-                              text: 'Realmente deseja excluir esta sprint?'),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(),
-                              child: BaseLabel(text: 'Cancelar'),
+                        builder: (ctx) {
+                          return MultiSelectDialog<Feature>(
+                            initialValue: controller
+                                .initialFeaturesInSprint(widget.sprint.id!),
+                            title: const BaseLabel(
+                                text:
+                                    'Clique nas funcionalidades que deseja incluir à essa sprint'),
+                            items: controller.featureValues
+                                .map((e) => MultiSelectItem(e, e.name ?? ''))
+                                .toList(),
+                            onConfirm: (features) async =>
+                                await controller.associateFeature(
+                              sprintId: widget.sprint.id!,
+                              features: features,
                             ),
-                            TextButton(
-                              onPressed: () {
-                                controller.deleteSprint(widget.sprint);
-                                Navigator.of(context).pop();
-                              },
-                              child: BaseLabel(text: 'Confirmar'),
-                            )
-                          ],
-                        ),
+                            listType: MultiSelectListType.CHIP,
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  Container(
+                    height: 40,
+                    width: 1,
+                    color: Colors.black12,
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    tooltip: 'Editar sprint',
+                    onPressed: () async {
+                      var result = await Get.to(SprintFormPage(
+                        sprint: widget.sprint,
+                        projectId: Get.find<Project>().id!,
+                      ));
+                      if (result == true) controller.refresh();
+                    },
+                  ),
+                  Container(
+                    height: 40,
+                    width: 1,
+                    color: Colors.black12,
+                  ),
+                  IconButton(
+                    icon: const Icon(
+                      Icons.delete_outline_rounded,
+                    ),
+                    tooltip: 'Excluir sprint',
+                    onPressed: () => showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: BaseLabel(
+                            text: 'Realmente deseja excluir esta sprint?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: BaseLabel(text: 'Cancelar'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              controller.deleteSprint(widget.sprint);
+                              Navigator.of(context).pop();
+                            },
+                            child: BaseLabel(text: 'Confirmar'),
+                          )
+                        ],
                       ),
                     ),
-                  ],
-                )),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget sprintRowMobile() {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(flex: 1, child: Text(widget.sprint.name ?? "NOME AQ")),
+            Expanded(
+              flex: 2,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.add),
+                    tooltip: 'Associar funcionalidades para essa sprint',
+                    onPressed: () async {
+                      await showDialog(
+                        context: context,
+                        builder: (ctx) {
+                          return MultiSelectDialog<Feature>(
+                            initialValue: controller
+                                .initialFeaturesInSprint(widget.sprint.id!),
+                            title: const BaseLabel(
+                                text:
+                                    'Clique nas funcionalidades que deseja incluir à essa sprint'),
+                            items: controller.featureValues
+                                .map((e) => MultiSelectItem(e, e.name ?? ''))
+                                .toList(),
+                            onConfirm: (features) async =>
+                                await controller.associateFeature(
+                              sprintId: widget.sprint.id!,
+                              features: features,
+                            ),
+                            listType: MultiSelectListType.CHIP,
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  Container(
+                    height: 40,
+                    width: 1,
+                    color: Colors.black12,
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    tooltip: 'Editar sprint',
+                    onPressed: () async {
+                      var result = await Get.to(SprintFormPage(
+                        sprint: widget.sprint,
+                        projectId: Get.find<Project>().id!,
+                      ));
+                      if (result == true) controller.refresh();
+                    },
+                  ),
+                  Container(
+                    height: 40,
+                    width: 1,
+                    color: Colors.black12,
+                  ),
+                  IconButton(
+                    icon: const Icon(
+                      Icons.delete_outline_rounded,
+                    ),
+                    tooltip: 'Excluir sprint',
+                    onPressed: () => showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: BaseLabel(
+                            text: 'Realmente deseja excluir esta sprint?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: BaseLabel(text: 'Cancelar'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              controller.deleteSprint(widget.sprint);
+                              Navigator.of(context).pop();
+                            },
+                            child: BaseLabel(text: 'Confirmar'),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ],
