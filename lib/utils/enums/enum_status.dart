@@ -65,4 +65,25 @@ enum ObjectStatus {
         return "NOT_STARTED";
     }
   }
+
+  static String getOsToString(String description) {
+    switch (description) {
+      case "NOT_STARTED":
+        return "Não Iniciado";
+      case "IN_ANALYSIS":
+        return "Em Análise";
+      case "IN_PROGRESS":
+        return "Em Progresso";
+      case "IN_TESTS":
+        return "Em Teste";
+      case "DONE":
+        return "Finalizado";
+      case "CANCELED":
+        return "Cancelado";
+      case "PAUSE":
+        return "Pause";
+      default:
+        return "Não Iniciado";
+    }
+  }
 }
