@@ -38,64 +38,6 @@ class BodyMobile extends StatelessWidget {
 
 class _BottomNavigationBar extends StatelessWidget {
   @override
-  /*Widget build(BuildContext context) {
-    HomePageController homeController = Get.find<HomePageController>();
-    AuthController authController = Get.find<AuthController>();
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Image.asset('assets/images/logo.png', width: 30),
-        const Divider(
-          indent: 1.0,
-          endIndent: 1.0,
-        ),
-        Expanded(
-            child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            ...Pages.values.map((page) {
-              return InkWell(
-                onTap: () => homeController.changePage(page.index),
-                child: ListTile(
-                  leading: SvgPicture.asset(
-                    page.icon,
-                    width: 20,
-                    height: 20,
-                    colorFilter: ColorFilter.mode(
-                      homeController.sideMenu.currentPage == page.index
-                          ? Colors.white
-                          : Colors.black,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                ),
-              );
-            }),
-          ],
-        )),
-        IconButton(
-          onPressed: () => showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              title: BaseLabel(text: 'Realmente deseja sair da aplicação ?'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: BaseLabel(text: 'Cancelar'),
-                ),
-                TextButton(
-                  onPressed: () => authController.logout(),
-                  child: BaseLabel(text: 'Confirmar'),
-                )
-              ],
-            ),
-          ),
-          icon: Icon(Icons.login_outlined),
-        ),
-      ],
-    );
-  }*/
   Widget build(BuildContext context) {
     HomePageController homeController = Get.find<HomePageController>();
     AuthController authController = Get.find<AuthController>();

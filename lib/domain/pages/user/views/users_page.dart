@@ -20,7 +20,8 @@ class UsersPage extends StatefulWidget {
 class _UsersPageState extends State<UsersPage> {
   @override
   Widget build(BuildContext context) {
-    UserListController userListController = Get.put<UserListController>(UserListController());
+    UserListController userListController =
+        Get.put<UserListController>(UserListController());
 
     return Scaffold(
       backgroundColor: Colors.grey[200],
@@ -42,7 +43,8 @@ class _UsersPageState extends State<UsersPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                       child: BaseLabel(
                         text: 'Usuários',
                         fontSize: fsVeryBig,
@@ -78,7 +80,8 @@ class _UserList extends StatelessWidget {
         mainAxisExtent: 200,
         onRefresh: () => controller.fetchUsers(),
         shrinkWrap: true,
-        padding: const EdgeInsets.symmetric(horizontal: 24).add(const EdgeInsets.only(bottom: 12)),
+        padding: const EdgeInsets.symmetric(horizontal: 24)
+            .add(const EdgeInsets.only(bottom: 12)),
         pageState: controller.userListState.value,
         items: controller.values,
         itemBuilder: (context, item) => UserCard(item),
@@ -111,8 +114,12 @@ class UserCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  decoration: BoxDecoration(color: Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(0.2), borderRadius: BorderRadius.circular(20)),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                      color: Color((Random().nextDouble() * 0xFFFFFF).toInt())
+                          .withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(20)),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   child: BaseLabel(
                     text: user.toString(),
                     color: Colors.black,
@@ -124,8 +131,11 @@ class UserCard extends StatelessWidget {
                   initialValue: user.roles ?? [],
                   buttonText: Text('Categorias'),
                   title: BaseLabel(text: 'Categorias'),
-                  items: controller.roles.map((e) => MultiSelectItem(e, e.name ?? '')).toList(),
-                  onConfirm: (categories) => controller.updateUserCategory(user, categories),
+                  items: controller.roles
+                      .map((e) => MultiSelectItem(e, e.name ?? ''))
+                      .toList(),
+                  onConfirm: (categories) =>
+                      controller.updateUserCategory(user, categories),
                   chipDisplay: MultiSelectChipDisplay(
                     scroll: true,
                     textStyle: TextStyle(fontSize: fsSmall),
