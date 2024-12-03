@@ -16,8 +16,7 @@ class KanbanController extends GetxController {
 
   Map<SprintDetails, List<Task>> get sprintTasks => _sprintTasks ?? {};
   late ProjectDetails projectDetails;
-  RxMap<ObjectStatus, List<Task>> statusTaskMap =
-      <ObjectStatus, List<Task>>{}.obs;
+  RxMap<ObjectStatus, List<Task>> statusTaskMap = <ObjectStatus, List<Task>>{}.obs;
 
   Map<SprintDetails, List<Task>>? _sprintTasks;
   Rx<SprintDetails?> selectedSprint = Rxn();
@@ -78,14 +77,12 @@ class KanbanController extends GetxController {
 
     for (var sprint in sprints) {
       if (selectedSprint.value == null) {
-        final tasks =
-            sprint.features!.expand((feature) => feature.tasks!).toList();
+        final tasks = sprint.features!.expand((feature) => feature.tasks!).toList();
 
         sprintTaskMap[sprint] = tasks;
       } else {
         if (sprint.id == selectedSprint.value!.id) {
-          final tasks =
-              sprint.features!.expand((feature) => feature.tasks!).toList();
+          final tasks = sprint.features!.expand((feature) => feature.tasks!).toList();
 
           sprintTaskMap[sprint] = tasks;
         }
@@ -101,23 +98,23 @@ class KanbanController extends GetxController {
 
     _sprintTasks!.values.forEach((tasks) {
       for (var task in tasks) {
-        final status =
-            ObjectStatus.values.firstWhere((sts) => sts.name == task.status);
+        final status = ObjectStatus.values.firstWhere((sts) => sts.name == task.status);
         statusTaskMap[status]!.add(task);
       }
     });
   }
 
-  Future<void> updateTaskStatus(
-      {required ObjectStatus oStatus,
-      required int oIndex,
-      required ObjectStatus nStatus,
-      required int nIndex}) async {
+  Future<void> updateTaskStatus({
+    required ObjectStatus oStatus,
+    required int oIndex,
+    required ObjectStatus nStatus,
+    required int nIndex,
+  }) async {
     final movedTask = statusTaskMap[oStatus]!.removeAt(oIndex);
 
     statusTaskMap[nStatus]!.insert(nIndex, movedTask);
 
-    // await updateTask(movedTask, nStatus);
+    KanbanService.updateTaskStatus(movedTask.copyWith(status: ObjectStatus.getStringToJson(nStatus.getDescription())));
 
     statusTaskMap.refresh();
   }
@@ -148,7 +145,7 @@ class KanbanController extends GetxController {
     return "Sem Funcionalidade";
   }
 
-  /*Future<void> updateTask(Task task, ObjectStatus status) async {
+/*Future<void> updateTask(Task task, ObjectStatus status) async {
     try {
       await TaskService.updateTask(Task(
         id: task.id,
