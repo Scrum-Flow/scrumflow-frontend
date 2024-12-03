@@ -68,11 +68,13 @@ class _FeaturePageState extends State<FeaturePage> {
                             ),
                             mobilePage: IconButton(
                               tooltip: 'Criar Funcionalidade',
-                              onPressed: () => Get.to(FeatureFormPage(
-                                projectId: Get.find<Project>().id!,
-                              )),
-                              /*Routes.goTo(
-                                  context, FeatureFormPage(projectId: 1)),*/
+                              onPressed: () async {
+                                var result = await Get.to(FeatureFormPage(
+                                  projectId: Get.find<Project>().id!,
+                                ));
+                                if (result == true)
+                                  featureController.fetchFeatures();
+                              },
                               icon: Icon(Icons.add_card_outlined),
                             ),
                           ),

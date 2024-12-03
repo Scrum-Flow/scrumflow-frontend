@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:scrumflow/domain/pages/backlog/backlog.dart';
 import 'package:scrumflow/domain/pages/feature/views/feature_page.dart';
 import 'package:scrumflow/domain/pages/kanban/kanban.dart';
+import 'package:scrumflow/domain/pages/report/views/report_page.dart';
 import 'package:scrumflow/domain/pages/sprint/views/sprint_form_page.dart';
 import 'package:scrumflow/domain/pages/task/views/task_page.dart';
 import 'package:scrumflow/models/project.dart';
@@ -30,6 +31,7 @@ class _DashboardPageMobileState extends State<DashboardPageMobile> {
     _pages.add(SprintFormPage(projectId: widget.project.id!));
     _pages.add(BacklogPage(projectId: widget.project.id!));
     _pages.add(KanbanPage(project: widget.project));
+    _pages.add(ReportPage(projectId: widget.project.id!));
     _currentPage = _pages[_selectedIndex];
   }
 
@@ -96,6 +98,11 @@ class _DashboardPageMobileState extends State<DashboardPageMobile> {
               icon: Icons.view_kanban,
               title: "Kanban",
               index: 4,
+            ),
+            _buildDrawerItem(
+              icon: Icons.document_scanner_outlined,
+              title: "Relatórios",
+              index: 5,
             ),
           ],
         ),

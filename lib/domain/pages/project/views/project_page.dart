@@ -78,8 +78,12 @@ class _ProjectPageState extends State<ProjectPage> {
                             ),
                             mobilePage: IconButton(
                               tooltip: 'Criar Projeto',
-                              onPressed: () =>
-                                  Get.toNamed(Routes.projectFormPage),
+                              onPressed: () async {
+                                var result =
+                                    await Get.toNamed(Routes.projectFormPage);
+                                if (result == true)
+                                  controller.fetchProjects(controller.user);
+                              },
                               icon: Icon(Icons.add_card_outlined),
                             ),
                           ),
