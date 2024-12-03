@@ -128,7 +128,7 @@ class _KanbanBoardState extends State<_KanbanBoard> {
                       Flexible(
                         flex: 3,
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 50),
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: DropdownButtonFormField<SprintDetails>(
                             hint: const Padding(
                               padding: EdgeInsets.only(left: 20.0),

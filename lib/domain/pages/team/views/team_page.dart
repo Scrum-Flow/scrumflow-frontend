@@ -34,7 +34,8 @@ class TeamPage extends StatelessWidget {
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 12),
                       child: Row(
                         children: [
                           const Expanded(
@@ -51,7 +52,8 @@ class TeamPage extends StatelessWidget {
                               child: BaseButton(
                                 title: 'Criar Time',
                                 onPressed: () async {
-                                  var result = await Get.toNamed(Routes.teamFormPage);
+                                  var result =
+                                      await Get.toNamed(Routes.teamFormPage);
 
                                   if (result != null) {
                                     controller.fetchTeams();
@@ -62,7 +64,8 @@ class TeamPage extends StatelessWidget {
                             mobilePage: IconButton(
                               tooltip: 'Criar Time',
                               onPressed: () async {
-                                var result = await Get.toNamed(Routes.teamFormPage);
+                                var result =
+                                    await Get.toNamed(Routes.teamFormPage);
 
                                 if (result != null) {
                                   controller.fetchTeams();
@@ -94,11 +97,12 @@ class _TeamList extends StatelessWidget {
     return Obx(
       () => Expanded(
         child: BaseGrid(
-          maxCrossAxisExtent: 250,
+          maxCrossAxisExtent: 325,
           mainAxisExtent: 100,
           onRefresh: () => controller.fetchTeams(),
           shrinkWrap: true,
-          padding: const EdgeInsets.symmetric(horizontal: 24).add(const EdgeInsets.only(bottom: 12)),
+          padding: const EdgeInsets.symmetric(horizontal: 24)
+              .add(const EdgeInsets.only(bottom: 12)),
           pageState: controller.teamListState.value,
           items: controller.values,
           itemBuilder: (context, item) => UserCard(item),
@@ -129,7 +133,10 @@ class UserCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              decoration: BoxDecoration(color: Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(0.2), borderRadius: BorderRadius.circular(20)),
+              decoration: BoxDecoration(
+                  color: Color((Random().nextDouble() * 0xFFFFFF).toInt())
+                      .withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(20)),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: BaseLabel(
                 text: team.toString(),
@@ -154,7 +161,8 @@ class UserCard extends StatelessWidget {
                   onPressed: () => showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: BaseLabel(text: 'Realmente deseja excluir este time?'),
+                      title: BaseLabel(
+                          text: 'Realmente deseja excluir este time?'),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.of(context).pop(),

@@ -105,6 +105,7 @@ class _FeatureList extends StatelessWidget {
     return Obx(
       () => Expanded(
         child: BaseGrid(
+          mainAxisExtent: 150,
           onRefresh: () => controller.fetchFeatures(),
           shrinkWrap: true,
           padding: const EdgeInsets.symmetric(horizontal: 24)

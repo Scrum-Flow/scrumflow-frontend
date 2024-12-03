@@ -76,7 +76,7 @@ class _UserList extends StatelessWidget {
 
     return Obx(
       () => BaseGrid(
-        maxCrossAxisExtent: 250,
+        maxCrossAxisExtent: 350,
         mainAxisExtent: 200,
         onRefresh: () => controller.fetchUsers(),
         shrinkWrap: true,
