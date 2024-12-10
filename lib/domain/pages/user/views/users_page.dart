@@ -8,6 +8,7 @@ import 'package:scrumflow/domain/pages/user/controllers/user_list_controller.dar
 import 'package:scrumflow/models/models.dart';
 import 'package:scrumflow/models/user_role.dart';
 import 'package:scrumflow/utils/utils.dart';
+import 'package:scrumflow/widgets/notification_dialog.dart';
 import 'package:scrumflow/widgets/widgets.dart';
 
 class UsersPage extends StatefulWidget {
@@ -113,18 +114,29 @@ class UserCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                      color: Color((Random().nextDouble() * 0xFFFFFF).toInt())
-                          .withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(20)),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  child: BaseLabel(
-                    text: user.toString(),
-                    color: Colors.black,
-                    fontWeight: fwBold,
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Color(
+                                    (Random().nextDouble() * 0xFFFFFF).toInt())
+                                .withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(20)),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        child: BaseLabel(
+                          text: user.toString(),
+                          color: Colors.black,
+                          fontWeight: fwBold,
+                        ),
+                      ),
+                    ),
+                    NotificationDialog(user.id!, false
+
+                        ///TODO: alterar aqui
+                        ),
+                  ],
                 ),
                 12.toSizedBoxH(),
                 MultiSelectDialogField<UserRole>(

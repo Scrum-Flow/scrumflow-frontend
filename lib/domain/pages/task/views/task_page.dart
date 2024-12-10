@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scrumflow/domain/basics/basics.dart';
 import 'package:scrumflow/domain/pages/pages.dart';
-import 'package:scrumflow/domain/pages/task/views/task_table_mobile.dart';
 import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/widgets.dart';
-
-import 'task_table_web.dart';
 
 class TaskPage extends StatefulWidget {
   const TaskPage({super.key, required this.projectId});
@@ -155,6 +152,10 @@ class _TaskPageState extends State<TaskPage> {
                       style: TextStyle(fontWeight: FontWeight.bold))),
               Expanded(
                   flex: 4,
+                  child: Text("Histórico",
+                      style: TextStyle(fontWeight: FontWeight.bold))),
+              Expanded(
+                  flex: 2,
                   child: Text('Editar/Excluir',
                       style: TextStyle(fontWeight: FontWeight.bold))),
             ],

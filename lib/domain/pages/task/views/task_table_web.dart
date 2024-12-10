@@ -5,6 +5,7 @@ import 'package:scrumflow/domain/pages/pages.dart';
 import 'package:scrumflow/models/feature.dart';
 import 'package:scrumflow/models/task.dart';
 import 'package:scrumflow/utils/enums/enum_status.dart';
+import 'package:scrumflow/widgets/historic_dialog.dart';
 
 class TaskTableWeb extends StatefulWidget {
   const TaskTableWeb({Key? key}) : super(key: key);
@@ -62,6 +63,7 @@ class _TaskTableState extends State<TaskTableWeb> {
             Expanded(flex: 2, child: Text(task.estimatePoints.toString())),
             Expanded(
                 flex: 5, child: Text(ObjectStatus.getOsToString(task.status!))),
+            Expanded(flex: 2, child: HistoryDialog(task.id)),
             Expanded(
                 flex: 4,
                 child: Row(

@@ -16,6 +16,7 @@ class UserListController extends GetxController {
   List<UserRole> roles = [];
   Rx<PageState> userListState = PageState.none().obs;
   Rx<PageState> userState = PageState.none().obs;
+  Rx<PageState> userPatchState = PageState.none().obs;
   RxString filterValue = ''.obs;
   PageController controller = PageController();
 
@@ -24,6 +25,7 @@ class UserListController extends GetxController {
     fetchUsers();
 
     userState.listen(Prompts.showSnackBar);
+    userPatchState.listen(Prompts.showSnackBar);
 
     super.onInit();
   }
@@ -51,20 +53,37 @@ class UserListController extends GetxController {
 
       values.removeAt(index);
 
-      User newUser = await UserService.updateUserRoles(user.copyWith(roles: roles));
+      User newUser =
+          await UserService.updateUserRoles(user.copyWith(roles: roles));
 
       values.insert(index, newUser);
 
       userListState.value = PageState.none();
     } catch (e) {
-      userState.value = PageState.error('Falha ao atualizar categoria do usuário!');
+      userState.value =
+          PageState.error('Falha ao atualizar categoria do usuário!');
+    }
+  }
+
+  FutureOr<void> patchUserNotification(int userId, bool notifyUser) async {
+    userPatchState.value = PageState.none();
+    try {
+      await UserService.patchUserNotification(userId, notifyUser);
+
+      userPatchState.value = PageState.success(data: "Notificação atualizada");
+    } catch (e) {
+      userPatchState.value =
+          PageState.error('Falha ao atualizar as notificações do usuário!');
     }
   }
 
   void filterUsers() {
     userListState.value = PageState.loading();
 
-    values = (_users ?? []).where((element) => (element.name?.toLowerCase() ?? '').isCaseInsensitiveContains(filterValue.value.toLowerCase() )).toList();
+    values = (_users ?? [])
+        .where((element) => (element.name?.toLowerCase() ?? '')
+            .isCaseInsensitiveContains(filterValue.value.toLowerCase()))
+        .toList();
 
     userListState.value = PageState.none();
   }

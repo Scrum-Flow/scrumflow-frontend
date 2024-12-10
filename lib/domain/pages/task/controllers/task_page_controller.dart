@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scrumflow/domain/pages/pages.dart';
 import 'package:scrumflow/models/models.dart';
+import 'package:scrumflow/models/task_history.dart';
 import 'package:scrumflow/utils/utils.dart';
 import 'package:scrumflow/widgets/widgets.dart';
 
@@ -15,13 +16,14 @@ class TaskPageController extends GetxController {
 
   List<Task>? _tasks;
   List<Feature>? _features;
-
+  List<TaskHistory> taskHystory = [];
   List<Task> tasksValues = [];
   List<Feature> featureValues = [];
   Rx<PageState> featureListState = PageState.none().obs;
   Rx<PageState> taskListState = PageState.none().obs;
   Rx<PageState> pageState = PageState.none().obs;
   Rx<PageState> taskDeleteState = PageState.none().obs;
+  Rx<PageState> taskHistoryState = PageState.none().obs;
 
   @override
   Future<void> onInit() async {
@@ -107,5 +109,24 @@ class TaskPageController extends GetxController {
     }
 
     taskDeleteState.value = PageState.none();
+  }
+
+  FutureOr<void> getTasksHistory(int taskId) async {
+    taskHistoryState.value = PageState.loading();
+    try {
+      taskHystory = await TaskService.fetchTasksHistory(taskId);
+
+      taskHistoryState.value = PageState.success();
+    } on DioException catch (e) {
+      debugPrint(e.toString());
+      taskHistoryState.value =
+          PageState.error('Erro ao obter histórico da tarefa!');
+    } catch (e) {
+      debugPrint(e.toString());
+      taskHistoryState.value =
+          PageState.error('Erro ao obter histórico da tarefa!');
+    }
+
+    taskHistoryState.value = PageState.none();
   }
 }

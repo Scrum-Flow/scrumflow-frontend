@@ -16,7 +16,8 @@ class KanbanController extends GetxController {
 
   Map<SprintDetails, List<Task>> get sprintTasks => _sprintTasks ?? {};
   late ProjectDetails projectDetails;
-  RxMap<ObjectStatus, List<Task>> statusTaskMap = <ObjectStatus, List<Task>>{}.obs;
+  RxMap<ObjectStatus, List<Task>> statusTaskMap =
+      <ObjectStatus, List<Task>>{}.obs;
 
   Map<SprintDetails, List<Task>>? _sprintTasks;
   Rx<SprintDetails?> selectedSprint = Rxn();
@@ -77,12 +78,14 @@ class KanbanController extends GetxController {
 
     for (var sprint in sprints) {
       if (selectedSprint.value == null) {
-        final tasks = sprint.features!.expand((feature) => feature.tasks!).toList();
+        final tasks =
+            sprint.features!.expand((feature) => feature.tasks!).toList();
 
         sprintTaskMap[sprint] = tasks;
       } else {
         if (sprint.id == selectedSprint.value!.id) {
-          final tasks = sprint.features!.expand((feature) => feature.tasks!).toList();
+          final tasks =
+              sprint.features!.expand((feature) => feature.tasks!).toList();
 
           sprintTaskMap[sprint] = tasks;
         }
@@ -98,7 +101,8 @@ class KanbanController extends GetxController {
 
     _sprintTasks!.values.forEach((tasks) {
       for (var task in tasks) {
-        final status = ObjectStatus.values.firstWhere((sts) => sts.name == task.status);
+        final status =
+            ObjectStatus.values.firstWhere((sts) => sts.name == task.status);
         statusTaskMap[status]!.add(task);
       }
     });
@@ -114,7 +118,8 @@ class KanbanController extends GetxController {
 
     statusTaskMap[nStatus]!.insert(nIndex, movedTask);
 
-    KanbanService.updateTaskStatus(movedTask.copyWith(status: ObjectStatus.getStringToJson(nStatus.getDescription())));
+    await KanbanService.updateTaskStatus(movedTask.copyWith(
+        status: ObjectStatus.getStringToJson(nStatus.getDescription())));
 
     statusTaskMap.refresh();
   }

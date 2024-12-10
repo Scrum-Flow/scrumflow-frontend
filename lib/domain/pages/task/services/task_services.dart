@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:scrumflow/models/models.dart';
+import 'package:scrumflow/models/task_history.dart';
 import 'package:scrumflow/utils/utils.dart';
 
 class TaskService {
@@ -47,5 +48,21 @@ class TaskService {
     var dio = await Connection.defaultDio();
 
     await dio.put('$path/${task.id}', data: json.encode(task.toJson()));
+  }
+
+  static FutureOr<List<TaskHistory>> fetchTasksHistory(int taskId) async {
+    Dio dio = await Connection.defaultDio();
+
+    var response = await dio.get('$path/$taskId/history');
+
+    if (response.data is List) {
+      return (response.data as List)
+          .map((item) => TaskHistory.fromJson(item))
+          .toList();
+    } else {
+      throw Exception('Resposta inesperada da API: não é uma lista');
+    } /*return response.data
+        .map<TaskHistory>((map) => TaskHistory.fromJson(map))
+        .toList();*/
   }
 }
