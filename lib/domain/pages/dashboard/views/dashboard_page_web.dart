@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scrumflow/domain/pages/backlog/backlog.dart';
 import 'package:scrumflow/domain/pages/feature/views/feature_page.dart';
 import 'package:scrumflow/domain/pages/kanban/kanban.dart';
+import 'package:scrumflow/domain/pages/report/views/report_page.dart';
 import 'package:scrumflow/domain/pages/sprint/views/sprint_form_page.dart';
 import 'package:scrumflow/domain/pages/task/views/task_page.dart';
 import 'package:scrumflow/models/project.dart';
@@ -14,7 +15,7 @@ class DashboardPageWeb extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 5,
+      length: 6,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Itens do projeto'),
@@ -25,6 +26,7 @@ class DashboardPageWeb extends StatelessWidget {
               tabHeader('Cadastro Sprint'),
               tabHeader('Backlog'),
               tabHeader('Kanban'),
+              tabHeader('Relatório')
             ],
           ),
         ),
@@ -34,7 +36,8 @@ class DashboardPageWeb extends StatelessWidget {
             FeaturePage(projectId: project.id!),
             SprintFormPage(projectId: project.id!),
             BacklogPage(projectId: project.id!),
-            KanbanPage(project: project)
+            KanbanPage(project: project),
+            ReportPage(projectId: project.id!)
           ],
         ),
       ),
