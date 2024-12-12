@@ -9,6 +9,7 @@ class User {
   final DateTime? createdAt;
   final bool? active;
   final List<UserRole>? roles;
+  final bool? sendNotifications;
 
   User({
     this.id,
@@ -18,6 +19,7 @@ class User {
     this.createdAt,
     this.active,
     this.roles,
+    this.sendNotifications,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -28,6 +30,7 @@ class User {
       createdAt: Helper.toDateTime(Helper.keyExists(json, 'dt_created')),
       active: Helper.toBool(Helper.keyExists(json, 'active')),
       roles: Helper.keyExists(json, 'roles')?.map<UserRole>((json) => UserRole.fromJson(json)).toList() ?? [],
+      sendNotifications: Helper.toBool(Helper.keyExists(json, 'sendNotifications')),
     );
   }
 
@@ -39,6 +42,7 @@ class User {
       'email': email,
       'dt_created': createdAt?.toIso8601String() ?? '',
       'active': active,
+      'sendNotifications': sendNotifications,
       'roles': roles?.map((role) => role.toJson()).toList(),
     };
   }
@@ -50,6 +54,7 @@ class User {
     String? email,
     DateTime? createdAt,
     bool? active,
+    bool? sendNotifications,
     List<UserRole>? roles,
   }) {
     return User(
@@ -59,6 +64,7 @@ class User {
       email: email ?? this.email,
       createdAt: createdAt ?? this.createdAt,
       active: active ?? this.active,
+      sendNotifications: sendNotifications ?? this.sendNotifications,
       roles: roles ?? this.roles,
     );
   }

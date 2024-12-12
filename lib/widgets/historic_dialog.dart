@@ -57,7 +57,7 @@ class HistoryDialogState extends State<HistoryDialog> {
                     child: Row(
                       children: [
                         Expanded(
-                            flex: 1,
+                            flex: 2,
                             child: Text("ID",
                                 style: TextStyle(fontWeight: FontWeight.bold))),
                         Expanded(
@@ -75,6 +75,10 @@ class HistoryDialogState extends State<HistoryDialog> {
                         Expanded(
                             flex: 4,
                             child: Text("Para Status",
+                                style: TextStyle(fontWeight: FontWeight.bold))),
+                        Expanded(
+                            flex: 4,
+                            child: Text("Quando",
                                 style: TextStyle(fontWeight: FontWeight.bold))),
                       ],
                     ),
@@ -96,7 +100,7 @@ class HistoryDialogState extends State<HistoryDialog> {
                                 child: Row(
                                   children: [
                                     Expanded(
-                                        flex: 1,
+                                        flex: 2,
                                         child: Text(item.id.toString())),
                                     Expanded(
                                         flex: 2,
@@ -111,6 +115,9 @@ class HistoryDialogState extends State<HistoryDialog> {
                                         flex: 4,
                                         child: Text(ObjectStatus.getOsToString(
                                             item.toStatus!))),
+                                    Expanded(
+                                        flex: 4,
+                                        child: Text(item.movedAt.toString())),
                                   ],
                                 ),
                               );

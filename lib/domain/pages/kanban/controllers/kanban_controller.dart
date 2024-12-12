@@ -149,20 +149,4 @@ class KanbanController extends GetxController {
     }
     return "Sem Funcionalidade";
   }
-
-/*Future<void> updateTask(Task task, ObjectStatus status) async {
-    try {
-      await TaskService.updateTask(Task(
-        id: task.id,
-        name: task.name,
-        status: status.name,
-        description: task.description,
-        assignedToUserId: task.assignedUser.,
-        assignedFeature: chosenFeature.value!.id,
-        estimatePoints: estimatePoints.value,
-      ));
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-  }*/
 }

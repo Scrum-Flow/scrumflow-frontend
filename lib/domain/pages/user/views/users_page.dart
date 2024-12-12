@@ -132,10 +132,8 @@ class UserCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    NotificationDialog(user.id!, false
-
-                        ///TODO: alterar aqui
-                        ),
+                    NotificationDialog(
+                        user.id!, user.sendNotifications ?? false),
                   ],
                 ),
                 12.toSizedBoxH(),
